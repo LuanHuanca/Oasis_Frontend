@@ -1,0 +1,220 @@
+<template>
+  <div class="pop-up">
+    <div class="pop-up-inner">
+      <div class="pop-up-close" @click="close">&times;</div>
+      <h1>Tu Carrito de Compras</h1>
+      <div class="cart-items">
+        <div v-if="cartItems.length === 0" class="empty-cart">
+          <p>Tu carrito está vacío.</p>
+        </div>
+        <div v-else>
+          <div
+            v-for="(item, index) in cartItems"
+            :key="index"
+            class="cart-item"
+          >
+            <img :src="item.image" alt="Item image" class="cart-item-image" />
+            <div class="cart-item-details">
+              <h2>{{ item.title }}</h2>
+              <p>Descripcion: {{ item.description }}</p>
+              <p>Categoria:{{ item.category }}</p>
+              <p>Ubicacion:{{ item.location }}</p>
+            </div>
+            <button @click="removeFromCart(index)">Eliminar</button>
+          </div>
+        </div>
+      </div>
+      <div v-if="cartItems.length > 0" class="pop-up-button">
+        <button @click="checkout">Checkout</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapState, mapActions } from "vuex";
+import axios from "axios";
+import Swal from "sweetalert2"; // Importar SweetAlert
+
+export default {
+  computed: {
+    ...mapState(["cartItems", "user"]),
+  },
+  methods: {
+    ...mapActions(["removeFromCart"]),
+    async checkout() {
+      const correoUsuario = this.user.result.correo;
+
+      let emailContent = `
+        <h1>Detalles de tu carrito de compras</h1>
+        <p>Estimado/a usuari@,</p>
+        <p>Gracias por elegir nuestros servicios. Aquí están los detalles de tu carrito:</p>
+        <ul>
+      `;
+
+      this.cartItems.forEach((item) => {
+        emailContent += `
+          <li>
+            <h2>${item.title}</h2>
+            <img src="${item.image}" alt="Item image" style="width: 300px; heigth:300px;">
+            <p><strong>Descripción:</strong> ${item.description}</p>
+            <p><strong>Categoría:</strong> ${item.category}</p>
+            <p><strong>Ubicación:</strong> ${item.location}</p>
+          </li>
+          <hr>
+        `;
+      });
+
+      emailContent += `
+        </ul>
+        <p>Esperamos verte pronto.</p>
+        <p>Saludos,<br>El equipo de Oasis</p>
+      `;
+
+      // Enviar solicitud al backend para enviar el correo
+      try {
+        const url = "http://localhost:9999/mail/send/" + correoUsuario;
+        await axios.post(url, {
+          subject: "Detalles de tu carrito de compras - Oasis",
+          message: emailContent,
+        });
+
+        // Mostrar notificación de éxito
+        Swal.fire({
+          icon: "success",
+          title: "Correo enviado",
+          text: "El correo ha sido enviado exitosamente.",
+        });
+
+      } catch (error) {
+        console.error("Error enviando correo:", error);
+        // Mostrar notificación de error
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un error al enviar el correo.",
+        });
+      }
+    },
+
+    close() {
+      this.$emit("close");
+    },
+  },
+};
+</script>
+
+
+
+<style>
+.pop-up {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 32px 16px 120px;
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(144, 216, 214, 0.5);
+  display: grid;
+  place-items: center;
+}
+
+.pop-up h1 {
+  display: flex;
+  justify-content: center;
+}
+
+.pop-up button {
+  background-color: rgb(164, 227, 200);
+  color: #000;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 5px 20px;
+  margin: 19px 0 0 0;
+}
+
+.pop-up-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pop-up-close {
+  position: absolute;
+  height: 52px;
+  width: 52px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  right: 0;
+  font-size: 3rem;
+  color: black;
+  cursor: pointer;
+}
+
+.pop-up-inner {
+  background-color: #fff;
+  color: #000;
+  position: relative;
+  width: 70%;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+  transition: all 250ms ease-in-out;
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 20px 0;
+  width: 100%;
+  height: 400px;
+  overflow-y: auto;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
+
+.cart-item-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.cart-item-details {
+  flex: 1;
+}
+
+.cart-item h2 {
+  margin: 0 0 10px 0;
+}
+
+.empty-cart {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #888;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 250ms ease-in-out;
+}
+
+.fade-leave-active {
+  transition-delay: 250ms;
+}
+</style>

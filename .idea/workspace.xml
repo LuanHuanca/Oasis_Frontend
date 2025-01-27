@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fec5c5ff-c2cf-415f-bedc-e543ab4f0aa8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../BackendOasis/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../BackendOasis/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Dashboard/CRUD_AlquilerAutos/RegisterAlquilerAu.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/CRUD_AlquilerAutos/RegisterAlquilerAu.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Dashboard/CRUD_ResHoteles/RegisterResHotel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/CRUD_ResHoteles/RegisterResHotel.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Dashboard/CRUD_Vuelos/RegisterVuelo.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/CRUD_Vuelos/RegisterVuelo.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Dashboard/ReservaViaje/Factura.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/ReservaViaje/Factura.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Dashboard/ReservaViaje/FormRegisterVue.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/ReservaViaje/FormRegisterVue.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Dashboard/ReservaViaje/QuoteModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/ReservaViaje/QuoteModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Dashboard/ReservaViaje/RegistroReserva.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/ReservaViaje/RegistroReserva.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/RegistroPersona.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/RegistroPersona.vue" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="Vue Composition API Component" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2gQ6iTg8gPhD6TkxcjGMEOhMZE8" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Max-Branch&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/maxpa/Desktop/Max Pasten/Ingenieria de sistemas/7mo Semestre/Internet de las cosas/Proyecto FInal/Asistencia_NFC_IoT&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.serve.executor&quot;: &quot;Run&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\maxpa\\Desktop\\Max Pasten\\Ingenieria de sistemas\\7mo Semestre\\Ingenieria de Software\\Proyecto\\SIS213Oasis\\FrontendOasis\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;vue.recent.templates&quot;: [
+      &quot;Vue Composition API Component&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\maxpa\Desktop\Max Pasten\Ingenieria de sistemas\7mo Semestre\Ingenieria de Software\Proyecto\SIS213Oasis\FrontendOasis\src\components\Dashboard\ReservaViaje" />
+      <recent name="C:\Users\maxpa\Desktop\Max Pasten\Ingenieria de sistemas\7mo Semestre\Ingenieria de Software\Proyecto\SIS213Oasis\FrontendOasis\src\components\Chatbot" />
+      <recent name="C:\Users\maxpa\Desktop\Max Pasten\Ingenieria de sistemas\7mo Semestre\Ingenieria de Software\Proyecto\SIS213Oasis\FrontendOasis\src" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="serve" type="js.build_tools.npm" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="serve" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.17890.13" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fec5c5ff-c2cf-415f-bedc-e543ab4f0aa8" name="Changes" comment="" />
+      <created>1715617580989</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1715617580989</updated>
+      <workItem from="1715617582101" duration="1207000" />
+      <workItem from="1715652906266" duration="1298000" />
+      <workItem from="1715729455675" duration="32000" />
+      <workItem from="1716234418763" duration="926000" />
+      <workItem from="1716296235081" duration="39000" />
+      <workItem from="1716296304839" duration="38000" />
+      <workItem from="1716343041105" duration="3884000" />
+      <workItem from="1716407586800" duration="201000" />
+      <workItem from="1716430200208" duration="8713000" />
+      <workItem from="1716467974813" duration="3088000" />
+      <workItem from="1716479111532" duration="13085000" />
+      <workItem from="1716641334523" duration="26785000" />
+      <workItem from="1716729116231" duration="20510000" />
+      <workItem from="1716901908558" duration="34000" />
+      <workItem from="1716941997117" duration="8145000" />
+      <workItem from="1716987771462" duration="4303000" />
+      <workItem from="1717023336276" duration="10748000" />
+      <workItem from="1717039984079" duration="4712000" />
+      <workItem from="1717079239136" duration="1244000" />
+      <workItem from="1717105535481" duration="2255000" />
+      <workItem from="1717419635984" duration="1059000" />
+      <workItem from="1717548207898" duration="608000" />
+      <workItem from="1718057414178" duration="16090000" />
+      <workItem from="1718110635375" duration="5377000" />
+      <workItem from="1718200086290" duration="657000" />
+      <workItem from="1718202795763" duration="136000" />
+      <workItem from="1718223455637" duration="3040000" />
+      <workItem from="1718228071468" duration="14136000" />
+      <workItem from="1718283891187" duration="7972000" />
+      <workItem from="1718308149732" duration="1955000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

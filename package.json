@@ -1,0 +1,49 @@
+{
+  "name": "01-login",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@auth0/auth0-vue": "^2.3.0",
+    "@fortawesome/fontawesome-svg-core": "^6.5.0",
+    "@fortawesome/free-solid-svg-icons": "^6.5.0",
+    "@fortawesome/vue-fontawesome": "^3.0.1",
+    "@google/generative-ai": "^0.11.4",
+    "@highlightjs/vue-plugin": "^2.1.0",
+    "@vueform/multiselect": "^2.6.7",
+    "aframe": "^1.6.0",
+    "auth0-js": "^9.25.0",
+    "axios": "^1.6.8",
+    "chart.js": "^4.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.1",
+    "highlight.js": "^11.9.0",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
+    "leaflet": "^1.9.4",
+    "morgan": "^1.10.0",
+    "node-fetch": "^3.3.2",
+    "vue": "^3.3.4",
+    "vue-multiselect": "^3.0.0-beta.3",
+    "vue-router": "^4.2.1",
+    "vue-sweetalert2": "^5.0.10",
+    "vue3-google-login": "^2.0.26",
+    "vue3-google-oauth2": "^1.0.7",
+    "vuex": "^4.0.2"
+  },
+  "devDependencies": {
+    "@iconify/vue": "^4.1.1",
+    "@vitejs/plugin-vue": "^1.6.1",
+    "@vue/compiler-sfc": "^3.3.4",
+    "sass": "^1.77.2",
+    "typescript": "^4.9.3",
+    "vite": "^2.9.18"
+  },
+  "prettier": {
+    "singleQuote": false,
+    "semi": true
+  }
+}
