@@ -11,23 +11,79 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="permiso in permisos" :key="permiso.idPermiso">
+          <tr v-for="permiso in allPermisos" :key="permiso.idPermiso">
             <td>{{ permiso.permiso }}</td>
-            <td><input type="checkbox" :checked="permiso.estado" disabled></td>
+            <td><input type="checkbox" v-model="permiso.estado" :disabled="!canEdit"></td>
           </tr>
         </tbody>
       </table>
+      <button v-if="canEdit" @click="assignPermissions">Asignar Permisos</button>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   props: {
     show: Boolean,
-    permisos: Array
+    adminId: Number,
+    canEdit: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      allPermisos: [],
+      userPermisos: []
+    };
+  },
+  watch: {
+    show(newVal) {
+      if (newVal) {
+        this.fetchPermisos();
+      }
+    }
   },
   methods: {
+    async fetchPermisos() {
+      try {
+        const allPermisosResponse = await axios.get('http://localhost:9999/api/v1/permiso');
+        this.allPermisos = allPermisosResponse.data.result.map(permiso => ({
+          ...permiso,
+          estado: false
+        }));
+
+        const userPermisosResponse = await axios.get(`http://localhost:9999/api/v1/rolpermiso/admin/${this.adminId}`);
+        this.userPermisos = userPermisosResponse.data.result.map(permiso => permiso.idPermiso);
+
+        this.allPermisos.forEach(permiso => {
+          if (this.userPermisos.includes(permiso.idPermiso)) {
+            permiso.estado = true;
+          }
+        });
+      } catch (error) {
+        console.error('Error al obtener los permisos:', error);
+      }
+    },
+    async assignPermissions() {
+      try {
+        const selectedPermisos = this.allPermisos.filter(permiso => permiso.estado);
+        const promises = selectedPermisos.map(permiso => {
+          return axios.post('http://localhost:9999/api/v1/rolpermiso/create', {
+            rol: { idRol: this.adminId },
+            permiso: { idPermiso: permiso.idPermiso }
+          });
+        });
+        await Promise.all(promises);
+        alert('Permisos asignados correctamente');
+        this.closePopup();
+      } catch (error) {
+        console.error('Error al asignar permisos:', error);
+      }
+    },
     closePopup() {
       this.$emit('close');
     }

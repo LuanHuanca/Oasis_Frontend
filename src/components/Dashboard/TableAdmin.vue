@@ -21,13 +21,14 @@
         </tr>
       </tbody>
     </table>
-    <PermissionsPopup :show="showPopup" :permisos="permisos" @close="showPopup = false" />
+    <PermissionsPopup :show="showPopup" :adminId="selectedAdminId" :canEdit="true" @close="showPopup = false" />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import PermissionsPopup from './PermissionsPopup.vue';
+
 export default {
   components: {
     PermissionsPopup
@@ -36,7 +37,7 @@ export default {
     return {
       admins: [],
       showPopup: false,
-      permisos: []
+      selectedAdminId: null
     };
   },
   async created() {
@@ -48,17 +49,9 @@ export default {
     }
   },
   methods: {
-    async showPermissions(adminId) {
-      try {
-        const response = await axios.get(`http://localhost:9999/api/v1/admin/${adminId}/permisos`);
-        this.permisos = response.data.result.map(permiso => ({
-          ...permiso,
-          estado: true // Asumiendo que todos los permisos obtenidos están activos
-        }));
-        this.showPopup = true;
-      } catch (error) {
-        console.error('Error al obtener los permisos:', error);
-      }
+    showPermissions(adminId) {
+      this.selectedAdminId = adminId;
+      this.showPopup = true;
     }
   }
 };
