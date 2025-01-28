@@ -23,13 +23,6 @@
           <div class="form-group">
             <input type="tel" v-model="telefono" class="form-control" placeholder="Teléfono">
           </div>
-          <div class="form-group">
-            <select v-model="rol" class="form-control" style="height: 40px">
-              <option value="" disabled selected>Selecciona un Rol</option>
-              <option value="Admin">Admin</option>
-              <option value="Usuario">Usuario</option>
-            </select>
-          </div>
           <!-- Botones -->
           <div class="button-group">
             <button type="button" @click="goBack" class="btn btn-secondary">Regresar</button>
@@ -41,36 +34,29 @@
   </div>
 </template>
 
-
 <script>
-import { useAuth0 } from '@auth0/auth0-vue';
 import axios from 'axios';
 
 export default {
-
   data() {
     return {
-      personas:[],
       nombre: '',
       apellidoP: '',
       apellidoM: '',
       telefono: '',
       correo: '',
       password: '',
-      rol: ''
     };
   },
   methods: {
-    async createPersona(){
+    async createPersona() {
       try {
-
         // Enviar solicitud para crear una persona
-        const response = await axios.post('http://localhost:9999/api/v1/persona/create',{
+        const response = await axios.post('http://localhost:9999/api/v1/persona/create', {
           nombre: this.nombre,
           apellidoP: this.apellidoP,
           apellidoM: this.apellidoM,
-          telefono: this.telefono,
-          rol: this.rol
+          telefono: this.telefono
         });
 
         const nuevaPersona = response.data.data;
@@ -79,11 +65,10 @@ export default {
         // Enviar solicitud para obtener el id de la última persona creada
         const response2 = await axios.get('http://localhost:9999/api/v1/persona/lastId');
         const lastPersona = response2.data.result;
-        console.log("Last persona",lastPersona);
+        console.log("Last persona", lastPersona);
 
         // Enviar solicitud para crear un nuevo administrador
-        const response3 = await axios.post('http://localhost:9999/api/v1/admin/create', {
-
+        await axios.post('http://localhost:9999/api/v1/admin/create', {
           persona: {
             idPersona: lastPersona,
             nombre: this.nombre,
@@ -91,7 +76,7 @@ export default {
             apellidoM: this.apellidoM,
             telefono: this.telefono
           },
-          rol: this.rol
+          rolId: 9,
         });
 
         console.log("Cuenta Admin created");
@@ -107,16 +92,15 @@ export default {
         this.$router.push('/'); // Redirige a la ruta de Login
 
       } catch (error) {
-        console.error("Error al crear la persona", error)
+        console.error("Error al crear la persona", error);
       }
     },
     goBack() {
       this.$router.push('/');
-    },
+    }
   }
 };
 </script>
-
 
 <style scoped>
 /* Estilos generales */

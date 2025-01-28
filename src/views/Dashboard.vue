@@ -32,6 +32,7 @@ import TableAlquilerAu from "../components/Dashboard/CRUD_AlquilerAutos/TableAlq
 import FormRegisterVue from "../components/Dashboard/ReservaViaje/FormRegisterVue.vue";
 import TableComentarios from "../components/Dashboard/Comentarios/TableComentarios.vue";
 import TableViaje from "../components/Dashboard/ReservaViaje/TableViaje.vue";
+import TableAdmin from "@/components/Dashboard/TableAdmin.vue";
 
 export default {
   components: {
@@ -44,7 +45,7 @@ export default {
     FormRegisterVue,
     TableViaje,
     TableComentarios,
-
+    TableAdmin
   },
   data() {
     return {
@@ -59,7 +60,7 @@ export default {
   methods: {
     optionSelected(option) {
       switch (option) {
-        case "admin":
+        case "auditoria":
           this.currentComponent = "TableAudit";
           break;
         case "flights":
@@ -79,6 +80,9 @@ export default {
           break;
         case 'coments':
           this.currentComponent = 'TableComentarios';
+          break;
+        case 'admin':
+          this.currentComponent = 'TableAdmin';
           break;
         default:
           this.currentComponent = "TableAudit";

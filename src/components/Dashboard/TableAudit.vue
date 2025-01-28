@@ -2,9 +2,7 @@
   <div class="dashboard">
     <div class="dashboardTitle">
       <h1 style="font-size: 34px">Dashboard</h1>
-      <button>
-        <router-link to="/RegistroAdmin" class="enlacerouter"> Registrar Administrador</router-link>
-      </button>
+
     </div>
     <div class="row">
       <div class="chart-container large">

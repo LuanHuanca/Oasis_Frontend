@@ -10,7 +10,13 @@
           <li class="nav-item">
             <div class="nav-link" @click="selectOption('admin')">
               <span v-if="isCollapsed">👤</span>
-              <span v-else>📊 Administrador</span>
+              <span v-else>📊 Lista de Administradores</span>
+            </div>
+          </li>
+          <li class="nav-item">
+            <div class="nav-link" @click="selectOption('auditoria')">
+              <span v-if="isCollapsed">👤</span>
+              <span v-else>📊 Auditoria</span>
             </div>
           </li>
           <li class="nav-item">
