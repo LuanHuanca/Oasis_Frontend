@@ -87,6 +87,12 @@ export default {
       telefono: "",
       correoenviar: "",
       password: "",
+      actividad: 'Creacion de cuenta Administrador',
+      fecha: '',
+      hora: '',
+      fechaInicio: '',
+      fechaFin: '',
+      ipAddress: '',
     };
   },
   methods: {
@@ -126,7 +132,7 @@ export default {
         });
 
         console.log("Cuenta Admin created");
-
+        await this.auditoriaUser();
         // Generar correo institucional y contraseña
         const correoInstitucional =
           `${this.nombre}.${this.apellidoP}@oasis.bo`.toLowerCase();
@@ -188,6 +194,56 @@ Max Pasten, Gerente de la agencia de viajes`,
         console.log("Correo enviado exitosamente");
       } catch (error) {
         console.error("Hubo un problema al enviar el correo:", error);
+      }
+    },
+    calcularFecha() {
+      const ahora = new Date();
+      const dia = String(ahora.getDate()).padStart(2, '0');
+      const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+      const anio = ahora.getFullYear();
+      const horas = String(ahora.getHours()).padStart(2, '0');
+      const minutos = String(ahora.getMinutes()).padStart(2, '0');
+      const segundos = String(ahora.getSeconds()).padStart(2, '0');
+
+      this.fecha = `${anio}-${mes}-${dia}`;
+      this.hora = `${horas}:${minutos}:${segundos}`;
+      this.fechaInicio = `${this.fecha}T${this.hora}`;
+    },
+    async getIPAddress() {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        console.log("IP: ", data.ip);
+        this.ipAddress = data.ip;
+      } catch (error) {
+        console.error('Error al obtener la dirección IP:', error);
+      }
+    },
+    async auditoriaUser() {
+      // Calcular fecha y obtener IP
+      this.calcularFecha();
+      await this.getIPAddress();
+      try {
+        console.log("correo creado"+this.correo);
+        console.log("actividad creado"+this.actividad);
+        console.log("fecha creado"+this.fecha);
+        console.log("hora creado"+this.hora);
+        console.log("fecha inicio creado"+this.fechaInicio);
+        console.log("fecha fin creado"+this.fechaFin);
+        console.log("ip creado"+this.ipAddress);
+        await axios.post('http://localhost:9999/api/v1/auditoria/create', {
+          correo: this.nombre +"."+ this.apellidoP+"@oasis.bo",
+          actividad: this.actividad,
+          fecha: this.fecha,
+          hora: this.hora,
+          fechaInicio: this.fechaInicio,
+          fechaFin: this.fechaFin,
+          ip: this.ipAddress
+        });
+
+        console.log("Auditoría creada");
+      } catch (error) {
+        console.error('Error al crear la auditoría:', error);
       }
     },
   },

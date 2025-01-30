@@ -30,8 +30,7 @@
         <tr>
           <th>ID</th>
           <th>Actividad</th>
-          <th>Administrador</th>
-          <th>Usuario</th>
+          <th>Correo</th>
           <th>Fecha</th>
           <th>Hora</th>
           <th>Fecha Inicio</th>
@@ -43,8 +42,7 @@
         <tr v-for="(auditoria, index) in auditorias" :key="index">
           <td>{{ auditoria.idAudit }}</td>
           <td>{{ auditoria.actividad }}</td>
-          <td>{{ auditoria.idAdmin }}</td>
-          <td>{{ auditoria.idCliente }}</td>
+          <td>{{ auditoria.correo }}</td>
           <td>{{ auditoria.fecha }}</td>
           <td>{{ auditoria.hora }}</td>
           <td>{{ auditoria.fechaInicio }}</td>
@@ -114,7 +112,8 @@ export default {
     async getAuditorias(userId) {
       try {
         const response = await axios.get(`http://localhost:9999/api/v1/auditoria`);
-        this.auditorias = response.data.result; // Acceder a la propiedad `result` en la respuesta
+        this.auditorias = response.data.result; // Acceder a la propiedad 
+        // `result` en la respuesta
         console.log('Auditorias cargadas exitosamente:', this.auditorias);
       } catch (error) {
         console.error('Error al cargar las auditorias:', error);

@@ -16,6 +16,7 @@ interface State {
   selectedCity: string;
   cartItems: CartItem[];
   admin:boolean;
+  correo: string; // Agregar el campo correo
 }
 
 
@@ -29,6 +30,7 @@ const store = createStore<State>({
     selectedCity:'all',
     cartItems: [],
     admin: false,
+    correo: '' // Inicializar el campo correo
   },
   mutations: {
     setLoggedIn(state, value: boolean) {
@@ -71,6 +73,9 @@ const store = createStore<State>({
     clearCart(state) {
       state.cartItems = [];
     },
+    setCorreo(state, correo: string) { // Agregar la mutación para actualizar el correo
+      state.correo = correo;
+    }
   },
   actions: {
     updateSelectedCity({ commit }, city) {
