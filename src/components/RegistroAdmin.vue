@@ -3,7 +3,11 @@
     <!-- Contenedor de la imagen de fondo -->
     <div class="background-container">
       <!-- Imagen de fondo -->
-      <img class="background-image" src="../assets/imageRegister.jpeg" alt="Background Image">
+      <img
+        class="background-image"
+        src="../assets/imageRegister.jpeg"
+        alt="Background Image"
+      />
       <!-- Contenedor del formulario -->
       <div class="form-container">
         <!-- Título del formulario -->
@@ -12,21 +16,58 @@
         <form @submit.prevent="createPersona" class="form">
           <!-- Datos Personales -->
           <div class="form-group">
-            <input type="text" v-model="nombre" class="form-control" placeholder="Nombre" required>
+            <input
+              type="text"
+              v-model="nombre"
+              class="form-control"
+              placeholder="Nombre"
+              required
+            />
           </div>
           <div class="form-group">
-            <input type="text" v-model="apellidoP" class="form-control" placeholder="Apellido Paterno" required>
+            <input
+              type="text"
+              v-model="apellidoP"
+              class="form-control"
+              placeholder="Apellido Paterno"
+              required
+            />
           </div>
           <div class="form-group">
-            <input type="text" v-model="apellidoM" class="form-control" placeholder="Apellido Materno">
+            <input
+              type="text"
+              v-model="apellidoM"
+              class="form-control"
+              placeholder="Apellido Materno"
+            />
           </div>
           <div class="form-group">
-            <input type="tel" v-model="telefono" class="form-control" placeholder="Teléfono">
+            <input
+              type="tel"
+              v-model="telefono"
+              class="form-control"
+              placeholder="Teléfono"
+            />
+          </div>
+          <div class="form-group">
+            <label for="correo"
+              >Escriba un correo donde se enviara sus credenciales de
+              acceso</label
+            >
+            <input
+              type="correo"
+              v-model="correoenviar"
+              class="form-control"
+              placeholder="Correo"
+              required
+            />
           </div>
           <!-- Botones -->
           <div class="button-group">
-            <button type="button" @click="goBack" class="btn btn-secondary">Regresar</button>
-            <input type="submit" value="Continuar" class="btn btn-primary">
+            <button type="button" @click="goBack" class="btn btn-secondary">
+              Regresar
+            </button>
+            <input type="submit" value="Continuar" class="btn btn-primary" />
           </div>
         </form>
       </div>
@@ -35,70 +76,121 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   data() {
     return {
-      nombre: '',
-      apellidoP: '',
-      apellidoM: '',
-      telefono: '',
-      correo: '',
-      password: '',
+      nombre: "",
+      apellidoP: "",
+      apellidoM: "",
+      telefono: "",
+      correoenviar: "",
+      password: "",
     };
   },
   methods: {
     async createPersona() {
       try {
         // Enviar solicitud para crear una persona
-        const response = await axios.post('http://localhost:9999/api/v1/persona/create', {
-          nombre: this.nombre,
-          apellidoP: this.apellidoP,
-          apellidoM: this.apellidoM,
-          telefono: this.telefono
-        });
+        const response = await axios.post(
+          "http://localhost:9999/api/v1/persona/create",
+          {
+            nombre: this.nombre,
+            apellidoP: this.apellidoP,
+            apellidoM: this.apellidoM,
+            telefono: this.telefono,
+          }
+        );
 
         const nuevaPersona = response.data.data;
         console.log("Persona created");
 
         // Enviar solicitud para obtener el id de la última persona creada
-        const response2 = await axios.get('http://localhost:9999/api/v1/persona/lastId');
+        const response2 = await axios.get(
+          "http://localhost:9999/api/v1/persona/lastId"
+        );
         const lastPersona = response2.data.result;
         console.log("Last persona", lastPersona);
 
         // Enviar solicitud para crear un nuevo administrador
-        await axios.post('http://localhost:9999/api/v1/admin/create', {
+        await axios.post("http://localhost:9999/api/v1/admin/create", {
           persona: {
             idPersona: lastPersona,
             nombre: this.nombre,
             apellidoP: this.apellidoP,
             apellidoM: this.apellidoM,
-            telefono: this.telefono
+            telefono: this.telefono,
           },
           rolId: 10,
         });
 
         console.log("Cuenta Admin created");
 
+        // Generar correo institucional y contraseña
+        const correoInstitucional =
+          `${this.nombre}.${this.apellidoP}@oasis.bo`.toLowerCase();
+        const contrasena = `${this.nombre}${this.apellidoP.charAt(0)}${
+          this.telefono
+        }`;
+
+        // Enviar correo con las credenciales
+        this.sendCredentialsMail(correoInstitucional, contrasena);
+
         // Limpiar campos
-        this.nombre = '';
-        this.apellidoP = '';
-        this.apellidoM = '';
-        this.telefono = '';
-        this.correo = '';
-        this.password = '';
+        this.nombre = "";
+        this.apellidoP = "";
+        this.apellidoM = "";
+        this.telefono = "";
+        this.correoenviar = "";
+        this.password = "";
 
-        this.$router.push('/'); // Redirige a la ruta de Login
-
+        this.$router.push("/"); // Redirige a la ruta de Login
       } catch (error) {
         console.error("Error al crear la persona", error);
       }
     },
     goBack() {
-      this.$router.push('/');
-    }
-  }
+      this.$router.push("/");
+    },
+    async sendCredentialsMail(correo, contrasena) {
+      const url = `http://localhost:9999/mail/send/${this.correoenviar}`;
+      const data = {
+        subject: "Credenciales de Acceso a tu Cuenta",
+        message: `Estimado/a Usuario/a,
+
+Tu cuenta ha sido creada exitosamente. A continuación, encontrarás tus credenciales de acceso:
+
+Correo Institucional: ${correo}
+Contraseña: ${contrasena}
+
+Por favor, asegúrate de cambiar tu contraseña después de iniciar sesión por primera vez para garantizar la seguridad de tu cuenta.
+
+Si tienes alguna pregunta o necesitas asistencia, no dudes en contactarnos.
+
+Atentamente,
+
+Agencia de Viajes Oasis
+Max Pasten, Gerente de la agencia de viajes`,
+      };
+      this.$swal({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+
+        icon: "success",
+        title: "Registro de administrador exitoso",
+        text: "Se le enviara las credenciales de acceso a su correo",
+      });
+      try {
+        await axios.post(url, data);
+        console.log("Correo enviado exitosamente");
+      } catch (error) {
+        console.error("Hubo un problema al enviar el correo:", error);
+      }
+    },
+  },
 };
 </script>
 
