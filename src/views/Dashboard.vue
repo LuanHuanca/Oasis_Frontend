@@ -3,7 +3,7 @@
     <template v-if="isAuthenticated">
       <div class="DashboardContainer">
         <div class="barralateral" style="background-color: black">
-          <side-bar @optionSelected="optionSelected" />
+          <side-bar :permisos="permisos" @optionSelected="optionSelected" />
         </div>
         <div class="content">
           <component :is="currentComponent" />
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import NavBar from "../components/NavBar.vue";
 import TableResHotel from "../components/Dashboard/CRUD_ResHoteles/TableResHotel.vue";
 import SideBar from "../components/Admin/SideBar.vue";
@@ -33,6 +34,13 @@ import FormRegisterVue from "../components/Dashboard/ReservaViaje/FormRegisterVu
 import TableComentarios from "../components/Dashboard/Comentarios/TableComentarios.vue";
 import TableViaje from "../components/Dashboard/ReservaViaje/TableViaje.vue";
 import TableAdmin from "@/components/Dashboard/TableAdmin.vue";
+import RegistroCuentas from '@/components/Admin/RegistroCuentas.vue';
+import DocumentosInternos from '@/components/Admin/DocumentosInternos.vue';
+import Correo from '@/components/Admin/Correo.vue';
+import Consultas from '@/components/Admin/Consultas.vue';
+import Modificaciones from '@/components/Admin/Modificaciones.vue';
+import ABMUsuarios from '@/components/Admin/ABMUsuarios.vue';
+import BajaComprobantes from '@/components/Admin/BajaComprobantes.vue';
 
 export default {
   components: {
@@ -45,11 +53,20 @@ export default {
     FormRegisterVue,
     TableViaje,
     TableComentarios,
-    TableAdmin
+    TableAdmin,
+    RegistroCuentas,
+    DocumentosInternos,
+    Correo,
+    Consultas,
+    Modificaciones,
+    ABMUsuarios,
+    BajaComprobantes
   },
   data() {
     return {
-      currentComponent: "TableAudit",
+      currentComponent: '',
+      permisos: [],
+      permisosInterval: null
     };
   },
   computed: {
@@ -58,6 +75,15 @@ export default {
     },
   },
   methods: {
+    async fetchPermisos() {
+      try {
+        const response = await axios.get(`http://localhost:9999/api/v1/adminpermiso/admin/${this.$store.state.id}/permisos`);
+        this.permisos = response.data.result.map(permiso => permiso.permiso);
+        console.log('Permisos:', this.permisos);
+      } catch (error) {
+        console.error('Error al obtener los permisos:', error);
+      }
+    },
     optionSelected(option) {
       switch (option) {
         case "auditoria":
@@ -84,11 +110,43 @@ export default {
         case 'admin':
           this.currentComponent = 'TableAdmin';
           break;
+        case 'registro_cuentas':
+          this.currentComponent = 'RegistroCuentas';
+          break;
+        case 'documentos_internos':
+          this.currentComponent = 'DocumentosInternos';
+          break;
+        case 'correo':
+          this.currentComponent = 'Correo';
+          break;
+        case 'consultas':
+          this.currentComponent = 'Consultas';
+          break;
+        case 'modificaciones':
+          this.currentComponent = 'Modificaciones';
+          break;
+        case 'abm_usuarios':
+          this.currentComponent = 'ABMUsuarios';
+          break;
+        case 'baja_comprobantes':
+          this.currentComponent = 'BajaComprobantes';
+          break;
         default:
-          this.currentComponent = "TableAudit";
+          this.currentComponent = '';
       }
     },
   },
+  async created() {
+    if (this.isAuthenticated) {
+      await this.fetchPermisos();
+      this.permisosInterval = setInterval(this.fetchPermisos, 1000); 
+    }
+  },
+  beforeDestroy() {
+    if (this.permisosInterval) {
+      clearInterval(this.permisosInterval);
+    }
+  }
 };
 </script>
 
