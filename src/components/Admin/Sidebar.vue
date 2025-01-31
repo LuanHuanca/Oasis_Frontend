@@ -16,7 +16,7 @@
           <li class="nav-item" v-if="hasPermission('Dashboard')">
             <div class="nav-link" @click="selectOption('dashboard')">
               <span v-if="isCollapsed">👤</span>
-              <span v-else>📊 Auditoria</span>
+              <span v-else>📊 Dashboard</span>
             </div>
           </li>
           <li class="nav-item" v-if="hasPermission('Agente de viajes')">

@@ -86,7 +86,7 @@ export default {
     },
     optionSelected(option) {
       switch (option) {
-        case "auditoria":
+        case "dashboard":
           this.currentComponent = "TableAudit";
           break;
         case "flights":

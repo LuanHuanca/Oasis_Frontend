@@ -37,6 +37,16 @@ import axios from "axios";
 import Swal from "sweetalert2"; // Importar SweetAlert
 
 export default {
+  data(){
+    return{
+      actividad: "Envio de cotizacion",
+      fecha: "",
+      hora: "",
+      fechaInicio: "",
+      fechaFin: "",
+      ipAddress: "",
+    }
+  },
   computed: {
     ...mapState(["cartItems", "user"]),
   },
@@ -79,6 +89,8 @@ export default {
           message: emailContent,
         });
 
+        await this.crearAuditoria();
+
         // Mostrar notificación de éxito
         Swal.fire({
           icon: "success",
@@ -94,6 +106,44 @@ export default {
           title: "Error",
           text: "Hubo un error al enviar el correo.",
         });
+      }
+    },
+    async crearAuditoria() {
+      try {
+        const correoUsuario = this.user.result.correo;
+
+        // Calcular fecha
+        const ahora = new Date();
+        const dia = String(ahora.getDate()).padStart(2, "0");
+        const mes = String(ahora.getMonth() + 1).padStart(2, "0");
+        const anio = ahora.getFullYear();
+        const horas = String(ahora.getHours()).padStart(2, "0");
+        const minutos = String(ahora.getMinutes()).padStart(2, "0");
+        const segundos = String(ahora.getSeconds()).padStart(2, "0");
+
+        this.fecha = `${anio}-${mes}-${dia}`;
+        this.hora = `${horas}:${minutos}:${segundos}`;
+        this.fechaInicio = `${this.fecha}T${this.hora}`;
+        this.fechaFin = `${this.fecha}T${this.hora}`;
+
+        // Obtener dirección IP
+        const response = await fetch("https://api.ipify.org?format=json");
+        const data = await response.json();
+        console.log("IP: ", data.ip);
+        this.ipAddress = data.ip;
+        console.log("correo " + correoUsuario);
+        await axios.post("http://localhost:9999/api/v1/auditoria/create", {
+          correo: correoUsuario,
+          actividad: this.actividad,
+          fecha: this.fecha,
+          hora: this.hora,
+          fechaInicio: this.fechaInicio,
+          fechaFin: this.fechaFin,
+          ip: this.ipAddress,
+        });
+        console.log("Auditoría creada");
+      } catch (error) {
+        console.error("Error al crear la auditoría:", error);
       }
     },
 
