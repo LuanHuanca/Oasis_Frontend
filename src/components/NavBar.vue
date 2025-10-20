@@ -5,7 +5,7 @@
   <div class="nav-container">
     <nav class="navbar navbar-expand-md navbar-light custom-navbar-color">
       <div class="container">
-        <img id="logo" src="/src/assets/logo.png" alt="Logo de Oasis">
+        <img id="logo" src="/src/assets/Home/carusel/Logo.png" alt="Logo de Oasis">
         <button
             id="custom-button"
             class="navbar-toggler"
@@ -291,54 +291,106 @@ export default defineComponent({
 
 
 <style scoped>
-.custom-navbar-color {
-    background-color: black;
+/* NavBar: modernizado, dinámico y profesional. Solo cambios visuales. */
+.nav-container{
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  backdrop-filter: saturate(120%) blur(6px);
 }
-.navbar-nav .nav-link {
-    color: #fff; /* Color del texto en blanco */
+.custom-navbar-color{
+  background: linear-gradient(90deg, rgba(207, 183, 45, 0.95), rgba(15, 84, 173, 0.92));
+  box-shadow: 0 8px 24px rgba(6,57,112,0.18);
+  transition: transform 240ms ease, box-shadow 240ms ease;
 }
-.navbar-nav .nav-link:hover {
-    color: #939292; /* Color del texto en blanco */
+.custom-navbar-color:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(6,57,112,0.22);
 }
-#custom-button {
-  background-color: rgb(184, 178, 178); /* Cambia el color de fondo del botón */
-  color: white; /* Cambia el color del texto del botón */
-}
-#carrito{
-  cursor: pointer;
-}
-#logo{
-    margin: 4px 30px;
-    width: 8%;
-}
-#mobileAuthNavBar {
-  min-height: 125px;
-  justify-content: space-between;
-}
-#country-select{
-  background: none;
-  color: #fff;
-  padding: 0px;
-  text-align: center;
-  border: 0px;
-  border-radius: 10px;
-}
-#country-select option{
-  color: #fff;
-  background: #939292;
-  border-radius: 10px;
-}
-.filtrador{
-  display: flex;
-  flex-direction: row;
-}
-@media (max-width: 700px) {
-  .filtrador{
-    display: flex;
-    flex-direction: row;
-    margin-left: 30px;
-    align-items: center;
-  }
 
+/* Logo */
+#logo{
+  width: 64px;
+  height: auto;
+  margin-right: 18px;
+  transition: transform 260ms cubic-bezier(.2,.9,.2,1);
+  will-change: transform;
 }
+#logo:hover{ transform: scale(1.06); }
+
+/* Navbar links */
+.navbar-nav .nav-link{
+  color: rgba(255,255,255,0.95);
+  font-weight: 600;
+  padding: 8px 12px;
+  position: relative;
+  transition: color 180ms ease, transform 180ms ease;
+}
+.navbar-nav .nav-link:hover{
+  color: #e6f2ff;
+  transform: translateY(-2px);
+}
+.navbar-nav .nav-link::after{
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.2), rgba(255,255,255,0.6));
+  bottom: -8px;
+  border-radius: 6px;
+  opacity: 0;
+  transform: scaleX(0.6) translateY(6px);
+  transition: all 220ms cubic-bezier(.2,.9,.2,1);
+}
+.navbar-nav .nav-link:hover::after{ opacity: 1; transform: scaleX(1) translateY(0); }
+
+/* Toggler button (mobile) */
+#custom-button{
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #fff;
+  box-shadow: none;
+}
+.navbar-toggler-icon{ filter: invert(1) sepia(1) saturate(0) hue-rotate(180deg); }
+
+/* Filtrador (country select) */
+.filtrador{ display:flex; align-items:center; gap:8px; margin-left:12px; }
+#country-select{
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  padding: 6px 8px;
+  text-align: center;
+  border: 0;
+  border-radius: 8px;
+  outline: none;
+}
+#country-select option{ color: #111; }
+
+/* Carrito icon animation */
+#carrito{ cursor: pointer; transition: transform 200ms ease; }
+#carrito:hover{ transform: translateY(-4px) scale(1.05); }
+
+/* User profile image */
+.nav-user-profile{ width:40px; height:40px; object-fit:cover; border: 2px solid rgba(255,255,255,0.12); }
+
+/* Mobile auth area adjustments */
+#mobileAuthNavBar{ min-height: 110px; justify-content: space-between; padding: 10px; }
+
+/* Dropdown styling */
+.dropdown-menu{ border-radius: 10px; box-shadow: 0 8px 26px rgba(6,57,112,0.12); }
+.dropdown-item{ color: #0b2540; }
+
+/* Responsive tweaks */
+@media (max-width: 900px){
+  #logo{ width:56px; }
+  .navbar-nav .nav-link{ font-size: 14px; }
+  .filtrador{ margin-left: 6px; }
+}
+
+@media (max-width: 560px){
+  .custom-navbar-color{ padding: 8px 6px; }
+  #logo{ width:48px; }
+}
+
 </style>

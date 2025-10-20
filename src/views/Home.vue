@@ -5,7 +5,7 @@
     <Carusel/>
     <NuestrosServicios/>
     <NuestrosViajes/>
-    <Team/>
+    <!--<Team/>-->
     <Contactanos/>
     <Ubicacion/>
     <ChatAssistant />
@@ -16,7 +16,7 @@
 import NuestrosServicios from "../components/Home/NuestrosServicios.vue";
 import Inicio from "../components/Home/Inicio.vue"
 import NuestrosViajes from "../components/Home/NuestrosViajes.vue"
-import Team from "../components/Home/Team.vue";
+// import Team from "../components/Home/Team.vue";
 import Contactanos from "../components/Home/Contactanos.vue";
 import Ubicacion from "../components/Home/Ubicacion.vue";
 import NavBar from "../components/NavBar.vue";
@@ -31,7 +31,7 @@ export default {
     Inicio,
     NuestrosServicios,
     NuestrosViajes,
-    Team,
+    //Team,
     Contactanos,
     Ubicacion,
     Carusel,

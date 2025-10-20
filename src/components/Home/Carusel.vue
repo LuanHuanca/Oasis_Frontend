@@ -10,11 +10,11 @@
     <div class="Tarjetas-container">
       <div class="carusel">
         <div class="tarjeta-ciudad">
-          <img src="src/assets/Home/carusel/cbba.jpg" alt="Ciudad de Cochabamba" />
+          <img src="src/assets/Home/carusel/Cochabamba.png" alt="Ciudad de Cochabamba" />
           <span>Cochabamba</span>
         </div>
         <div class="tarjeta-ciudad">
-          <img src="src/assets/Home/carusel/lapazlugar.jpg" alt="Ciudad de La Paz" />
+          <img src="src/assets/Home/carusel/La_Paz.png" alt="Ciudad de La Paz" />
           <span>La Paz</span>
         </div>
         <div class="tarjeta-ciudad">
@@ -31,7 +31,7 @@
 </template>
 <style>
 .imagen-container {
-  background: url("src/assets/Home/carusel/cbba.jpg");
+  background: url("src/assets/Home/carusel/foto1.jpg");
   display: flex;
   flex-direction: column;
   background-size: cover;
