@@ -1,6 +1,6 @@
 <template>
   <div class="TarjetaLogin">
-    <img src="src/assets/logo_black.png" alt="Logo Oasis" />
+    <img src="src/assets/Home/carusel/Logo.png" alt="Logo Oasis" />
     <br />
     <h3>Bienvenido</h3>
     <p>Inicie su sesión para continuar en Oasis</p>
@@ -407,7 +407,7 @@ Agencia de Viajes Oasis`,
 }
 
 .TarjetaLogin {
-  background: #d5f3fb;
+  background: #d6c14c;
   border: 3px solid black;
   width: 25%;
   height: fit-content;
@@ -431,7 +431,7 @@ Agencia de Viajes Oasis`,
   width: 85%;
   border-radius: 25px;
   padding: 10px;
-  background-color: blue;
+  background-color: rgb(118, 185, 224);
   border: 2px solid black;
   color: #fff;
 }
