@@ -33,7 +33,7 @@ export default {
     return {
       vuelo: [
         {
-          title: "Boliviana de Aviación (BOA)",
+          title: "(BOA) Boliviana de Aviación",
           image:
             "https://www.expreso.info/files/2022-05/Boliviana_de_Aviacion.jpg",
           description:
@@ -42,7 +42,7 @@ export default {
           category: "Vuelos",
         },
         {
-          title: "Amaszonas",
+          title: "Linea Aérea Amaszonas",
           image:
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6jSWIID2SYId_xSREzMb4x9qiqEAFzupA7Q&s",
           description:
@@ -109,7 +109,7 @@ export default {
           image:
             "https://elcomercio.pe/resizer/YPzQdSQ_PkanZ3Vh0BsXOyg07hI=/1200x800/smart/filters:format(jpeg):quality(75)/cloudfront-us-east-1.images.arcpublishing.com/elcomercio/II4XZEYJYBBDFBKDHJWNFC24PA.jpg",
           description:
-            "Star Peru es una aerolínea peruana que opera vuelos nacionales dentro de Perú.",
+            "Star Peru es una aerolínea peruana que opera vuelos en territorio peruano.",
           location: "Perú",
           category: "Vuelos",
         },

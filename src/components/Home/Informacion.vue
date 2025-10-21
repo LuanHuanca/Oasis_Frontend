@@ -2,8 +2,8 @@
   <section class="agencia-informacion" role="region" aria-label="Información de la agencia OASIS">
     <div class="container">
       <header class="section-header">
-        <h1>Sobre TU GUIA</h1>
-        <p class="subtitle">Tu puerta a experiencias auténticas en Latinoamérica</p>
+  <h1>Sobre TU GUIA</h1>
+  <p class="subtitle">Tu puerta a experiencias auténticas e inolvidables en Latinoamérica</p>
       </header>
 
       <div class="cards">
