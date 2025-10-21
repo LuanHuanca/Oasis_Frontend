@@ -25,7 +25,11 @@
       </div>
     </div>
     <div class="footer-bottom">
+<<<<<<< HEAD
+  <p>&copy; 2025 Todos los derechos reservados. Oasis.</p>
+=======
       <p>&copy; 2025 Todos los derechos reservados. Oasis.</p>
+>>>>>>> origin/main
     </div>
   </footer>
 </template>

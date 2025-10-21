@@ -2,7 +2,7 @@
   <div>
     <div v-if="showChat" class="chat-container">
       <div class="chat-header">
-        <h6>Chat Asistente de OASIS</h6>
+        <h6>Chat Asistente de TU GUIA</h6>
         <span style="cursor: pointer;" @click="toggleChat">
           {{ showChat ? '–' : '+' }}
         </span>
@@ -22,7 +22,7 @@
           <div v-else class="bot-message-container">
             <div class="bot-message">
               <div class="message-meta">
-                <strong>Asistente OASIS</strong> - <small>{{ formatDate(message.timestamp) }}</small>
+                <strong>Asistente TU GUIA</strong> - <small>{{ formatDate(message.timestamp) }}</small>
               </div>
               <div>
                 <p v-html="formatMessage(message.text)"></p>
@@ -31,7 +31,7 @@
           </div>
         </div>
         <div v-if="isTyping" class="typing-indicator">
-          <em>Asistente OASIS está escribiendo...</em>
+          <em>Asistente TU GUIA está escribiendo...</em>
         </div>
       </div>
       <div class="chat-input">

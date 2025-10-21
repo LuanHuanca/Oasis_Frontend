@@ -8,7 +8,7 @@
             <img style="width: 100%" src="../../../assets/logoBack.png" alt="Logo de la empresa">
           </div>
           <div class="company-info" style="color: black">
-            <h2>Agencia de Viajes OASIS</h2>
+            <h2>Agencia de Viajes TU GUIA</h2>
             <p>Dirección: Av. 14 de Septiembre Nº 4807 esquina, La Paz</p>
             <p>Teléfono: (+591) 68171114</p>
             <p>Email: agencia.viajes.oasis@gmail.com</p>
