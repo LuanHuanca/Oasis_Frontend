@@ -176,8 +176,8 @@ Si tienes alguna pregunta o necesitas asistencia, no dudes en contactarnos.
 
 Atentamente,
 
-Agencia de Viajes Oasis
-Max Pasten, Gerente de la agencia de viajes`,
+Agencia de Viajes TU GUIA
+Luis Huanca, Gerente de la agencia de viajes`,
       };
       this.$swal({
         toast: true,

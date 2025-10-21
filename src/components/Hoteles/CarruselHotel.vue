@@ -4,7 +4,7 @@
       <div class="item" v-for="(fotografia, index) in filteredImages" :key="index">
         <img :src="fotografia.imagenes" :alt="fotografia.hotel" />
         <div class="content">
-          <div class="author">OASIS</div>
+          <div class="author">TU GUIA</div>
           <div class="title">{{ fotografia.hotel }}</div>
           <div class="city">{{ cityMap[fotografia.idCiudad] }}</div>
           <div class="descripcion">{{ fotografia.descripcion }}</div>

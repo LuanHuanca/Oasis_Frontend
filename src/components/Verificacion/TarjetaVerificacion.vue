@@ -1,6 +1,6 @@
 <template>
     <div class="TarjetaVerificacion">
-      <img src="src/assets/logo_black.png" alt="Logo Oasis" />
+      <img src="Oasis_Frontend\src\assets\Home\carusel\Logo.png" alt="Logo Oasis" />
       <br />
       <h3>Verificacion de dos pasos</h3>
       <p>Se le envio un codigo de verificacion a su correo</p>
@@ -100,7 +100,7 @@ export default defineComponent({
   }
   
   .TarjetaVerificacion {
-    background: #d5f3fb;
+    background: #f0d33f;
     border: 3px solid black;
     width: 30%;
     height: fit-content;
