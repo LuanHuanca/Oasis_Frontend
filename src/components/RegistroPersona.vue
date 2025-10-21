@@ -1,8 +1,6 @@
 <template>
   <div class="app">
-    <!-- Contenedor de la imagen de fondo -->
     <div class="background-container">
-      <!-- Imagen de fondo -->
       <img
         class="background-image"
         src="../assets/imageRegister.jpeg"
@@ -12,7 +10,6 @@
       <div class="form-container">
         <!-- Título del formulario -->
         <h2 class="form-title">Registro</h2>
-        <!-- Formulario -->
         <form @submit.prevent="createPersona" class="form">
           <!-- Datos Personales -->
           <div class="form-group">
