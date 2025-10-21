@@ -1,3 +1,4 @@
+<template>
   <transition name="fade">
     <CarritoPopUp v-show="showPopUp" @close="togglePopUp"/>
   </transition>
@@ -21,7 +22,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <router-link to="/" class="nav-link">Menú</router-link>
+              <router-link to="/" class="nav-link">Home</router-link>
             </li>
           </ul>
           <ul class="navbar-nav mr-auto">
@@ -41,7 +42,7 @@
           </ul>
           <ul class="navbar-nav mr-auto">
             <li v-if="!isAuthenticated" class="nav-item">
-              <router-link to="/RegistroPersona" class="nav-link">Registrate</router-link>
+              <router-link to="/RegistroPersona" class="nav-link">Registrarse</router-link>
             </li>
           </ul>
           <ul class="navbar-nav mr-auto">
@@ -120,7 +121,6 @@
     </nav>
   </div>
 </template>
-...existing code...
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'; // Importa ref desde vue

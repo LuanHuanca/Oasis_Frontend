@@ -5,11 +5,7 @@
           Explora y vive: <br> Tu Pasaporte a la <br>Aventura
         </h1>
         <p style="color:#000; font-weight:700; background: rgba(255,255,255,0.85); padding:16px; border-radius:8px; border:1px solid rgba(0,0,0,0.12); display:inline-block; max-width:90%;">
-<<<<<<< HEAD
-          Explora un universo de experiencias únicas con Oasis Viajes. Desde
-=======
-          Explora un universo de experiencias únicas con Oasis Viajes. Desde
->>>>>>> origin/main
+          Explora un universo de experiencias únicas con TU GUIA. Desde
           destinos exóticos hasta joyas ocultas, te llevamos a descubrir lo
           extraordinario en cada rincón del mundo.
         </p>
