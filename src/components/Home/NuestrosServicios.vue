@@ -3,7 +3,7 @@
     <div class="container">
       <header class="header">
         <h2 id="servicios-title">Nuestros Servicios</h2>
-        <p class="lead">Servicios pensados para que viajes tranquilo — calidad, seguridad y precio.</p>
+        <p class="lead">Servicios pensados para que viajes tranquilo, con calidad, seguridad y al mejor precio.</p>
       </header>
 
       <div class="tarjetas-servicios-contenedor">
@@ -39,7 +39,7 @@
 
         <TarjetaServicios
           icono="et:wallet"
-          titulo="Mejor precio garantizado"
+          titulo="Al mejor precio garantizado"
           descripcion="Si encuentras viajes más baratos que los nuestros, te compensaremos la diferencia."
         />
       </div>

@@ -9,7 +9,7 @@
             titulo="Vive la magia de Peru"
             duracion="Viaje de 8 dias y 7 noches"
             paises="Peru"
-            ciudades="Lima, Cusco, Machu Pichu"
+            ciudades="Lima, Arequipa, Cusco, Machu Pichu"
             />
             <TarjetaViajes
             imagen="src/assets/Home/travels/Colombia.png"
@@ -17,7 +17,7 @@
             titulo="Con sabor a Colombia"
             duracion="Viaje de 8 dias y 7 noches"
             paises="Colombia"
-            ciudades="Bogota, Medellin, Cartagena"
+            ciudades="Bogota, Medellin, Cartagena, Popayan"
             />
             <TarjetaViajes
             imagen="src/assets/Home/travels/Buenos Aires.png"
@@ -25,7 +25,7 @@
             titulo="Buenos Aires a su medida"
             duracion="Viaje 8 dias y 7 noches"
             paises="Argentina"
-            ciudades="Buenos Aires"
+            ciudades="Buenos Aires, Cordoba, Mendoza"
             />
             <TarjetaViajes
             imagen="src/assets/Home/travels/Brasil y Argentina.png"
@@ -33,7 +33,7 @@
             titulo="Brasil y Argentina"
             duracion="Viaje de 15 dias y 7 noches"
             paises="Brasil"
-            ciudades="Buenos Aires, Rio de Janeiro"
+            ciudades="Buenos Aires, Rio de Janeiro, Rio Grande do Sul"
             />
         </div>
     </div>
