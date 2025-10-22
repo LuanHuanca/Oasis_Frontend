@@ -2,8 +2,13 @@
   <section class="NuestrosServicios" aria-labelledby="servicios-title">
     <div class="container">
       <header class="header">
+<<<<<<< HEAD
         <h2 id="servicios-title">Nuestros Servicios</h2>
         <p class="lead">Servicios pensados para que viajes tranquilo, con calidad, seguridad y al mejor precio.</p>
+=======
+  <h2 id="servicios-title">Nuestros Servicios</h2>
+  <p class="lead">Servicios pensados para que viajes tranquilo, con calidad, seguridad y al mejor precio.</p>
+>>>>>>> origin/main
       </header>
 
       <div class="tarjetas-servicios-contenedor">

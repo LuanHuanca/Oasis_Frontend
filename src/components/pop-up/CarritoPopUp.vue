@@ -78,14 +78,14 @@ export default {
       emailContent += `
         </ul>
         <p>Esperamos verte pronto.</p>
-        <p>Saludos,<br>El equipo de Oasis</p>
+        <p>Saludos,<br>El equipo de Tu Guia</p>
       `;
 
       // Enviar solicitud al backend para enviar el correo
       try {
         const url = "http://localhost:9999/mail/send/" + correoUsuario;
         await axios.post(url, {
-          subject: "Detalles de tu carrito de compras - Oasis",
+          subject: "Detalles de tu carrito de compras - Tu Guia",
           message: emailContent,
         });
 

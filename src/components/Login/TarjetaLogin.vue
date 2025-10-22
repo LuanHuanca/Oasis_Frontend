@@ -1,9 +1,9 @@
 <template>
   <div class="TarjetaLogin">
-    <img src="src/assets/Home/carusel/Logo.png" alt="Logo Oasis" />
+    <img src="src/assets/Home/carusel/Logo.png" alt="Logo" />
     <br />
     <h3>Bienvenido</h3>
-    <p>Inicie su sesión para continuar en Oasis</p>
+    <p>Inicie su sesión para continuar en Tu guia</p>
     <form @submit.prevent="continuar" class="form">
       <div class="CustomInput">
         <p>Correo electronico:</p>
@@ -228,12 +228,12 @@ export default defineComponent({
     },
 
     async verificarCorreoAdmin(correo) {
-      if (correo.includes("@oasis")) {
-        // El correo contiene el dominio "@oasis", realiza la acción deseada
+      if (correo.includes("@tuguia")) {
+        // El correo contiene el dominio "@tuguia", realiza la acción deseada
         console.log("El correo ingresado pertenece a la empresa");
         await this.loginAdmin();
       } else {
-        // El correo no contiene el dominio "@oasis"
+        // El correo no contiene el dominio "@tuguia"
         console.log("El correo ingresado no pertenece a la empresa");
         await this.loginPersona();
       }
@@ -292,7 +292,7 @@ Gracias por tu cooperación en garantizar la seguridad de tu cuenta.
 
 Atentamente,
 
-Agencia de Viajes Oasis
+Agencia de Viajes Tu Guia
 Max Pasten, Gerente de la agencia de viajes`,
       };
       const response2 = await axios.post(url, data).catch((error) => {
@@ -316,7 +316,7 @@ Por favor, asegúrate de introducir este código en el campo correspondiente en 
 Si tienes alguna pregunta o necesitas asistencia, no dudes en ponerte en contacto con nuestro equipo de soporte.
 
 Gracias,
-Agencia de Viajes Oasis`,
+Agencia de Viajes Tu guia`,
       };
 
       await axios

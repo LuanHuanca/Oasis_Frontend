@@ -8,7 +8,7 @@
     <!--<Team/>-->
     <Contactanos/>
     <Ubicacion/>
-    <ChatAssistant />
+    <!-- <ChatAssistant /> -->
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="TarjetaRestablecerContra">
-    <img src="src/assets/logo_black.png" alt="Logo Oasis" />
+    <img src="src/assets/logo_black.png" alt="Logo Tu Guia" />
     <br />
     <h3>Reestablecimiento de contraseña</h3>
     <p>En el siguiente apartado puede crear una nueva contraseña</p>

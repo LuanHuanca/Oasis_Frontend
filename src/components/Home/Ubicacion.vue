@@ -9,11 +9,11 @@
       </div>
       <div class="social">
         <img src="src/assets/Home/facebook.png" alt="" width="30">
-        <p>Agencia de Viajes Oasis</p>
+        <p>Agencia de Viajes TU GUIA</p>
       </div>
       <div class="social">
         <img src="src/assets/Home/instagram.png" alt="" width="30">
-        <p>Agency.oasis</p>
+        <p>Agency.TuGuia</p>
       </div>
       <div class="social">
         <img src="src/assets/Home/telefono.png" alt="" width="30">
