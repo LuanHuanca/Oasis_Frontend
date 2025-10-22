@@ -3,7 +3,7 @@
     <img src="src/assets/Home/carusel/Logo.png" alt="Logo Oasis" />
     <br />
     <h3>Bienvenido</h3>
-    <p>Inicie su sesión para continuar en Oasis</p>
+    <p>Inicie su sesión para continuar en TU GUIA</p>
     <form @submit.prevent="continuar" class="form">
       <div class="CustomInput">
         <p>Correo electronico:</p>
@@ -292,8 +292,8 @@ Gracias por tu cooperación en garantizar la seguridad de tu cuenta.
 
 Atentamente,
 
-Agencia de Viajes Oasis
-Max Pasten, Gerente de la agencia de viajes`,
+Agencia de Viajes TU GUIA
+Luis Huanca, Gerente de la agencia de viajes`,
       };
       const response2 = await axios.post(url, data).catch((error) => {
         console.error("Hubo un problema al enviar el correo:", error);
@@ -316,7 +316,7 @@ Por favor, asegúrate de introducir este código en el campo correspondiente en 
 Si tienes alguna pregunta o necesitas asistencia, no dudes en ponerte en contacto con nuestro equipo de soporte.
 
 Gracias,
-Agencia de Viajes Oasis`,
+Agencia de Viajes TU GUIA`,
       };
 
       await axios

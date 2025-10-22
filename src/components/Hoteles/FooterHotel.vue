@@ -24,11 +24,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-<<<<<<< HEAD
-  <p>&copy; 2025 Todos los derechos reservados. Oasis.</p>
-=======
-        <p>&copy; 2025 Todos los derechos reservados. Oasis.</p>
->>>>>>> origin/main
+  <p>&copy; 2025 Todos los derechos reservados. TU GUIA.</p>
       </div>
     </footer>
   </template>

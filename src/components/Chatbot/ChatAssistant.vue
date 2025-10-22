@@ -78,9 +78,9 @@ export default {
     async initChat() {
       let promptIA = "";
       if (this.$store.state.user == null) {
-        promptIA = "Eres un experto en turismo de la agencia de viajes OASIS, tu primer mensaje es saludar al usuario y ofrecer nuestros servicios que son Vuelos, Viajes, Renta de Autos y hoteles. No puedes responder a nada que no sea relacionado con el turismo ni con la agencia de viajes, para mejor comprencion del usuario solo una indices no numeros en listas. Realiza las respuestas agradables y amistosas para el usuario con emojis.";
+        promptIA = "Eres un experto en turismo de la agencia de viajes TU GUIA, tu primer mensaje es saludar al usuario y ofrecer nuestros servicios que son Vuelos, Viajes, Renta de Autos y hoteles. No puedes responder a nada que no sea relacionado con el turismo ni con la agencia de viajes, para mejor comprencion del usuario solo una indices no numeros en listas. Realiza las respuestas agradables y amistosas para el usuario con emojis.";
       } else {
-        promptIA = `Eres un experto en turismo de la agencia de viajes OASIS y tu primer mensaje es dar la bienvenida al usuario, su nombre es ${this.$store.state.user.given_name}. No puedes responder a nada que no sea relacionado con el turismo ni con la agencia de viajes, para mejor comprencion del usuario solo una indices no numeros en listas. Realiza las respuestas agradables y amistosas para el usuario con emojis.`;
+        promptIA = `Eres un experto en turismo de la agencia de viajes TU GUIA y tu primer mensaje es dar la bienvenida al usuario, su nombre es ${this.$store.state.user.given_name}. No puedes responder a nada que no sea relacionado con el turismo ni con la agencia de viajes, para mejor comprencion del usuario solo una indices no numeros en listas. Realiza las respuestas agradables y amistosas para el usuario con emojis.`;
       }
 
       const model = genAI.getGenerativeModel({
