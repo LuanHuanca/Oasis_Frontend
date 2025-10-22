@@ -55,12 +55,37 @@
               acceso</label
             >
             <input
-              type="correo"
+              type="email"
               v-model="correoenviar"
               class="form-control"
               placeholder="Correo"
               required
             />
+          </div>
+          
+          <div class="form-group">
+            <label for="role">Selecciona el rol</label>
+            <select
+              v-model="selectedRole"
+              id="role"
+              class="form-control"
+              @change="updatePermissions"
+              required
+            >
+              <option disabled value="">Seleccione un rol</option>
+              <option value="1">Administrador</option>
+              <option value="2">Contabilidad</option>
+              <option value="3">Usuario</option>
+            </select>
+          </div>
+          
+          <div class="form-group" v-if="permissions.length > 0">
+            <label>Permisos del Rol:</label>
+            <ul>
+              <li v-for="(permission, index) in permissions" :key="index">
+                {{ permission }}
+              </li>
+            </ul>
           </div>
           <!-- Botones -->
           <div class="button-group">
@@ -93,6 +118,8 @@ export default {
       fechaInicio: '',
       fechaFin: '',
       ipAddress: '',
+      selectedRole: null,  // para el rol seleccionado
+      permissions: [],  //permisos asociados al rol
     };
   },
   methods: {
@@ -128,20 +155,11 @@ export default {
             apellidoM: this.apellidoM,
             telefono: this.telefono,
           },
-          rolId: 10,
+          rolId: this.selectedRole,  // Crear administrador con el rol seleccionado
         });
 
         console.log("Cuenta Admin created");
         await this.auditoriaUser();
-        // Generar correo institucional y contraseña
-        const correoInstitucional =
-          `${this.nombre}.${this.apellidoP}@tuguia.bo`.toLowerCase();
-        const contrasena = `${this.nombre}${this.apellidoP.charAt(0)}${
-          this.telefono
-        }`;
-
-        // Enviar correo con las credenciales
-        this.sendCredentialsMail(correoInstitucional, contrasena);
 
         // Limpiar campos
         this.nombre = "";
@@ -184,7 +202,6 @@ Luis Huanca, Gerente de la agencia de viajes`,
         position: "top-end",
         showConfirmButton: false,
         timer: 3000,
-
         icon: "success",
         title: "Registro de administrador exitoso",
         text: "Se le enviara las credenciales de acceso a su correo",
@@ -246,6 +263,24 @@ Luis Huanca, Gerente de la agencia de viajes`,
         console.error('Error al crear la auditoría:', error);
       }
     },
+    updatePermissions() {
+      // permisos segn el rol seleccionado
+      if (this.selectedRole === '1') {
+        this.permissions = ['Administrador de permisos', 'Contabilidad', 'Presupuesto', 'Informes'];  
+      } else if (this.selectedRole === '2') {
+        this.permissions = ['Contabilidad', 'Presupuesto', 'Informes'];  
+      } else if (this.selectedRole === '3') {
+        this.permissions = ['Ver Reservas', 'Ver Facturación'];  
+      } else {
+        this.permissions = [];
+      }
+    },
+  },
+
+  watch: {
+    selectedRole(newRole) {
+      this.updatePermissions();  // Actualiza permisos cuando el rol cambia
+    }
   },
 };
 </script>
