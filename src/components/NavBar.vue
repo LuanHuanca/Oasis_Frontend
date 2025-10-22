@@ -2,7 +2,7 @@
   <transition name="fade">
     <CarritoPopUp v-show="showPopUp" @close="togglePopUp"/>
   </transition>
-  <div class="nav-container">
+  <div class="nav-container" :class="{ 'nav-hidden': isHiddenNav }">
     <nav class="navbar navbar-expand-md navbar-light custom-navbar-color">
       <div class="container">
         <img id="logo" src="/src/assets/Home/carusel/Logo.png" alt="Logo">
@@ -141,6 +141,23 @@ export default defineComponent({
     const user = ref(store.state.user);
     const localSelectedCity = ref(store.state.selectedCity);
 
+    // hide-on-scroll state
+    const isHiddenNav = ref(false);
+    let lastScroll = window?.scrollY || 0;
+
+    const onScroll = () => {
+      const current = window.scrollY || 0;
+      // hide when scrolling down, show when scrolling up
+      if (current > lastScroll && current > 80) {
+        isHiddenNav.value = true;
+      } else {
+        isHiddenNav.value = false;
+      }
+      lastScroll = current;
+    };
+
+    // attach/detach en mounted/beforeUnmount usando lifecycle hooks expuestos abajo
+
     const actividad = ref('');
     const fecha = ref('');
     const hora = ref('');
@@ -239,13 +256,21 @@ export default defineComponent({
       console.log(selectedCity);
     };
     
+    // lifecycle hooks para montar y desmontar el listener de scroll
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', onScroll, { passive: true });
+    }
+
+    // Exponer propiedades y métodos al template
     return {
       isAuthenticated,
       user,
       login,
       logout,
       localSelectedCity,
-      updateCity
+      updateCity,
+      isHiddenNav,
+      onScroll
     };
   },
   data() {
@@ -262,6 +287,11 @@ export default defineComponent({
   mounted() {
     // Iniciar el temporizador
     this.temporizador = setTimeout(this.realizarAccion, this.tiempoRestante * 1000);
+  },
+  beforeUnmount() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('scroll', this.onScroll as EventListener);
+    }
   },
   methods: {
     async realizarAccion() {
@@ -296,6 +326,12 @@ export default defineComponent({
   top: 0;
   z-index: 1100;
   backdrop-filter: saturate(120%) blur(6px);
+}
+
+/* Clase aplicada cuando se oculta la barra al hacer scroll hacia abajo */
+.nav-hidden{
+  transform: translateY(-120%);
+  transition: transform 280ms cubic-bezier(.2,.9,.2,1);
 }
 .custom-navbar-color{
   background: linear-gradient(90deg, rgba(207, 183, 45, 0.95), rgba(15, 84, 173, 0.92));

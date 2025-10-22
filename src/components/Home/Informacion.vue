@@ -1,5 +1,5 @@
 <template>
-  <section class="agencia-informacion" role="region" aria-label="Información de la agencia tuguia">
+  <section class="agencia-informacion" role="region" aria-label="Información de la agencia TU GUIA">
     <div class="container">
       <header class="section-header">
   <h1>Sobre TU GUIA</h1>
