@@ -5,7 +5,7 @@
   <div class="nav-container" :class="{ 'nav-hidden': isHiddenNav }">
     <nav class="navbar navbar-expand-md navbar-light custom-navbar-color">
       <div class="container">
-        <img id="logo" src="/src/assets/Home/carusel/Logo.png" alt="Logo de Oasis">
+        <img id="logo" src="/src/assets/Home/carusel/Logo.png" alt="Logo">
         <button
             id="custom-button"
             class="navbar-toggler"
@@ -321,7 +321,6 @@ export default defineComponent({
 
 
 <style scoped>
-/* NavBar: modernizado, dinámico y profesional. Solo cambios visuales. */
 .nav-container{
   position: sticky;
   top: 0;

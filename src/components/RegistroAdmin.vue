@@ -135,7 +135,7 @@ export default {
         await this.auditoriaUser();
         // Generar correo institucional y contraseña
         const correoInstitucional =
-          `${this.nombre}.${this.apellidoP}@oasis.bo`.toLowerCase();
+          `${this.nombre}.${this.apellidoP}@tuguia.bo`.toLowerCase();
         const contrasena = `${this.nombre}${this.apellidoP.charAt(0)}${
           this.telefono
         }`;
@@ -232,7 +232,7 @@ Luis Huanca, Gerente de la agencia de viajes`,
         console.log("fecha fin creado"+this.fechaFin);
         console.log("ip creado"+this.ipAddress);
         await axios.post('http://localhost:9999/api/v1/auditoria/create', {
-          correo: this.nombre +"."+ this.apellidoP+"@oasis.bo",
+          correo: this.nombre +"."+ this.apellidoP+"@tuguia.bo",
           actividad: this.actividad,
           fecha: this.fecha,
           hora: this.hora,

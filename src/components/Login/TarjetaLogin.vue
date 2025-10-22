@@ -1,9 +1,9 @@
 <template>
   <div class="TarjetaLogin">
-    <img src="src/assets/Home/carusel/Logo.png" alt="Logo Oasis" />
+    <img src="src/assets/Home/carusel/Logo.png" alt="Logo" />
     <br />
-    <h3>Bienvenido</h3>
-    <p>Inicie su sesión para continuar en TU GUIA</p>
+  <h3>Bienvenido</h3>
+  <p>Inicie su sesión para continuar en TU GUIA</p>
     <form @submit.prevent="continuar" class="form">
       <div class="CustomInput">
         <p>Correo electronico:</p>
@@ -228,12 +228,12 @@ export default defineComponent({
     },
 
     async verificarCorreoAdmin(correo) {
-      if (correo.includes("@oasis")) {
-        // El correo contiene el dominio "@oasis", realiza la acción deseada
+      if (correo.includes("@tuguia")) {
+        // El correo contiene el dominio "@tuguia", realiza la acción deseada
         console.log("El correo ingresado pertenece a la empresa");
         await this.loginAdmin();
       } else {
-        // El correo no contiene el dominio "@oasis"
+        // El correo no contiene el dominio "@tuguia"
         console.log("El correo ingresado no pertenece a la empresa");
         await this.loginPersona();
       }
@@ -278,7 +278,7 @@ export default defineComponent({
       const url = "http://localhost:9999/mail/send/" + this.correo;
       const data = {
         subject: "Código de Verificación en Dos Pasos para Acceder a tu Cuenta",
-        message: `Estimado/a Usuario/a,
+  message: `Estimado/a Usuario/a,
 
 Para completar el proceso de verificación en dos pasos y acceder a tu cuenta de manera segura, por favor utiliza el siguiente código de verificación:
 
@@ -302,8 +302,8 @@ Luis Huanca, Gerente de la agencia de viajes`,
     async tokenDeOlvido() {
       const url = "http://localhost:9999/mail/send/" + this.correo;
       const data = {
-        subject: "Solicitud de restablecimiento de contraseña",
-        message: `Estimado/a Usuario/a,
+  subject: "Solicitud de restablecimiento de contraseña",
+  message: `Estimado/a Usuario/a,
 
 Hemos recibido una solicitud para restablecer tu contraseña. Si no has solicitado este cambio, por favor ignora este mensaje.
 

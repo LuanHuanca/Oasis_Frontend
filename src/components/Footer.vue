@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-  <p>&copy; 2025 Todos los derechos reservados. Tu GUIA DE VIAJES</p>
+      <p>&copy; 2025 Todos los derechos reservados. Tu GUIA DE VIAJES</p>
     </div>
   </footer>
 </template>

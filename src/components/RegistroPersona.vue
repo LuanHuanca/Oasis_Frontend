@@ -84,7 +84,7 @@
             </div>            
             <div>
               <Icon :icon="icon_validacion1" width="16" height="16" :color='estilo_validacion1'/>
-              <p :class='confirmacion1'>La contraseña debe ser de al menos 8 caracteres</p>
+              <p :class='confirmacion1'>La contraseña debe ser de al menos 12 caracteres</p>
             </div>
             <div>
               <Icon :icon="icon_validacion2" width="16" height="16" :color='estilo_validacion2'/>
@@ -263,7 +263,7 @@ export default {
     validatePassword(password) {
       console.log(password);
       // Al menos 8 caracteres
-      if (password.length < 8) {
+      if (password.length < 13) {
         console.log("Tamanio");
         return false;
       }
@@ -312,16 +312,11 @@ export default {
       this.confirmacion5 = 'validation_error';
 
       if (password.length > 0 || passwordConf.length > 0) {
-        if (password === passwordConf) {
-          this.icon_validacion0 = 'lets-icons:check-fill';
-          this.estilo_validacion0 = 'green';
-          this.confirmacion0 = 'validation_check';
-          
-          if (password.length >= 8) {
-            this.icon_validacion1 = 'lets-icons:check-fill';
-            this.estilo_validacion1 = 'green';
-            this.confirmacion1 = 'validation_check';
-          }
+        if (password.length >= 12) {
+          this.icon_validacion1 = 'lets-icons:check-fill';
+          this.estilo_validacion1 = 'green';
+          this.confirmacion1 = 'validation_check';
+        }  
           
           if (/[a-z]/.test(password)) {
             this.icon_validacion2 = 'lets-icons:check-fill';
@@ -346,8 +341,13 @@ export default {
             this.estilo_validacion5 = 'green';
             this.confirmacion5 = 'validation_check';
           }
+          if (password === passwordConf ) {
+            this.icon_validacion0 = 'lets-icons:check-fill';
+            this.estilo_validacion0 = 'green';
+            this.confirmacion0 = 'validation_check';
+          }
         }
-      }
+      
     },
     mostrarError(message) {
       this.$swal({
