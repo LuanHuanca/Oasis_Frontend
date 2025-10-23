@@ -12,6 +12,11 @@
               class="rounded-circle img-fluid profile-picture"
             />
           </div>
+          <div style="margin-top: 18px; text-align: center;">
+            <button class="btn btn-warning" @click="cambiarContrasenia" style="border-radius: 10px; padding: 8px 18px; font-weight: 600;">
+              Cambiar contraseña
+            </button>
+          </div>
           <div class="col-md text-center text-md-left ">
             <h4>Nombre: {{ clienteData?.nombre || '' }}</h4>
             <h4>Apellido Paterno: {{ clienteData?.apellidoP || '' }}</h4>
@@ -71,6 +76,9 @@ export default {
     }
   },
   methods:{
+    cambiarContrasenia() {
+      this.$router.push('/RestablecerContrasenia');
+    },
     fetchClienteData() {
       const u = store?.state?.user || {};
       const idPersona = u?.result?.idPersona ?? u?.idPersona ?? u?.id;
