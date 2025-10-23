@@ -285,7 +285,7 @@ export default {
           {
             correo: this.correo,
             password: this.password,
-            estadoCuenta: "Activa",
+            estadoCuenta: true,
             idPersona: lastPersona,
           }
         );
