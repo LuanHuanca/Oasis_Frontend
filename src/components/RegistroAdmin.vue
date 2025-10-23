@@ -51,7 +51,7 @@
           </div>
           <div class="form-group">
             <label for="correo"
-              >Escriba un correo donde se enviara sus credenciales de
+              >Escriba un correo donde se enviará sus credenciales de
               acceso</label
             >
             <input
@@ -63,6 +63,7 @@
             />
           </div>
           
+          <!-- Selector de rol -->
           <div class="form-group">
             <label for="role">Selecciona el rol</label>
             <select
@@ -73,12 +74,13 @@
               required
             >
               <option disabled value="">Seleccione un rol</option>
-              <option value="1">Administrador</option>
-              <option value="2">Contabilidad</option>
-              <option value="3">Usuario</option>
+              <option v-for="role in roles" :key="role.name" :value="role.name">
+                {{ role.name }}
+              </option>
             </select>
           </div>
-          
+
+          <!-- Mostrar permisos según el rol -->
           <div class="form-group" v-if="permissions.length > 0">
             <label>Permisos del Rol:</label>
             <ul>
@@ -87,6 +89,7 @@
               </li>
             </ul>
           </div>
+
           <!-- Botones -->
           <div class="button-group">
             <button type="button" @click="goBack" class="btn btn-secondary">
@@ -111,177 +114,102 @@ export default {
       apellidoM: "",
       telefono: "",
       correoenviar: "",
-      password: "",
-      actividad: 'Creacion de cuenta Administrador',
-      fecha: '',
-      hora: '',
-      fechaInicio: '',
-      fechaFin: '',
-      ipAddress: '',
-      selectedRole: null,  // para el rol seleccionado
-      permissions: [],  //permisos asociados al rol
+      selectedRole: null,
+      roles: [],  // Aquí guardaremos los roles disponibles
+      permissions: [],  // Aquí guardamos los permisos según el rol seleccionado
     };
   },
+  mounted() {
+    // Cuando el componente se monte, obtendremos los roles disponibles desde el backend
+    this.fetchRoles();
+  },
   methods: {
+    async fetchRoles() {
+      try {
+        const response = await axios.get("http://localhost:9999/api/v1/roles/list");
+        this.roles = response.data; // Asigna los roles obtenidos
+      } catch (error) {
+        console.error("Error al obtener los roles", error);
+      }
+    },
+
+    // Actualiza los permisos en función del rol seleccionado
+    updatePermissions() {
+      if (this.selectedRole) {
+        // El backend debería retornar los permisos adecuados para cada rol
+        const role = this.roles.find(role => role.name === this.selectedRole);
+        this.permissions = role ? role.permissions : [];
+      }
+    },
+
+    // Método para crear una persona
     async createPersona() {
       try {
-        // Enviar solicitud para crear una persona
-        const response = await axios.post(
-          "http://localhost:9999/api/v1/persona/create",
-          {
-            nombre: this.nombre,
-            apellidoP: this.apellidoP,
-            apellidoM: this.apellidoM,
-            telefono: this.telefono,
-          }
-        );
+        // 1. Crear la persona en la base de datos
+        const response = await axios.post("http://localhost:9999/api/v1/persona/create", {
+          nombre: this.nombre,
+          apellidoP: this.apellidoP,
+          apellidoM: this.apellidoM,
+          telefono: this.telefono,
+        });
 
         const nuevaPersona = response.data.data;
-        console.log("Persona created");
+        console.log("Persona creada");
 
-        // Enviar solicitud para obtener el id de la última persona creada
-        const response2 = await axios.get(
-          "http://localhost:9999/api/v1/persona/lastId"
-        );
-        const lastPersona = response2.data.result;
-        console.log("Last persona", lastPersona);
-
-        // Enviar solicitud para crear un nuevo administrador
+        // 2. Crear el administrador con los datos de la persona y el rol seleccionado
         await axios.post("http://localhost:9999/api/v1/admin/create", {
           persona: {
-            idPersona: lastPersona,
+            idPersona: nuevaPersona.id,  // ID de la persona creada
             nombre: this.nombre,
             apellidoP: this.apellidoP,
             apellidoM: this.apellidoM,
             telefono: this.telefono,
           },
-          rolId: this.selectedRole,  // Crear administrador con el rol seleccionado
+          rolId: this.selectedRole,  // ID del rol seleccionado
+          permissions: this.permissions,  // Permisos asignados
         });
 
-        console.log("Cuenta Admin created");
-        await this.auditoriaUser();
+        console.log("Cuenta de administrador creada");
+        await this.sendCredentialsMail();  // Enviar correo de credenciales
+        this.clearForm();
+        this.$router.push("/login");  // Redirige al login
 
-        // Limpiar campos
-        this.nombre = "";
-        this.apellidoP = "";
-        this.apellidoM = "";
-        this.telefono = "";
-        this.correoenviar = "";
-        this.password = "";
-
-        this.$router.push("/"); // Redirige a la ruta de Login
       } catch (error) {
-        console.error("Error al crear la persona", error);
+        console.error("Error al crear persona o admin", error);
       }
     },
-    goBack() {
-      this.$router.push("/");
+
+    // Limpiar los campos del formulario
+    clearForm() {
+      this.nombre = "";
+      this.apellidoP = "";
+      this.apellidoM = "";
+      this.telefono = "";
+      this.correoenviar = "";
     },
-    async sendCredentialsMail(correo, contrasena) {
-      const url = `http://localhost:9999/mail/send/${this.correoenviar}`;
-      const data = {
-        subject: "Credenciales de Acceso a tu Cuenta",
-        message: `Estimado/a Usuario/a,
 
-Tu cuenta ha sido creada exitosamente. A continuación, encontrarás tus credenciales de acceso:
-
-Correo Institucional: ${correo}
-Contraseña: ${contrasena}
-
-Por favor, asegúrate de cambiar tu contraseña después de iniciar sesión por primera vez para garantizar la seguridad de tu cuenta.
-
-Si tienes alguna pregunta o necesitas asistencia, no dudes en contactarnos.
-
-Atentamente,
-
-Agencia de Viajes TU GUIA
-Luis Huanca, Gerente de la agencia de viajes`,
-      };
-      this.$swal({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        icon: "success",
-        title: "Registro de administrador exitoso",
-        text: "Se le enviara las credenciales de acceso a su correo",
-      });
+    // Método para enviar el correo con las credenciales
+    async sendCredentialsMail() {
+      const correo = `${this.nombre}.${this.apellidoP}@tuguia.bo`.toLowerCase();
+      const contrasena = `${this.nombre}${this.apellidoP.charAt(0)}${this.telefono}`;
+      
       try {
-        await axios.post(url, data);
+        await axios.post("http://localhost:9999/mail/send", {
+          to: this.correoenviar,
+          subject: "Credenciales de Acceso a tu Cuenta",
+          message: `Estimado/a usuario/a, tus credenciales son:\nCorreo: ${correo}\nContraseña: ${contrasena}`,
+        });
         console.log("Correo enviado exitosamente");
       } catch (error) {
         console.error("Hubo un problema al enviar el correo:", error);
       }
     },
-    calcularFecha() {
-      const ahora = new Date();
-      const dia = String(ahora.getDate()).padStart(2, '0');
-      const mes = String(ahora.getMonth() + 1).padStart(2, '0');
-      const anio = ahora.getFullYear();
-      const horas = String(ahora.getHours()).padStart(2, '0');
-      const minutos = String(ahora.getMinutes()).padStart(2, '0');
-      const segundos = String(ahora.getSeconds()).padStart(2, '0');
 
-      this.fecha = `${anio}-${mes}-${dia}`;
-      this.hora = `${horas}:${minutos}:${segundos}`;
-      this.fechaInicio = `${this.fecha}T${this.hora}`;
-    },
-    async getIPAddress() {
-      try {
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        console.log("IP: ", data.ip);
-        this.ipAddress = data.ip;
-      } catch (error) {
-        console.error('Error al obtener la dirección IP:', error);
-      }
-    },
-    async auditoriaUser() {
-      // Calcular fecha y obtener IP
-      this.calcularFecha();
-      await this.getIPAddress();
-      try {
-        console.log("correo creado"+this.correo);
-        console.log("actividad creado"+this.actividad);
-        console.log("fecha creado"+this.fecha);
-        console.log("hora creado"+this.hora);
-        console.log("fecha inicio creado"+this.fechaInicio);
-        console.log("fecha fin creado"+this.fechaFin);
-        console.log("ip creado"+this.ipAddress);
-        await axios.post('http://localhost:9999/api/v1/auditoria/create', {
-          correo: this.nombre +"."+ this.apellidoP+"@tuguia.bo",
-          actividad: this.actividad,
-          fecha: this.fecha,
-          hora: this.hora,
-          fechaInicio: this.fechaInicio,
-          fechaFin: this.fechaFin,
-          ip: this.ipAddress
-        });
-
-        console.log("Auditoría creada");
-      } catch (error) {
-        console.error('Error al crear la auditoría:', error);
-      }
-    },
-    updatePermissions() {
-      // permisos segn el rol seleccionado
-      if (this.selectedRole === '1') {
-        this.permissions = ['Administrador de permisos', 'Contabilidad', 'Presupuesto', 'Informes'];  
-      } else if (this.selectedRole === '2') {
-        this.permissions = ['Contabilidad', 'Presupuesto', 'Informes'];  
-      } else if (this.selectedRole === '3') {
-        this.permissions = ['Ver Reservas', 'Ver Facturación'];  
-      } else {
-        this.permissions = [];
-      }
-    },
-  },
-
-  watch: {
-    selectedRole(newRole) {
-      this.updatePermissions();  // Actualiza permisos cuando el rol cambia
+    // Método para volver atrás
+    goBack() {
+      this.$router.push("/");  // Redirige al inicio
     }
-  },
+  }
 };
 </script>
 
@@ -314,12 +242,12 @@ Luis Huanca, Gerente de la agencia de viajes`,
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.8); /* Fondo semi-transparente */
+  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 10px;
   padding: 30px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  width: 80%; /* Ancho del formulario */
-  max-width: 400px; /* Ancho máximo del formulario */
+  width: 80%;
+  max-width: 400px;
 }
 
 /* Título del formulario */
@@ -342,7 +270,7 @@ Luis Huanca, Gerente de la agencia de viajes`,
   background-color: transparent;
   width: 100%;
   font-size: 16px;
-  transition: border-color 0.3s ease; /* Transición suave para el borde */
+  transition: border-color 0.3s ease;
 }
 
 /* Estilos para el borde al enfocar el campo de entrada */
@@ -364,7 +292,7 @@ Luis Huanca, Gerente de la agencia de viajes`,
   cursor: pointer;
   font-size: 16px;
   text-transform: uppercase;
-  transition: all 0.3s ease; /* Transición suave */
+  transition: all 0.3s ease;
 }
 
 .btn-secondary {
@@ -376,34 +304,10 @@ Luis Huanca, Gerente de la agencia de viajes`,
 .btn-primary {
   background-color: #007bff;
   color: #fff;
-  border: none;
+  border: 1px solid #007bff;
 }
 
-/* Efecto de desplazamiento al pasar el cursor sobre los botones */
 .btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Mensaje para iniciar sesión */
-.login-message {
-  margin-top: 20px;
-  text-align: center;
-  color: #666;
-  font-size: 14px;
-}
-
-/* Estilos responsivos */
-@media only screen and (max-width: 768px) {
-  .form-container {
-    padding: 20px;
-  }
-}
-
-@media only screen and (max-width: 576px) {
-  .form-container {
-    padding: 15px;
-    width: 90%;
-  }
+  opacity: 0.9;
 }
 </style>
