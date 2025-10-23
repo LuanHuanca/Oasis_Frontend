@@ -56,24 +56,48 @@
               required
             />
           </div>
-          <div class="form-group">
+
+          <!-- Campo contraseña con solo el ojo -->
+          <div class="form-group password-wrapper">
             <input
-              type="password"
+              :type="showPassword ? 'text' : 'password'"
               v-model="password"
               class="form-control"
               placeholder="Contraseña"
               required
             />
+            <button
+              type="button"
+              class="btn-password-toggle"
+              @click="toggleShowPassword"
+              :aria-label="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            >
+              <Icon :icon="showPassword ? 'mdi:eye-off' : 'mdi:eye'" width="18" height="18" />
+            </button>
           </div>
-          <div class="form-group">
+
+          
+
+          <!-- Campo confirmar contraseña con ojo -->
+          <div class="form-group password-wrapper">
             <input
-              type="password"
+              :type="showPasswordConf ? 'text' : 'password'"
               v-model="passwordConf"
               class="form-control"
               placeholder="Confirmar contraseña"
               required
             />
+            <button
+              type="button"
+              class="btn-password-toggle"
+              @click="toggleShowPasswordConf"
+              :aria-label="showPasswordConf ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            >
+              <Icon :icon="showPasswordConf ? 'mdi:eye-off' : 'mdi:eye'" width="18" height="18" />
+            </button>
           </div>
+
+
           <div class="validation">
             <div>
               <Icon :icon="icon_validacion0" width="16" height="16" :color='estilo_validacion0'/>
@@ -81,7 +105,7 @@
             </div>            
             <div>
               <Icon :icon="icon_validacion1" width="16" height="16" :color='estilo_validacion1'/>
-              <p :class='confirmacion1'>La contraseña debe ser de al menos 8 caracteres</p>
+              <p :class='confirmacion1'>La contraseña debe ser de al menos 12 caracteres</p>
             </div>
             <div>
               <Icon :icon="icon_validacion2" width="16" height="16" :color='estilo_validacion2'/>
@@ -134,6 +158,9 @@ export default {
       correo: "",
       password: "",
       passwordConf: "",
+      // flag para mostrar/ocultar contraseña
+      showPassword: false,
+      showPasswordConf: false,
       // para la validacion de la contraseña
       // validacion de igualdad
       icon_validacion0:"fluent:error-circle-20-regular",
@@ -169,16 +196,37 @@ export default {
     };
   },
   methods: {
+    async emailExistsBackend(email) {
+      if (!email) return false;
+      try {
+        const res = await axios.get("http://localhost:9999/api/v1/cliente");
+        let lista = [];
+        if (Array.isArray(res.data)) {
+          lista = res.data;
+        } else if (res.data && Array.isArray(res.data.data)) {
+          lista = res.data.data;
+        } else if (res.data && Array.isArray(res.data.result)) {
+          lista = res.data.result;
+        }
+
+        const correoLower = email.trim().toLowerCase();
+        return lista.some(c => {
+          if (!c) return false;
+          const cCorreo = (c.correo || c.email || c.CORREO || '').trim().toLowerCase();
+          return cCorreo === correoLower;
+        });
+      } catch (err) {
+        throw err;
+      }
+    },
+    
     async createPersona() {
       try {
-        
         // Validar complejidad de la contraseña
         if (!this.validatePassword(this.password)) {
           console.error("La contraseña no cumple con los requisitos mínimos");
-          // window.alert("La contraseña no debe conterner minimo 8 caracteres que incluya caracteres especiales, numericos," +
-          //     "mayusculas y minusculas");
           this.mostrarError(
-            "La contraseña no debe conterner minimo 8 caracteres que incluya caracteres especiales, numericos, mayusculas y minusculas",
+            "La contraseña no debe conterner minimo 12 caracteres que incluya caracteres especiales, numericos, mayusculas y minusculas",
             "error"
           );
           return;
@@ -186,8 +234,27 @@ export default {
         // Validar contraseña
         if (this.password !== this.passwordConf) {
           console.error("Las contraseñas no coinciden");
-          // window.alert("Las contraseñas no coinciden");
           this.mostrarError("Las contraseñas no coinciden", "error");
+          return;
+        }
+
+        // Guard: asegurar que la función exista en this
+        if (typeof this.emailExistsBackend !== 'function') {
+          console.error("emailExistsBackend no definida en el componente");
+          this.mostrarError("Error interno. Intente de nuevo más tarde.", "error");
+          return;
+        }
+
+        // Verificar en backend si el correo ya existe usando el endpoint GET /api/v1/cliente
+        try {
+          const existe = await this.emailExistsBackend(this.correo);
+          if (existe) {
+            this.mostrarError("El correo ya está registrado. Use otro correo.", "error");
+            return;
+          }
+        } catch (err) {
+          console.error("Error verificando existencia del correo:", err);
+          this.mostrarError("No se pudo verificar el correo. Intente de nuevo.", "error");
           return;
         }
 
@@ -256,11 +323,23 @@ export default {
     goBack() {
       this.$router.push("/");
     },
+    
+
+
+    // toggle para mostrar/ocultar contraseña
+    toggleShowPassword() {
+      this.showPassword = !this.showPassword;
+    },
+    // toggle para mostrar/ocultar confirmar contraseña
+    toggleShowPasswordConf() {
+      this.showPasswordConf = !this.showPasswordConf;
+    },
+
     // Función para validar la complejidad de la contraseña
     validatePassword(password) {
       console.log(password);
-      // Al menos 8 caracteres
-      if (password.length < 8) {
+      // Al menos 12 caracteres
+      if (password.length < 12) {
         console.log("Tamanio");
         return false;
       }
@@ -314,7 +393,7 @@ export default {
           this.estilo_validacion0 = 'green';
           this.confirmacion0 = 'validation_check';
           
-          if (password.length >= 8) {
+          if (password.length >= 12) {
             this.icon_validacion1 = 'lets-icons:check-fill';
             this.estilo_validacion1 = 'green';
             this.confirmacion1 = 'validation_check';
@@ -517,6 +596,32 @@ export default {
 /* Estilos para el borde al enfocar el campo de entrada */
 .form-control:focus {
   border-bottom-color: #007bff;
+  outline: none;
+}
+
+/* Estilos para el campo de contraseña con el ojo */
+.password-wrapper {
+  position: relative;
+  width: 75%;
+}
+.password-wrapper .form-control {
+  padding-right: 40px; /* espacio para el botón */
+}
+.btn-password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+}
+.btn-password-toggle:focus {
   outline: none;
 }
 

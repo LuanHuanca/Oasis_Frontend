@@ -13,11 +13,11 @@
             />
           </div>
           <div class="col-md text-center text-md-left ">
-            <h4>Nombre: {{ clienteData.nombre }}</h4>
-            <h4>Apellido Paterno: {{ clienteData.apellidoP }}</h4>
-            <h4>Apellido Materno: {{ clienteData.apellidoM }}</h4>
-            <h4>Telefono: {{ clienteData.telefono }}</h4>
-            <h4>Correo Electronico: {{ user?.result.correo }}</h4>
+            <h4>Nombre: {{ clienteData?.nombre || '' }}</h4>
+            <h4>Apellido Paterno: {{ clienteData?.apellidoP || '' }}</h4>
+            <h4>Apellido Materno: {{ clienteData?.apellidoM || '' }}</h4>
+            <h4>Telefono: {{ clienteData?.telefono || '' }}</h4>
+            <h4>Correo Electronico: {{ user?.result?.correo || user?.correo || '' }}</h4>
           </div>
         </div>
       </div>
@@ -38,6 +38,7 @@
 import axios from "axios";
 import NavBar from '../components/NavBar.vue';
 import { useStore } from 'vuex';
+import store from '../functions/store';
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
 
@@ -48,33 +49,35 @@ export default {
   },
   data(){
     return{
-      clienteData:{}
+      clienteData:{} as any
     }
   },
-  setup() {
-    const store = useStore();
-    const router = useRouter();
-    return {
-      isAuthenticated: store.state.loggedIn,
-      isAdmin: store.state.admin,
-      user: store.state.user,
-    }
+  computed: {
+    isAuthenticated() { return store.state.loggedIn; },
+    isAdmin() { return store.state.admin; },
+    user() { return store.state.user; }
   },
   mounted(){
     console.log("imprimir el usuario: ",this.user);
-    if(this.user!=null){
-      if(this.isAdmin == true){
+    const userObj = this.user || {};
+    if (userObj) {
+      if (this.isAdmin == true) {
         this.fetchAdminData();
-      }else{
+      } else {
         this.fetchClienteData();
       }
-    }else{
+    } else {
       console.log("nada");
     }
   },
   methods:{
     fetchClienteData() {
-      const idPersona = this.$store.state.user.result.idPersona;
+      const u = store?.state?.user || {};
+      const idPersona = u?.result?.idPersona ?? u?.idPersona ?? u?.id;
+      if (!idPersona) {
+        console.warn('fetchClienteData: idPersona no disponible');
+        return;
+      }
       axios
         .get(`http://localhost:9999/api/v1/persona/${idPersona}`)
         .then((response) => {
@@ -86,7 +89,12 @@ export default {
         });
     },
     fetchAdminData() {
-      const idPersona = this.$store.state.user.result.idPersona;
+      const u = store?.state?.user || {};
+      const idPersona = u?.result?.idPersona ?? u?.idPersona ?? u?.id;
+      if (!idPersona) {
+        console.warn('fetchAdminData: idPersona no disponible');
+        return;
+      }
       axios
         .get(`http://localhost:9999/api/v1/admin/${idPersona}`)
         .then((response) => {
@@ -100,12 +108,13 @@ export default {
     eliminarmicuenta(){
       this.fetchEliminarCliente();
       this.fetchEliminarPersona();
-      const router = useRouter();
       this.$router.push("/");
       window.location.reload();
     },
     fetchEliminarCliente() {
-      const idPersona = this.$store.state.user.result.idPersona;
+      const u = store?.state?.user || {};
+      const idPersona = u?.result?.idPersona ?? u?.idPersona ?? u?.id;
+      if (!idPersona) { console.warn('fetchEliminarCliente: idPersona no disponible'); return; }
       axios
         .delete(`http://localhost:9999/api/v1/cliente/delete/${idPersona}`)
         .then((response) => {
@@ -124,7 +133,9 @@ export default {
         });
     },
     fetchEliminarPersona() {
-      const idPersona = this.$store.state.user.result.idPersona;
+      const u = store?.state?.user || {};
+      const idPersona = u?.result?.idPersona ?? u?.idPersona ?? u?.id;
+      if (!idPersona) { console.warn('fetchEliminarPersona: idPersona no disponible'); return; }
       axios
         .delete(`http://localhost:9999/api/v1/persona/delete/${idPersona}`)
         .then((response) => {

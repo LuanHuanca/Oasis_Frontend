@@ -109,65 +109,47 @@ export default defineComponent({
     },
 
     async loginPersona() {
-      const store = useStore();
-      const router = useRouter();
       try {
-        // Realiza una solicitud POST al endpoint de inicio de sesión
         const response = await axios.post(
           "http://localhost:9999/api/v1/cliente/login",
           {
-            correo: this.correo, // Usa el valor del nombre de usuario del input
-            password: this.password, // Usa el valor de la contraseña del input
+            correo: this.correo,
+            password: this.password,
           }
         );
 
         const user = response.data;
 
         if (user.code === "200-OK") {
-          // Si el inicio de sesión es exitoso, guarda el usuario en el store y redirige a la página principal
-          this.$store.commit("setLoggedIn", true);
-          this.$store.commit("setUser", user);
-          console.log(user);
-          console.info("ID: ", response.data.result["idCliente"]);
-          this.$store.commit("setId", response.data.result["idCliente"]);
-          this.$store.commit("setRol", "Cliente");
-          console.info("ROL: ", this.$store.state.rol);
+          // No marcar como loggedIn aún — guardar login pendiente en sessionStorage
+          const pending = {
+            role: "Cliente",
+            id: response.data.result["idCliente"],
+            user: response.data.result,
+            correo: this.correo,
+          };
+          sessionStorage.setItem("pendingAuth", JSON.stringify(pending));
 
-          this.randomCode = this.generateCode(); // Llama a la función dentro del componente
+          // Generar código y guardarlo en store (verificación)
+          this.randomCode = this.generateCode();
           this.$store.commit("setRandomCode", this.randomCode);
-          this.sendMail(); // Llama a la función sendMail() para enviar el correo de verificación
-          console.log("Se envio la solicitud al correo" + this.correo);
-          this.toastTopEnd();
 
-          console.info("ID: ", this.$store.state.id);
-          //this.idAdmin.value = this.$store.state.id;
-          this.idAdmin = null;
-          this.idCliente = this.$store.state.id;
+          // Enviar email con el código
+          await this.sendMail();
 
-          //router.push("/");
+          // Ir a pantalla de verificación (allí se completará el login)
           this.$router.push("/Verificacion");
-          // Crear auditoría para inicio de sesión exitoso
-          this.actividad = "Inicio de sesión exitoso Cliente";
-          await this.crearAuditoria();
-          console.log("CLIENTE:", user);
         } else {
-          // Si el inicio de sesión no es exitoso, muestra un mensaje de error
-          console.error("Error al iniciar sesión:", response.data.message);
-          // alert("Error al iniciar sesión: Correo o contraseña incorrectos");
-          this.mostrarError(
-            "Error al iniciar sesión: Correo o contraseña incorrectos",
-            "error"
-          );
-          // Crear auditoría para contraseña erronea
+          this.mostrarError("Error al iniciar sesión: Correo o contraseña incorrectos", "error");
           this.actividad = "Se introdujo contraseña incorrecta";
           await this.crearAuditoria();
         }
       } catch (error) {
         console.error("Error al iniciar sesión:", error);
-        // alert("Error al iniciar sesión");
         this.mostrarError("Error al iniciar sesion", "error");
       }
     },
+    
 
     async loginAdmin() {
       const store = useStore();
