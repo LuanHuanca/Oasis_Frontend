@@ -338,8 +338,13 @@ export default {
     // Función para validar la complejidad de la contraseña
     validatePassword(password) {
       console.log(password);
+<<<<<<< HEAD
       // Al menos 12 caracteres
       if (password.length < 12) {
+=======
+      // Al menos 8 caracteres
+      if (password.length < 13) {
+>>>>>>> 53ad86e034fd2d57414392329be7e62aa213222c
         console.log("Tamanio");
         return false;
       }
@@ -388,6 +393,7 @@ export default {
       this.confirmacion5 = 'validation_error';
 
       if (password.length > 0 || passwordConf.length > 0) {
+<<<<<<< HEAD
         if (password === passwordConf) {
           this.icon_validacion0 = 'lets-icons:check-fill';
           this.estilo_validacion0 = 'green';
@@ -398,6 +404,13 @@ export default {
             this.estilo_validacion1 = 'green';
             this.confirmacion1 = 'validation_check';
           }
+=======
+        if (password.length >= 12) {
+          this.icon_validacion1 = 'lets-icons:check-fill';
+          this.estilo_validacion1 = 'green';
+          this.confirmacion1 = 'validation_check';
+        }  
+>>>>>>> 53ad86e034fd2d57414392329be7e62aa213222c
           
           if (/[a-z]/.test(password)) {
             this.icon_validacion2 = 'lets-icons:check-fill';
@@ -422,8 +435,13 @@ export default {
             this.estilo_validacion5 = 'green';
             this.confirmacion5 = 'validation_check';
           }
+          if (password === passwordConf ) {
+            this.icon_validacion0 = 'lets-icons:check-fill';
+            this.estilo_validacion0 = 'green';
+            this.confirmacion0 = 'validation_check';
+          }
         }
-      }
+      
     },
     mostrarError(message) {
       this.$swal({

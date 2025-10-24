@@ -1,6 +1,6 @@
 <template>
     <div class="TarjetaTokenOlvido">
-      <img src="src/assets/logo_black.png" alt="Logo Oasis" />
+      <img src="src/assets/logo_black.png" alt="Logo" />
       <br />
       <h3>Restablecer contraseña</h3>
       <p>Se le envio un codigo de restablecimiento de contraseña</p>
