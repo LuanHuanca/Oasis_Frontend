@@ -48,35 +48,23 @@
     
     <PermissionsPopup :show="showPopup" :adminId="selectedAdminId" @close="showPopup = false" @update="fetchData" />
     
-    <div v-if="showCreateRolePopup" class="popup-overlay">
-      <div class="popup-content">
-        <h3>Crear nuevo rol</h3>
-        <form @submit.prevent="createRole">
-          <label for="rol">Nombre del rol:</label>
-          <input id="rol" v-model="newRole" required />
-          <div class="popup-actions">
-            <button type="submit" class="btn btn-primary">
-              Crear
-            </button>
-            <button type="button" @click="showCreateRolePopup = false" class="btn btn-danger">
-              Cancelar
-            </button>
-          </div>
-          <div v-if="roleError" class="message error">{{ roleError }}</div>
-          <div v-if="roleSuccess" class="message success">{{ roleSuccess }}</div>
-        </form>
-      </div>
-    </div>
+    <CreateRolPopup 
+      :show="showCreateRolePopup"
+      @close="showCreateRolePopup = false"
+      @created="fetchData"
+    />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import PermissionsPopup from './PermissionsPopup.vue';
+import CreateRolPopup from '../Admin/CreateRolPopup.vue';
 
 export default {
   components: {
-    PermissionsPopup
+    PermissionsPopup,
+    CreateRolPopup
   },
   data() {
     return {

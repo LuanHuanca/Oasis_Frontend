@@ -28,31 +28,49 @@
       <hr class="separator">
 
       <div class="permissions-section">
-        <h3>Permisos Asignados (Actuales)</h3>
+        <h3>Permisos del Rol</h3>
+        <div class="chips-container role-chips">
+          <span v-for="permiso in rolPermisos" :key="permiso.idPermiso" class="chip chip-role">
+            {{ permiso.permiso }}
+            <span class="role-indicator">👑</span>
+          </span>
+          <span v-if="rolPermisos.length === 0" class="no-permissions">
+            (El rol no tiene permisos predeterminados)
+          </span>
+        </div>
+      </div>
+
+      <div class="permissions-section">
+        <h3>Permisos Adicionales del Usuario</h3>
         <div class="chips-container current-chips">
-          <span v-for="permiso in isEditing ? editedPermisos : currentPermisos" :key="permiso.idPermiso" class="chip chip-success">
+          <span v-for="permiso in isEditing ? editedPermisos : currentPermisos" 
+                :key="permiso.idPermiso" 
+                class="chip chip-success"
+                v-if="!isPermisoFromRol(permiso)">
             {{ permiso.permiso }}
             <button v-if="isEditing" @click="removePermiso(permiso.idPermiso)" class="btn-chip-remove">
               &times;
             </button>
           </span>
-          <span v-if="(isEditing ? editedPermisos.length : currentPermisos.length) === 0" class="no-permissions">
-             (Sin permisos asignados)
+          <span v-if="getCustomPermisos.length === 0" class="no-permissions">
+            (Sin permisos adicionales)
           </span>
         </div>
       </div>
 
       <div v-if="isEditing" class="permissions-section">
-        <h3>Permisos Disponibles</h3>
+        <h3>Permisos Disponibles para Agregar</h3>
         <div class="chips-container available-chips">
-          <span v-for="permiso in availablePermisos" :key="permiso.idPermiso" class="chip chip-info">
+          <span v-for="permiso in availablePermisos" 
+                :key="permiso.idPermiso" 
+                class="chip chip-info">
             {{ permiso.permiso }}
             <button @click="addPermiso(permiso.idPermiso)" class="btn-chip-add">
               +
             </button>
           </span>
           <span v-if="availablePermisos.length === 0" class="no-permissions">
-             (No hay permisos disponibles)
+            (No hay permisos disponibles)
           </span>
         </div>
       </div>
@@ -96,11 +114,19 @@ export default {
       roles: [],
       allPermisos: [],
       currentPermisos: [],
+      rolPermisos: [],
       availablePermisos: [],
       isEditing: false,
       editedPermisos: [],
       originalRolId: ''
     };
+  },
+  computed: {
+    getCustomPermisos() {
+      return this.isEditing ? 
+        this.editedPermisos.filter(p => !this.isPermisoFromRol(p)) :
+        this.currentPermisos.filter(p => !this.isPermisoFromRol(p));
+    }
   },
   watch: {
     show(newVal) {
@@ -122,6 +148,11 @@ export default {
         const allPermisosResponse = await axios.get('http://localhost:9999/api/v1/permiso');
         this.allPermisos = allPermisosResponse.data.result;
 
+        // Obtener permisos del rol
+        const rolPermisosResponse = await axios.get(`http://localhost:9999/api/v1/rolpermiso/rol/${this.admin.rol.idRol}`);
+        this.rolPermisos = rolPermisosResponse.data.result;
+
+        // Obtener permisos del usuario
         const userPermisosResponse = await axios.get(`http://localhost:9999/api/v1/adminpermiso/admin/${this.adminId}`);
         this.currentPermisos = userPermisosResponse.data.result.map(permiso => permiso.permiso);
         this.editedPermisos = [...this.currentPermisos];
@@ -132,9 +163,15 @@ export default {
       }
     },
     updateAvailablePermisos() {
+      // Filtrar permisos que no están en el rol ni en los permisos editados del usuario
       this.availablePermisos = this.allPermisos.filter(permiso => 
-        !this.editedPermisos.some(currentPermiso => currentPermiso.idPermiso === permiso.idPermiso)
+        !this.editedPermisos.some(currentPermiso => currentPermiso.idPermiso === permiso.idPermiso) &&
+        !this.rolPermisos.some(rolPermiso => rolPermiso.idPermiso === permiso.idPermiso)
       );
+    },
+    
+    isPermisoFromRol(permiso) {
+      return this.rolPermisos.some(rolPermiso => rolPermiso.idPermiso === permiso.idPermiso);
     },
     enableEditing() {
       this.isEditing = true;
@@ -283,6 +320,17 @@ export default {
 }
 
 /* --- 3. CHIPS (PERMISOS) --- */
+.chip-role {
+  background-color: #fff3e0; /* Naranja muy claro para rol */
+  color: #f57c00; /* Texto naranja */
+  border: 1px solid #ffcc80;
+}
+
+.role-indicator {
+  margin-left: 5px;
+  font-size: 0.9em;
+}
+
 .separator {
     border: 0;
     height: 1px;
