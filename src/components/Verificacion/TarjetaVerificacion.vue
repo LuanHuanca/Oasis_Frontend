@@ -1,7 +1,6 @@
 <template>
-<<<<<<< HEAD
   <div class="TarjetaVerificacion">
-    <img src="Oasis_Frontend\src\assets\Home\carusel\Logo.png" alt="Logo Oasis" />
+    <img src="src/assets/Home/carusel/Logo.png" alt="Logo Oasis" />
     <br />
     <h3>Verificacion de dos pasos</h3>
     <p>Se le envio un codigo de verificacion a su correo</p>
@@ -9,17 +8,6 @@
     <form @submit.prevent="verificacionCodigo" class="form">
       <div class="CustomInput">
         <p>Codigo de verificacion:</p>
-=======
-    <div class="TarjetaVerificacion">
-  <img src="Oasis_Frontend\src\assets\Home\carusel\Logo.png" alt="Logo Oasis" />
-      <br />
-      <h3>Verificacion de dos pasos</h3>
-      <p>Se le envio un codigo de verificacion a su correo</p>
-      <p>por favor ingrese ese codigo en el siguiente campo para la validacion</p>
-      <form @submit.prevent="verificacionCodigo" class="form">
-        <div class="CustomInput">
-          <p>Codigo de verificacion:</p>
->>>>>>> 53ad86e034fd2d57414392329be7e62aa213222c
         <input
           placeholder="Ingrese su codigo de verificacion"
           type="text"
@@ -201,21 +189,8 @@ export default defineComponent({
 }
 @media (max-width: 860px) {
   .TarjetaVerificacion {
-<<<<<<< HEAD
     width: 70%;
     padding: 10px 2px;
-=======
-    background: #f0d33f;
-    border: 3px solid black;
-    width: 30%;
-    height: fit-content;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 40px 8px;
-    border-radius: 30px;
->>>>>>> 53ad86e034fd2d57414392329be7e62aa213222c
   }
 }
 </style>
