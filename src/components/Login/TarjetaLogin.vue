@@ -97,8 +97,11 @@ export default defineComponent({
       if (this.correo) {
         this.randomCode = this.generateCode();
         this.$store.commit("setRandomCode", this.randomCode);
+        this.$store.commit("setCorreo", this.correo); // <-- guardar correo en el store
         this.tokenDeOlvido();
         this.$router.push("/TokenOlvido");
+        console.log("Usuario:", this.correo);
+      
       } else {
         console.error("Por favor, Llena por lo menos el email");
         this.mostrarError(
@@ -133,6 +136,10 @@ export default defineComponent({
           // Generar código y guardarlo en store (verificación)
           this.randomCode = this.generateCode();
           this.$store.commit("setRandomCode", this.randomCode);
+          this.$store.commit("setCorreo", this.correo);
+          // Crear auditoría para inicio de sesión exitoso
+          this.actividad = "Inicio de sesión exitoso Cliente";
+          
 
           // Enviar email con el código
           await this.sendMail();

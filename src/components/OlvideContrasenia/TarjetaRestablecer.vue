@@ -87,7 +87,7 @@
           </p>
         </div>
       </div>
-      <button type="submit">Continuar</button>
+      <button type="button" @click="verificarPassword" class="btn-continuar">Continuar</button>
     </form>
   </div>
 </template>
@@ -131,36 +131,52 @@ export default {
   },
   methods: {
     async verificarPassword() {
+      
+
+      console.log("Botón presionado — ejecutando verificarPassword()");
       try {
-        // Validar contraseña
+        const correo = this.$store.state.correo; // correo almacenado al solicitar el código
+
+        // 1️⃣ Verificar que las contraseñas coincidan
         if (this.password !== this.passwordConf) {
-          console.error("Las contraseñas no coinciden");
-          // window.alert("Las contraseñas no coinciden");
           this.mostrarError("Las contraseñas no coinciden", "error");
           return;
         }
 
-        // Validar complejidad de la contraseña
-        if (!this.validatePassword(this.password)) {
-          console.error("La contraseña no cumple con los requisitos mínimos");
-          this.mostrarError(
-            "La contraseña no debe conterner minimo 8 caracteres que incluya caracteres especiales, numericos, mayusculas y minusculas",
-            "error"
-          );
-          // window.alert("La contraseña no debe conterner minimo 8 caracteres que incluya caracteres especiales, numericos," +
-          //     "mayusculas y minusculas");
+        // 2️⃣ Buscar al cliente por su correo
+        const clienteResp = await axios.get(`http://localhost:9999/api/v1/cliente/correo/${correo}`);
+        console.log("Respuesta del cliente:", clienteResp.data);
+        const cliente = clienteResp.data.result;
+        if (!cliente || !cliente.idCliente) {
+          console.error("El backend no devolvió un cliente válido:", clienteResp.data);
+          alert("No se encontró el cliente. Verifica el correo ingresado.");
           return;
         }
+        console.log("Cliente encontrado:", cliente);
 
-        this.password = "";
-        this.passwordConf = "";
+        // 3️⃣ Enviar la nueva contraseña al endpoint dedicado
+        const body = { password: this.password };
 
-        this.$router.push("/"); // Redirige a la ruta de Login
+        await axios.put(`http://localhost:9999/api/v1/cliente/${cliente.idCliente}/password`, body);
+
+        // 4️⃣ Confirmar éxito
+        this.$swal({
+          icon: "success",
+          title: "Contraseña actualizada correctamente",
+          timer: 2000,
+        });
+
+        // 5️⃣ Redirigir al login
+        this.$router.push("/");
       } catch (error) {
-        console.log("Error al restablecer contrasena", error);
-        // this.mostrarError("Error al restablecer contrasena"+ error,error)
+        console.error("Error al restablecer contraseña:", error);
+        this.mostrarError("No se pudo actualizar la contraseña", "error");
       }
     },
+
+
+
+
     // Función para validar la complejidad de la contraseña
     validatePassword(password) {
       // Al menos 8 caracteres
