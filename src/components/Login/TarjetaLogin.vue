@@ -2,8 +2,8 @@
   <div class="TarjetaLogin">
     <img src="src/assets/Home/carusel/Logo.png" alt="Logo" />
     <br />
-  <h3>Bienvenido</h3>
-  <p>Inicie su sesión para continuar en TU GUIA</p>
+    <h3>Bienvenido</h3>
+    <p>Inicie su sesión para continuar en TU GUIA</p>
     <form @submit.prevent="continuar" class="form">
       <div class="CustomInput">
         <p>Correo electronico:</p>
@@ -15,11 +15,27 @@
       </div>
       <div class="CustomInput">
         <p>Contraseña:</p>
-        <input
-          placeholder="Ingrese su contraseña"
-          type="password"
-          v-model="password"
-        />
+          <input
+            :type="showPassword ? 'text' : 'password'"
+            placeholder="Ingrese su contraseña"
+            v-model="password"
+          />
+          <button
+            type="button"
+            id="btn-password-toggle"
+            @click="toggleShowPassword"
+            :aria-label="
+              showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
+            "
+            :aria-pressed="showPassword"
+            :title="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+          >
+            <Icon
+              :icon="showPassword ? 'mdi:eye-off' : 'mdi:eye'"
+              width="18"
+              height="18"
+            />
+          </button>
       </div>
       <router-link to="" @click="olvideContrasena" class="enlace"
         >¿Olvidaste tu contraseña?</router-link
@@ -41,7 +57,8 @@ import { decodeCredential } from "vue3-google-login";
 import CustomInput from "./CustomInput.vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
-import { User } from "@auth0/auth0-vue";
+import { Icon } from "@iconify/vue";
+
 
 export default defineComponent({
   name: "TarjetaLogin",
@@ -58,6 +75,7 @@ export default defineComponent({
       fechaInicio: "",
       fechaFin: "",
       ipAddress: "",
+      showPassword: false,
     };
   },
   components: {
@@ -92,6 +110,9 @@ export default defineComponent({
   },
 
   methods: {
+    toggleShowPassword() {
+      this.showPassword = !this.showPassword;
+    },
     olvideContrasena() {
       const router = useRouter();
       if (this.correo) {
@@ -147,7 +168,10 @@ export default defineComponent({
           // Ir a pantalla de verificación (allí se completará el login)
           this.$router.push("/Verificacion");
         } else {
-          this.mostrarError("Error al iniciar sesión: Correo o contraseña incorrectos", "error");
+          this.mostrarError(
+            "Error al iniciar sesión: Correo o contraseña incorrectos",
+            "error"
+          );
           this.actividad = "Se introdujo contraseña incorrecta";
           await this.crearAuditoria();
         }
@@ -156,7 +180,6 @@ export default defineComponent({
         this.mostrarError("Error al iniciar sesion", "error");
       }
     },
-    
 
     async loginAdmin() {
       const store = useStore();
@@ -267,7 +290,7 @@ export default defineComponent({
       const url = "http://localhost:9999/mail/send/" + this.correo;
       const data = {
         subject: "Código de Verificación en Dos Pasos para Acceder a tu Cuenta",
-  message: `Estimado/a Usuario/a,
+        message: `Estimado/a Usuario/a,
 
 Para completar el proceso de verificación en dos pasos y acceder a tu cuenta de manera segura, por favor utiliza el siguiente código de verificación:
 
@@ -291,8 +314,8 @@ Luis Huanca, Gerente de la agencia de viajes`,
     async tokenDeOlvido() {
       const url = "http://localhost:9999/mail/send/" + this.correo;
       const data = {
-  subject: "Solicitud de restablecimiento de contraseña",
-  message: `Estimado/a Usuario/a,
+        subject: "Solicitud de restablecimiento de contraseña",
+        message: `Estimado/a Usuario/a,
 
 Hemos recibido una solicitud para restablecer tu contraseña. Si no has solicitado este cambio, por favor ignora este mensaje.
 
@@ -367,6 +390,9 @@ Agencia de Viajes TU GUIA`,
       }
     },
   },
+  components: {
+    Icon,
+  },
 });
 </script>
 
@@ -375,7 +401,7 @@ Agencia de Viajes TU GUIA`,
   width: 85%;
   display: flex;
   justify-content: center;
-  flex-direction: column;
+  flex-direction: row;
   margin: 10px 0px;
 }
 .CustomInput p {
@@ -430,26 +456,27 @@ Agencia de Viajes TU GUIA`,
   flex-direction: row;
   align-items: center;
 }
-.CustomInput {
-  width: 85%;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  margin: 10px 0px;
-}
-.CustomInput p {
-  padding: 0;
-  margin: 0;
-}
-.CustomInput input {
-  border: 2px solid black;
-  border-radius: 25px;
-  padding: 10px 20px;
-}
+
 @media (max-width: 860px) {
   .TarjetaLogin {
     width: 70%;
     padding: 10px 2px;
   }
 }
+
+#btn-password-toggle {
+  margin-top: -40px;
+  margin-left: 300px;
+  border: 0px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  background: none;
+  color: #4f4b4b;
+}
+
+#btn-password-toggle .iconify {
+  display: block;
+}
+
 </style>

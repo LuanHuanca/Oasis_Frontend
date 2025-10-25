@@ -39,7 +39,7 @@
             :color="estilo_validacion1"
           />
           <p :class="confirmacion1">
-            La contraseña debe ser de al menos 8 caracteres
+            La contraseña debe ser de al menos 12 caracteres
           </p>
         </div>
         <div>
@@ -179,8 +179,8 @@ export default {
 
     // Función para validar la complejidad de la contraseña
     validatePassword(password) {
-      // Al menos 8 caracteres
-      if (password.length < 8) return false;
+      // Al menos 12 caracteres
+      if (password.length < 12) return false;
       // Al menos un número
       if (!/\d/.test(password)) return false;
       // Al menos una letra minúscula
@@ -218,7 +218,7 @@ export default {
           this.estilo_validacion0 = "green";
           this.confirmacion0 = "validation_check";
 
-          if (password.length >= 8) {
+          if (password.length >= 12) {
             this.icon_validacion1 = "lets-icons:check-fill";
             this.estilo_validacion1 = "green";
             this.confirmacion1 = "validation_check";

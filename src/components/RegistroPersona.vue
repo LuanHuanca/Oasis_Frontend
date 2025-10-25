@@ -338,7 +338,6 @@ export default {
     // Función para validar la complejidad de la contraseña
     validatePassword(password) {
       console.log(password);
-
       // Al menos 8 caracteres
       if (password.length < 13) {
         console.log("Tamanio");
@@ -389,47 +388,41 @@ export default {
       this.confirmacion5 = 'validation_error';
 
       if (password.length > 0 || passwordConf.length > 0) {
-        if (password === passwordConf) {
+        if (password.length >= 12) {
+          this.icon_validacion1 = 'lets-icons:check-fill';
+          this.estilo_validacion1 = 'green';
+          this.confirmacion1 = 'validation_check';
+        }  
+          
+        if (/[a-z]/.test(password)) {
+          this.icon_validacion2 = 'lets-icons:check-fill';
+          this.estilo_validacion2 = 'green';
+          this.confirmacion2 = 'validation_check';
+        }
+        
+        if (/[A-Z]/.test(password)) {
+          this.icon_validacion3 = 'lets-icons:check-fill';
+          this.estilo_validacion3 = 'green';
+          this.confirmacion3 = 'validation_check';
+        }
+        
+        if (/[^a-zA-Z0-9]/.test(password)) {
+          this.icon_validacion4 = 'lets-icons:check-fill';
+          this.estilo_validacion4 = 'green';
+          this.confirmacion4 = 'validation_check';
+        }
+        
+        if (/\d/.test(password)) {
+          this.icon_validacion5 = 'lets-icons:check-fill';
+          this.estilo_validacion5 = 'green';
+          this.confirmacion5 = 'validation_check';
+        }
+        if (password === passwordConf ) {
           this.icon_validacion0 = 'lets-icons:check-fill';
           this.estilo_validacion0 = 'green';
           this.confirmacion0 = 'validation_check';
-          
-          if (password.length >= 12) {
-            this.icon_validacion1 = 'lets-icons:check-fill';
-            this.estilo_validacion1 = 'green';
-            this.confirmacion1 = 'validation_check';
-          }
-
-          
-          if (/[a-z]/.test(password)) {
-            this.icon_validacion2 = 'lets-icons:check-fill';
-            this.estilo_validacion2 = 'green';
-            this.confirmacion2 = 'validation_check';
-          }
-          
-          if (/[A-Z]/.test(password)) {
-            this.icon_validacion3 = 'lets-icons:check-fill';
-            this.estilo_validacion3 = 'green';
-            this.confirmacion3 = 'validation_check';
-          }
-          
-          if (/[^a-zA-Z0-9]/.test(password)) {
-            this.icon_validacion4 = 'lets-icons:check-fill';
-            this.estilo_validacion4 = 'green';
-            this.confirmacion4 = 'validation_check';
-          }
-          
-          if (/\d/.test(password)) {
-            this.icon_validacion5 = 'lets-icons:check-fill';
-            this.estilo_validacion5 = 'green';
-            this.confirmacion5 = 'validation_check';
-          }
-          if (password === passwordConf ) {
-            this.icon_validacion0 = 'lets-icons:check-fill';
-            this.estilo_validacion0 = 'green';
-            this.confirmacion0 = 'validation_check';
-          }
         }
+        
       }
     },
     mostrarError(message) {
