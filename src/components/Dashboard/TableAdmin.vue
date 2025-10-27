@@ -46,7 +46,7 @@
       </tbody>
     </table>
     
-    <PermissionsPopup :show="showPopup" :adminId="selectedAdminId" @close="showPopup = false" @update="fetchData" />
+  <PermissionsPopup :show="showPopup" :adminId="selectedAdminId" @close="showPopup = false" @update="fetchData" @permissionsSaved="handlePermissionsSaved" />
     
     <div v-if="showCreateRolePopup" class="popup-overlay">
       <div class="popup-content">
@@ -118,33 +118,84 @@ export default {
           admin.permisos = adminPermisos[admin.idAdmin] || [];
         });
 
+        // Aplicar overrides frontend por admin (si existen) para que la vista refleje cambios locales
+        try {
+          const overrides = this.$store.state && this.$store.state.sidebarOverrides;
+          if (overrides) {
+            Object.keys(overrides).forEach(adminId => {
+              const overridePerms = overrides[adminId];
+              if (overridePerms && overridePerms.length) {
+                const match = admins.find(a => String(a.idAdmin) === String(adminId));
+                if (match) {
+                  adminPermisos[adminId] = overridePerms;
+                  match.permisos = overridePerms;
+                }
+              }
+            });
+          }
+        } catch (e) {
+          console.error('Error aplicando overrides locales en TableAdmin:', e);
+        }
+
+        // Ordenar administradores por id (asegura orden ascendente por idAdmin)
+        // Convertimos a Number por si el id viene como string
+        admins.sort((a, b) => Number(a.idAdmin) - Number(b.idAdmin));
+
         this.admins = admins;
         this.adminPermisos = adminPermisos;
       } catch (error) {
         console.error('Error al obtener los administradores:', error);
       }
     },
+
     showPermissions(adminId) {
       this.selectedAdminId = adminId;
       this.showPopup = true;
-    }
-      , async createRole() {
-        this.roleError = '';
-        this.roleSuccess = '';
-        try {
-          const response = await axios.post('http://localhost:9999/api/v1/rol/create', {
-            rol: this.newRole
-          });
-          if (response.data.code == '200-OK') {
-            this.roleSuccess = 'Rol creado exitosamente.';
-            this.newRole = '';
-          } else {
-            this.roleError = 'No se pudo crear el rol.';
+    },
+
+    handlePermissionsSaved(payload) {
+      try {
+        const currentId = this.$store.state.id;
+        if (payload && payload.adminId && Number(payload.adminId) === Number(currentId)) {
+          // payload.permisos expected as array of objects {idPermiso, permiso}
+          let permisoObjects = [];
+          if (payload.permisos && payload.permisos.length) {
+            if (typeof payload.permisos[0] === 'string') {
+              permisoObjects = payload.permisos.map((p, idx) => ({ idPermiso: -(1000 + idx), permiso: p }));
+            } else {
+              permisoObjects = payload.permisos;
+            }
           }
-        } catch (error) {
-          this.roleError = 'Error al crear el rol.';
+          const permisoNames = permisoObjects.map(p => p.permiso);
+          // Reemplazamos la lista completa de permisos del sidebar para reflejar eliminaciones también
+          this.$store.commit('setSidebarPermisos', permisoNames);
+          // Guardar override (objetos) para evitar que el refresco del backend los reemplace
+          if (this.$store.commit) {
+            this.$store.commit('setSidebarOverride', { adminId: payload.adminId, permisos: permisoObjects });
+          }
         }
+      } catch (e) {
+        console.error('Error manejando permissionsSaved:', e);
       }
+    },
+
+    async createRole() {
+      this.roleError = '';
+      this.roleSuccess = '';
+      try {
+        const response = await axios.post('http://localhost:9999/api/v1/rol/create', {
+          rol: this.newRole
+        });
+        if (response.data.code == '200-OK') {
+          this.roleSuccess = 'Rol creado exitosamente.';
+          this.newRole = '';
+        } else {
+          this.roleError = 'No se pudo crear el rol.';
+        }
+      } catch (error) {
+        this.roleError = 'Error al crear el rol.';
+      }
+    }
   }
 };
 </script>

@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div>
     <div class="sidebar-container" :class="{ 'collapsed': isCollapsed }">
       <button class="toggle-sidebar-button" @click="toggleCollapse">
@@ -97,9 +97,25 @@
               <span v-else>📉 Baja de comprobantes</span>
             </div>
           </li>
+          <li class="nav-item" v-if="hasPermission('ABM Usuarios')">
+            <div class="nav-link" @click="selectOption('Editar_Usuario')">
+              <span v-if="isCollapsed">📉</span>
+              <span v-else>📉 Editar Usuario</span>
+            </div>
+          </li>
+
+          <!-- Renderizar elementos dinámicos basados en permisos -->
+          <template v-for="item in dynamicItems" :key="item.key">
+            <li class="nav-item" v-if="hasPermission(item.permiso)">
+              <div class="nav-link" @click="selectOption(item.key)">
+                <span v-if="isCollapsed">•</span>
+                <span v-else v-text="item.label"></span>
+              </div>
+            </li>
+          </template>
         </ul>
       </nav>
-    </div>
+    </div>  
   </div>
 </template>
 
@@ -130,11 +146,28 @@ export default defineComponent({
       return props.permisos.includes(permiso);
     };
 
+    // Elementos dinámicos que se muestran cuando el usuario tiene permisos específicos
+    const dynamicItems = [
+      { permiso: 'Editar usuario', key: 'Editar_Usuario', label: '📌 Editar Usuario' },
+      { permiso: 'Desactivar usuario', key: 'Desactivar_Usuario', label: '🚫 Desactivar Usuario' },
+      { permiso: 'Ver lista de usuarios', key: 'Ver_Lista_Usuarios', label: '👥 Ver Lista de Usuarios' },
+      { permiso: 'Asignar roles', key: 'Asignar_Roles', label: '🎛️ Asignar Roles' },
+      { permiso: 'Revisar accesos de red', key: 'Revisar_Accesos_Red', label: '🔒 Revisar Accesos de Red' },
+      { permiso: 'Subir documentos internos', key: 'Subir_Documentos_Internos', label: '📤 Subir Documentos Internos' },
+      { permiso: 'Ver documentos internos', key: 'Ver_Documentos_Internos', label: '📂 Ver Documentos Internos' },
+      { permiso: 'Registrar cuentas', key: 'Registrar_Cuentas', label: '📝 Registrar Cuentas' },
+      { permiso: 'Editar cuentas', key: 'Editar_Cuentas', label: '✏️ Editar Cuentas' },
+      { permiso: 'Eliminar comprobante', key: 'Eliminar_Comprobante', label: '🗑️ Eliminar Comprobante' },
+      { permiso: 'Ver reportes contables', key: 'Ver_Reportes_Contables', label: '📊 Ver Reportes Contables' },
+      { permiso: 'Crear solicitud de viaje', key: 'Crear_Solicitud_Viaje', label: '✈️ Crear Solicitud de Viaje' }
+    ];
+
     return {
       isCollapsed,
       toggleCollapse,
       selectOption,
       hasPermission
+      , dynamicItems
     };
   }
 });

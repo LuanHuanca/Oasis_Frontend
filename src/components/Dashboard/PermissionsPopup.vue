@@ -95,6 +95,21 @@ export default {
       },
       roles: [],
       allPermisos: [],
+      // Permisos locales adicionales (frontend only)
+      extraPermisos: [
+        { idPermiso: -101, permiso: 'Editar usuario' },
+        { idPermiso: -102, permiso: 'Desactivar usuario' },
+        { idPermiso: -103, permiso: 'Ver lista de usuarios' },
+        { idPermiso: -104, permiso: 'Asignar roles' },
+        { idPermiso: -105, permiso: 'Revisar accesos de red' },
+        { idPermiso: -106, permiso: 'Subir documentos internos' },
+        { idPermiso: -107, permiso: 'Ver documentos internos' },
+        { idPermiso: -108, permiso: 'Registrar cuentas' },
+        { idPermiso: -109, permiso: 'Editar cuentas' },
+        { idPermiso: -110, permiso: 'Eliminar comprobante' },
+        { idPermiso: -111, permiso: 'Ver reportes contables' },
+        { idPermiso: -112, permiso: 'Crear solicitud de viaje' }
+      ],
       currentPermisos: [],
       availablePermisos: [],
       isEditing: false,
@@ -107,9 +122,59 @@ export default {
       if (newVal) {
         this.fetchData();
       }
+    },
+    // Cuando se cambie el rol mientras estamos editando, aplicar permisos por defecto del rol
+    'admin.rol.idRol'(newVal, oldVal) {
+      if (this.isEditing && newVal) {
+        // Buscar el nombre del rol en la lista de roles
+        const rolObj = this.roles.find(r => String(r.idRol) === String(newVal));
+        if (rolObj && rolObj.rol) {
+          this.applyRoleDefaults(rolObj.rol);
+        }
+      }
     }
   },
   methods: {
+    applyRoleDefaults(roleName) {
+      if (!roleName) return;
+      const name = String(roleName).toLowerCase().trim();
+      const roleDefaults = {
+        'tecnologia': ['Editar usuario', 'Desactivar usuario', 'Ver lista de usuarios', 'Revisar accesos de red'],
+        'gerente': ['Ver documentos internos', 'Ver reportes contables'],
+        'seguridad': ['Asignar roles', 'Revisar accesos de red'],
+        'contador': ['Registrar cuentas', 'Editar cuentas', 'Eliminar comprobante', 'Ver reportes contables'],
+        'auditor': ['Ver lista de usuarios', 'Ver documentos internos', 'Ver reportes contables'],
+        'pasantes ti': ['Subir documentos internos', 'Ver documentos internos'],
+        'usuario': ['Editar usuario']
+      };
+
+      const defaults = roleDefaults[name];
+      if (!defaults) return;
+
+      // Encontrar los objetos de permiso en allPermisos por nombre (case-insensitive)
+      const matched = [];
+      defaults.forEach(d => {
+        const found = this.allPermisos.find(p => String(p.permiso).toLowerCase() === String(d).toLowerCase());
+        if (found) matched.push(found);
+      });
+
+      // Si no se encontraron algunos permisos porque no existen, intentar buscarlos en extraPermisos
+      if (matched.length < defaults.length) {
+        defaults.forEach(d => {
+          const exists = matched.some(m => String(m.permiso).toLowerCase() === String(d).toLowerCase());
+          if (!exists) {
+            const extra = this.extraPermisos.find(p => String(p.permiso).toLowerCase() === String(d).toLowerCase());
+            if (extra) matched.push(extra);
+          }
+        });
+      }
+
+      // Reemplazar los permisos editados por los defaults encontrados
+      if (matched.length) {
+        this.editedPermisos = matched.slice();
+        this.updateAvailablePermisos();
+      }
+    },
     async fetchData() {
       try {
         const adminResponse = await axios.get(`http://localhost:9999/api/v1/admin/${this.adminId}`);
@@ -120,10 +185,30 @@ export default {
         this.roles = rolesResponse.data.result;
 
         const allPermisosResponse = await axios.get('http://localhost:9999/api/v1/permiso');
-        this.allPermisos = allPermisosResponse.data.result;
+        this.allPermisos = allPermisosResponse.data.result || [];
+        // Añadir permisos locales si no existen en la lista del backend
+        this.extraPermisos.forEach(extra => {
+          const exists = this.allPermisos.some(p => p.permiso === extra.permiso);
+          if (!exists) {
+            this.allPermisos.push(extra);
+          }
+        });
 
         const userPermisosResponse = await axios.get(`http://localhost:9999/api/v1/adminpermiso/admin/${this.adminId}`);
-        this.currentPermisos = userPermisosResponse.data.result.map(permiso => permiso.permiso);
+        // mapear a objetos { idPermiso, permiso }
+        this.currentPermisos = userPermisosResponse.data.result.map(item => item.permiso);
+
+        // Si existe un override frontend para este admin, usarlo en lugar de lo que venga del backend
+        try {
+          const overrides = this.$store && this.$store.state && this.$store.state.sidebarOverrides;
+          if (overrides && overrides[String(this.adminId)] && overrides[String(this.adminId)].length) {
+            this.currentPermisos = overrides[String(this.adminId)];
+          }
+        } catch (e) {
+          // no bloquear si falla
+          console.error('Error leyendo overrides del store:', e);
+        }
+
         this.editedPermisos = [...this.currentPermisos];
 
         this.updateAvailablePermisos();
@@ -144,40 +229,38 @@ export default {
     },
     async savePermissions() {
       try {
-        // Actualizar el rol si cambió
+        // Nota: operación frontend-only (no cambios en backend)
+        // Actualizar rol localmente
         if (this.admin.rol.idRol !== this.originalRolId) {
-          await axios.put(`http://localhost:9999/api/v1/admin/updateRole/${this.adminId}`, {
-            rolId: this.admin.rol.idRol
-          });
+          this.originalRolId = this.admin.rol.idRol;
         }
 
-        // Calcular permisos a agregar y eliminar
-        const permisosActualIds = this.currentPermisos.map(p => p.idPermiso);
-        const permisosEditadosIds = this.editedPermisos.map(p => p.idPermiso);
-        // Permisos a agregar
-        const nuevos = permisosEditadosIds.filter(id => !permisosActualIds.includes(id));
-        // Permisos a eliminar
-        const eliminados = permisosActualIds.filter(id => !permisosEditadosIds.includes(id));
-
-        // Agregar permisos
-        for (const id of nuevos) {
-          await axios.post('http://localhost:9999/api/v1/adminpermiso/create', {
-            admin: { idAdmin: this.adminId },
-            permiso: { idPermiso: id }
-          });
-        }
-        // Eliminar permisos
-        for (const id of eliminados) {
-          await axios.delete(`http://localhost:9999/api/v1/adminpermiso/delete/${this.adminId}/${id}`);
-        }
+        // Reemplazar permisos actuales por los editados (frontend)
+        this.currentPermisos = [...this.editedPermisos];
 
         this.isEditing = false;
-        Swal.fire('Éxito', 'Cambios guardados correctamente', 'success');
+        Swal.fire('Éxito', 'Cambios aplicados en el frontend (no persistidos)', 'success');
+        // Emitir evento con permisos asignados (objetos completos) para que el padre/otros componentes los usen
+        const permisoObjects = this.currentPermisos.map(p => ({ idPermiso: p.idPermiso, permiso: p.permiso }));
+        this.$emit('permissionsSaved', {
+          adminId: this.adminId,
+          permisos: permisoObjects
+        });
+        // Guardar override en el store para que la UI no sea sobreescrita por refrescos del backend
+        try {
+          if (this.$store && this.$store.commit) {
+            this.$store.commit('setSidebarOverride', { adminId: this.adminId, permisos: permisoObjects });
+            // Actualizar también la lista que muestra la sidebar (solo nombres)
+            this.$store.commit('setSidebarPermisos', permisoObjects.map(p => p.permiso));
+          }
+        } catch (e) {
+          console.error('No se pudo guardar override en el store:', e);
+        }
         this.$emit('update');
         this.closePopup();
       } catch (error) {
         console.error('Error al guardar los cambios:', error);
-        Swal.fire('Error', 'Hubo un problema al guardar los cambios', 'error');
+        Swal.fire('Error', 'Hubo un problema al aplicar los cambios', 'error');
       }
     },
     addPermiso(permisoId) {

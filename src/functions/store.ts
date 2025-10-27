@@ -18,6 +18,9 @@ interface State {
   cartItems: CartItem[];
   admin:boolean;
   correo: string; // Agregar el campo correo
+  sidebarPermisos: string[];
+  // Overrides frontend por adminId: si existe se usan en la UI en vez de lo que venga del backend
+  sidebarOverrides: { [adminId: string]: Array<{ idPermiso: number; permiso: string }> };
 }
 
 
@@ -33,6 +36,10 @@ const store = createStore<State>({
     admin: false,
     correo: '', // Inicializar el campo correo
     correoTemp: '',
+    // Permisos que usa la sidebar en el frontend (se puede poblar desde la API o localmente)
+    sidebarPermisos: [] as string[],
+    // Overrides frontend por adminId (inicialmente vacío)
+    sidebarOverrides: {},
   },
   mutations: {
     setLoggedIn(state, value: boolean) {
@@ -80,6 +87,21 @@ const store = createStore<State>({
     },
     setCorreo(state, correo) {
       state.correo = correo;
+    },
+    setSidebarPermisos(state, permisos: string[]) {
+      state.sidebarPermisos = permisos;
+    },
+    addSidebarPermisos(state, permisos: string[]) {
+      const set = new Set(state.sidebarPermisos || []);
+      permisos.forEach(p => set.add(p));
+      state.sidebarPermisos = Array.from(set);
+    },
+    setSidebarOverride(state, payload: { adminId: string | number; permisos: Array<{ idPermiso: number; permiso: string }> }) {
+      if (!state.sidebarOverrides) state.sidebarOverrides = {};
+      state.sidebarOverrides[String(payload.adminId)] = payload.permisos;
+    },
+    clearSidebarOverride(state, adminId: string | number) {
+      if (state.sidebarOverrides) delete state.sidebarOverrides[String(adminId)];
     },
 
   },
