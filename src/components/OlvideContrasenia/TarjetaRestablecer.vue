@@ -143,21 +143,22 @@ export default {
           return;
         }
 
-        // 2️⃣ Buscar al cliente por su correo
-        const clienteResp = await axios.get(`http://localhost:9999/api/v1/cliente/correo/${correo}`);
-        console.log("Respuesta del cliente:", clienteResp.data);
-        const cliente = clienteResp.data.result;
-        if (!cliente || !cliente.idCliente) {
-          console.error("El backend no devolvió un cliente válido:", clienteResp.data);
-          alert("No se encontró el cliente. Verifica el correo ingresado.");
-          return;
-        }
-        console.log("Cliente encontrado:", cliente);
-
-        // 3️⃣ Enviar la nueva contraseña al endpoint dedicado
         const body = { password: this.password };
 
-        await axios.put(`http://localhost:9999/api/v1/cliente/${cliente.idCliente}/password`, body);
+        if (correo === "tuguia.bo") {
+          // 2 Buscar al idPersona del admin por su correo
+          const adminResp = await axios.get(`http://localhost:9999/api/v1/admin/correo/${correo}`);
+          // 3 Actualiza la nueva contraseña del admin
+          const response = await axios.put(`http://localhost:9999/api/v1/admin/${adminResp.data.result.idAdmin}/password`, body);
+        } else {
+        // 2 Buscar al cliente por su correo
+          const clienteResp = await axios.get(`http://localhost:9999/api/v1/cliente/correo/${correo}`);
+          
+          // 3 Actualizar la nueva contraseña del cliente
+          const response = await axios.put(`http://localhost:9999/api/v1/cliente/${clienteResp.data.result.idCliente}/password`, body);
+        }
+          // 3️⃣ Enviar la nueva contraseña al endpoint dedicado
+
 
         // 4️⃣ Confirmar éxito
         this.$swal({
