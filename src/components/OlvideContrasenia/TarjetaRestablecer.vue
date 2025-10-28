@@ -39,7 +39,7 @@
             :color="estilo_validacion1"
           />
           <p :class="confirmacion1">
-            La contraseña debe ser de al menos 8 caracteres
+            La contraseña debe ser de al menos 12 caracteres
           </p>
         </div>
         <div>
@@ -87,7 +87,7 @@
           </p>
         </div>
       </div>
-      <button type="submit">Continuar</button>
+      <button type="button" @click="verificarPassword" class="btn-continuar">Continuar</button>
     </form>
   </div>
 </template>
@@ -131,40 +131,57 @@ export default {
   },
   methods: {
     async verificarPassword() {
+      
+
+      console.log("Botón presionado — ejecutando verificarPassword()");
       try {
-        // Validar contraseña
+        const correo = this.$store.state.correo; // correo almacenado al solicitar el código
+
+        // 1️⃣ Verificar que las contraseñas coincidan
         if (this.password !== this.passwordConf) {
-          console.error("Las contraseñas no coinciden");
-          // window.alert("Las contraseñas no coinciden");
           this.mostrarError("Las contraseñas no coinciden", "error");
           return;
         }
 
-        // Validar complejidad de la contraseña
-        if (!this.validatePassword(this.password)) {
-          console.error("La contraseña no cumple con los requisitos mínimos");
-          this.mostrarError(
-            "La contraseña no debe conterner minimo 8 caracteres que incluya caracteres especiales, numericos, mayusculas y minusculas",
-            "error"
-          );
-          // window.alert("La contraseña no debe conterner minimo 8 caracteres que incluya caracteres especiales, numericos," +
-          //     "mayusculas y minusculas");
-          return;
+        const body = { password: this.password };
+
+        if (correo === "tuguia.bo") {
+          // 2 Buscar al idPersona del admin por su correo
+          const adminResp = await axios.get(`http://localhost:9999/api/v1/admin/correo/${correo}`);
+          // 3 Actualiza la nueva contraseña del admin
+          const response = await axios.put(`http://localhost:9999/api/v1/admin/${adminResp.data.result.idAdmin}/password`, body);
+        } else {
+        // 2 Buscar al cliente por su correo
+          const clienteResp = await axios.get(`http://localhost:9999/api/v1/cliente/correo/${correo}`);
+          
+          // 3 Actualizar la nueva contraseña del cliente
+          const response = await axios.put(`http://localhost:9999/api/v1/cliente/${clienteResp.data.result.idCliente}/password`, body);
         }
+          // 3️⃣ Enviar la nueva contraseña al endpoint dedicado
 
-        this.password = "";
-        this.passwordConf = "";
 
-        this.$router.push("/"); // Redirige a la ruta de Login
+        // 4️⃣ Confirmar éxito
+        this.$swal({
+          icon: "success",
+          title: "Contraseña actualizada correctamente",
+          timer: 2000,
+        });
+
+        // 5️⃣ Redirigir al login
+        this.$router.push("/");
       } catch (error) {
-        console.log("Error al restablecer contrasena", error);
-        // this.mostrarError("Error al restablecer contrasena"+ error,error)
+        console.error("Error al restablecer contraseña:", error);
+        this.mostrarError("No se pudo actualizar la contraseña", "error");
       }
     },
+
+
+
+
     // Función para validar la complejidad de la contraseña
     validatePassword(password) {
-      // Al menos 8 caracteres
-      if (password.length < 8) return false;
+      // Al menos 12 caracteres
+      if (password.length < 12) return false;
       // Al menos un número
       if (!/\d/.test(password)) return false;
       // Al menos una letra minúscula
@@ -202,7 +219,7 @@ export default {
           this.estilo_validacion0 = "green";
           this.confirmacion0 = "validation_check";
 
-          if (password.length >= 8) {
+          if (password.length >= 12) {
             this.icon_validacion1 = "lets-icons:check-fill";
             this.estilo_validacion1 = "green";
             this.confirmacion1 = "validation_check";

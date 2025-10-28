@@ -19,7 +19,7 @@
       <tr v-for="cliente in clientes" :key="cliente.idCliente">
         <td>{{ cliente.idCliente }}</td>
         <td>{{ cliente.correo }}</td>
-        <td>{{ cliente.estadoCuenta }}</td>
+        <td>{{ cliente.estadoCuenta === true ? 'Activo' : (cliente.estadoCuenta === false ? 'Inactivo' : '') }}</td>
         <td>{{ cliente.idPersona }}</td>
         <td>{{ cliente.nombre }}</td>
         <td>{{ cliente.apellidoP }}</td>

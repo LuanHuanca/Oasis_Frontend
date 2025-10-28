@@ -1,10 +1,10 @@
-<template>
+<template> 
   <div>
     <template v-if="isAuthenticated">
       <div class="DashboardContainer">
         <div class="barralateral" style="background-color: black">
-          <side-bar :permisos="permisos" @optionSelected="optionSelected" />
-        </div>
+            <side-bar :permisos="$store.state.sidebarPermisos" @optionSelected="optionSelected" />
+          </div>
         <div class="content">
           <component :is="currentComponent" />
         </div>
@@ -41,7 +41,17 @@ import Consultas from '@/components/Admin/Consultas.vue';
 import Modificaciones from '@/components/Admin/Modificaciones.vue';
 import ABMUsuarios from '@/components/Admin/ABMUsuarios.vue';
 import BajaComprobantes from '@/components/Admin/BajaComprobantes.vue';
-
+import Editar_Usuario from '@/components/Admin/Editar_Usuario.vue';
+import Desactivar_Usuario from '@/components/Admin/Desactivar_Usuario.vue';
+import Ver_Lista_Usuarios from '@/components/Admin/Ver_Lista_Usuarios.vue';
+import Asignar_Roles from '@/components/Admin/Asignar_Roles.vue';
+import Revisar_Accesos_Red from '@/components/Admin/Revisar_Accesos_Red.vue';
+import Subir_Documentos_Internos from '@/components/Admin/Subir_Documentos_Internos.vue';
+import Ver_Documentos_Internos from '@/components/Admin/Ver_Documentos_Internos.vue';
+import Editar_Cuentas from '@/components/Admin/Editar_Cuentas.vue';
+import Eliminar_Comprobante from '@/components/Admin/Eliminar_Comprobante.vue';
+import Ver_Reportes_Contables from '@/components/Admin/Ver_Reportes_Contables.vue';
+import Crear_Solicitud_Viaje from '@/components/Admin/Crear_Solicitud_Viaje.vue';
 export default {
   components: {
     NavBar,
@@ -60,7 +70,18 @@ export default {
     Consultas,
     Modificaciones,
     ABMUsuarios,
-    BajaComprobantes
+    BajaComprobantes,
+  Editar_Usuario,
+  Desactivar_Usuario,
+  Ver_Lista_Usuarios,
+  Asignar_Roles,
+  Revisar_Accesos_Red,
+  Subir_Documentos_Internos,
+  Ver_Documentos_Internos,
+  Editar_Cuentas,
+  Eliminar_Comprobante,
+  Ver_Reportes_Contables,
+  Crear_Solicitud_Viaje
   },
   data() {
     return {
@@ -79,6 +100,14 @@ export default {
       try {
         const response = await axios.get(`http://localhost:9999/api/v1/adminpermiso/admin/${this.$store.state.id}/permisos`);
         this.permisos = response.data.result.map(permiso => permiso.permiso);
+        // Respetar overrides frontend: si existe override para el usuario actual, usarlo para la sidebar
+        const override = this.$store.state.sidebarOverrides && this.$store.state.sidebarOverrides[String(this.$store.state.id)];
+        if (override && Array.isArray(override) && override.length > 0) {
+          this.$store.commit('setSidebarPermisos', override.map(p => p.permiso));
+        } else {
+          // También actualizar los permisos usados por la sidebar en el store
+          this.$store.commit('setSidebarPermisos', this.permisos);
+        }
         console.log('Permisos:', this.permisos);
       } catch (error) {
         console.error('Error al obtener los permisos:', error);
@@ -130,6 +159,42 @@ export default {
           break;
         case 'baja_comprobantes':
           this.currentComponent = 'BajaComprobantes';
+          break;
+        case 'Editar_Usuario':
+          this.currentComponent = 'Editar_Usuario';
+          break;
+        case 'Registrar_Cuentas':
+          this.currentComponent = 'RegistroCuentas';
+          break;
+        case 'Desactivar_Usuario':
+          this.currentComponent = 'Desactivar_Usuario';
+          break;
+        case 'Ver_Lista_Usuarios':
+          this.currentComponent = 'Ver_Lista_Usuarios';
+          break;
+        case 'Asignar_Roles':
+          this.currentComponent = 'Asignar_Roles';
+          break;
+        case 'Revisar_Accesos_Red':
+          this.currentComponent = 'Revisar_Accesos_Red';
+          break;
+        case 'Subir_Documentos_Internos':
+          this.currentComponent = 'Subir_Documentos_Internos';
+          break;
+        case 'Ver_Documentos_Internos':
+          this.currentComponent = 'Ver_Documentos_Internos';
+          break;
+        case 'Editar_Cuentas':
+          this.currentComponent = 'Editar_Cuentas';
+          break;
+        case 'Eliminar_Comprobante':
+          this.currentComponent = 'Eliminar_Comprobante';
+          break;
+        case 'Ver_Reportes_Contables':
+          this.currentComponent = 'Ver_Reportes_Contables';
+          break;
+        case 'Crear_Solicitud_Viaje':
+          this.currentComponent = 'Crear_Solicitud_Viaje';
           break;
         default:
           this.currentComponent = '';

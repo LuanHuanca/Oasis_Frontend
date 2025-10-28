@@ -25,7 +25,15 @@
       </div>
     </div>
     <div class="footer-bottom">
+<<<<<<< HEAD
+<<<<<<< HEAD
+  <p>&copy; 2025 Todos los derechos reservados. Oasis.</p>
+=======
+      <p>&copy; 2025 Todos los derechos reservados. Oasis.</p>
+>>>>>>> origin/main
+=======
       <p>&copy; 2025 Todos los derechos reservados. Tu GUIA DE VIAJES</p>
+>>>>>>> 53ad86e034fd2d57414392329be7e62aa213222c
     </div>
   </footer>
 </template>

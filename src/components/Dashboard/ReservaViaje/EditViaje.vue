@@ -137,7 +137,7 @@
                 <div class="column">
                   <p><strong>ID:</strong> {{ selectedClient.idCliente }}</p>
                   <p><strong>Correo:</strong> {{ selectedClient.correo }}</p>
-                  <p><strong>Estado Cuenta:</strong> {{ selectedClient.estadoCuenta }}</p>
+                  <p><strong>Estado Cuenta:</strong> {{ selectedClient.estadoCuenta === true ? 'Activo' : (selectedClient.estadoCuenta === false ? 'Inactivo' : '') }}</p>
                   <p><strong>ID Persona:</strong> {{ selectedClient.idPersona }}</p>
                 </div>
                 <div class="column">
