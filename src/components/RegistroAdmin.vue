@@ -128,7 +128,7 @@ export default {
             apellidoM: this.apellidoM,
             telefono: this.telefono,
           },
-          rolId: 10,
+          rolId: 1,
         });
 
         console.log("Cuenta Admin created");

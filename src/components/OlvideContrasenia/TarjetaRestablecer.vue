@@ -1,11 +1,20 @@
 <template>
   <div class="TarjetaRestablecerContra">
-    <img src="src/assets/logo_black.png" alt="Logo Tu Guia" />
+    <img src="src/assets/Home/carusel/Logo.png" alt="Logo Tu Guia" />
     <br />
-    <h3>Reestablecimiento de contraseña</h3>
-    <p>En el siguiente apartado puede crear una nueva contraseña</p>
+    <h3>Cambio de contraseña</h3>
+    <p>Para cambiar su contraseña, primero debe verificar su contraseña actual</p>
     <form @submit.prevent="verificarPassword" class="form">
       <div class="CustomInput">
+        <!-- Campo para contraseña actual (para ambos tipos de usuario) -->
+        <p>Contraseña actual:</p>
+        <input
+          placeholder="Ingrese su contraseña actual"
+          type="password"
+          v-model="currentPassword"
+          required
+        />
+        
         <p>Nueva contraseña:</p>
         <input
           placeholder="Ingrese una nueva contraseña"
@@ -88,7 +97,7 @@
         </div>
       </div>
       <button type="button" @click="verificarPassword" class="btn-continuar">Continuar</button>
-    </form>
+   </form>
   </div>
 </template>
 
@@ -100,6 +109,7 @@ export default {
   data() {
     return {
       correo: "",
+      currentPassword: "", // Para administradores
       password: "",
       passwordConf: "",
       // para la validacion de la contraseña
@@ -129,133 +139,206 @@ export default {
       confirmacion5: "validation_error",
     };
   },
+  computed: {
+    isAdmin() {
+      return this.$store.state.admin === true;
+    },
+    userId() {
+      return this.$store.state.id;
+    }
+  },
   methods: {
     async verificarPassword() {
-      
-
-      console.log("Botón presionado — ejecutando verificarPassword()");
       try {
-        const correo = this.$store.state.correo; // correo almacenado al solicitar el código
-
-        // 1️⃣ Verificar que las contraseñas coincidan
+        // Validaciones básicas
+        if (!this.validatePassword(this.password)) {
+          console.error("La contraseña no cumple con los requisitos mínimos");
+          this.mostrarError(
+            "La contraseña debe contener mínimo 12 caracteres que incluya caracteres especiales, numéricos, mayúsculas y minúsculas",
+            "error"
+          );
+          return;
+        }
+        
         if (this.password !== this.passwordConf) {
           this.mostrarError("Las contraseñas no coinciden", "error");
           return;
         }
 
-        const body = { password: this.password };
-
-        if (correo === "tuguia.bo") {
-          // 2 Buscar al idPersona del admin por su correo
-          const adminResp = await axios.get(`http://localhost:9999/api/v1/admin/correo/${correo}`);
-          // 3 Actualiza la nueva contraseña del admin
-          const response = await axios.put(`http://localhost:9999/api/v1/admin/${adminResp.data.result.idAdmin}/password`, body);
-        } else {
-        // 2 Buscar al cliente por su correo
-          const clienteResp = await axios.get(`http://localhost:9999/api/v1/cliente/correo/${correo}`);
-          
-          // 3 Actualizar la nueva contraseña del cliente
-          const response = await axios.put(`http://localhost:9999/api/v1/cliente/${clienteResp.data.result.idCliente}/password`, body);
+        // Validar que se ingrese la contraseña actual
+        if (!this.currentPassword) {
+          this.mostrarError("Debe ingresar su contraseña actual", "error");
+          return;
         }
-          // 3️⃣ Enviar la nueva contraseña al endpoint dedicado
 
+        console.log("idAdmin: ", this.$store.state.id); // objeto con la informacion del usuario
+        console.log("admin: ", this.$store.state.admin); // true o false
 
-        // 4️⃣ Confirmar éxito
-        this.$swal({
-          icon: "success",
-          title: "Contraseña actualizada correctamente",
-          timer: 2000,
-        });
+        const userId = this.userId;
+        if (!userId) {
+          this.mostrarError("No se pudo obtener el ID del usuario", "error");
+          return;
+        }
 
-        // 5️⃣ Redirigir al login
-        this.$router.push("/");
+        // FLUJO UNIFICADO: Validar contraseña actual + Cambiar contraseña
+        const userType = this.isAdmin ? 'admin' : 'cliente';
+        
+        try {
+          // Paso 1: Validar contraseña actual
+          const validateResponse = await axios.post(
+            `http://localhost:9999/api/v1/${userType}/${userId}/validate-password`,
+            { password: this.currentPassword }
+          );
+
+          console.log("Respuesta de validación:", validateResponse.data);
+
+          // Verificar que el resultado de la validación sea true
+          if (!validateResponse.data.result) {
+            this.mostrarError("La contraseña actual es incorrecta", "error");
+            return;
+          }
+
+          // Paso 2: Si la validación es exitosa (result: true), cambiar la contraseña
+          const changeResponse = await axios.put(
+            `http://localhost:9999/api/v1/${userType}/${userId}/password`,
+            { password: this.password }
+          );
+
+          console.log("Respuesta del backend:", changeResponse.data);
+          this.handleSuccessResponse(changeResponse.data);
+
+        } catch (error) {
+          console.error(`Error en flujo de ${userType}:`, error);
+          this.handleErrorResponse(error);
+        }
+
       } catch (error) {
-        console.error("Error al restablecer contraseña:", error);
-        this.mostrarError("No se pudo actualizar la contraseña", "error");
+        console.error('Error al cambiar contraseña:', error);
+        this.handleErrorResponse(error);
       }
     },
 
+    handleSuccessResponse(data) {
+      if (data && data.code === '200-OK') {
+        // Usar el mensaje del backend si está disponible, sino usar uno por defecto
+        const message = data.message || 'Contraseña actualizada correctamente';
+        this.$swal({ 
+          icon: 'success', 
+          title: message, 
+          timer: 1800 
+        });
+        setTimeout(() => this.$router.push('/'), 600);
+      } else {
+        // Usar el mensaje del backend si está disponible
+        const message = data?.message || "No se pudo actualizar la contraseña";
+        this.$swal({ icon: 'error', title: 'Error', text: message });
+      }
+    },
+
+    handleErrorResponse(error) {
+      // Priorizar el mensaje del backend
+      const msg = error?.response?.data?.message || error.message || 'No se pudo actualizar la contraseña';
+      this.$swal({ icon: 'error', title: 'Error', text: msg });
+    },
 
 
 
-    // Función para validar la complejidad de la contraseña
+
+// Función para validar la complejidad de la contraseña
     validatePassword(password) {
-      // Al menos 12 caracteres
-      if (password.length < 12) return false;
+      console.log(password);
+      // Al menos 8 caracteres
+      if (password.length < 13) {
+        console.log("Tamanio");
+        return false;
+      }
       // Al menos un número
-      if (!/\d/.test(password)) return false;
+      if (!/\d/.test(password)) {
+        console.log("un numero");
+        return false;
+      }
       // Al menos una letra minúscula
-      if (!/[a-z]/.test(password)) return false;
+      if (!/[a-z]/.test(password)) {
+        console.log("minu");
+        return false;
+      }
       // Al menos una letra mayúscula
-      if (!/[A-Z]/.test(password)) return false;
+      if (!/[A-Z]/.test(password)) {
+        console.log("mayu");
+        return false;
+      }
       // Al menos un carácter especial
-      if (!/[^a-zA-Z0-9]/.test(password)) return false;
+      if (!/[^a-zA-Z0-9]/.test(password)) {
+        console.log("espec");
+        return false;
+      }
       return true;
     },
+
     validaciones(password, passwordConf) {
       // Restablecer estados de validación
-      this.icon_validacion0 = "fluent:error-circle-20-regular";
-      this.estilo_validacion0 = "red";
-      this.confirmacion0 = "validation_error";
-      this.icon_validacion1 = "fluent:error-circle-20-regular";
-      this.estilo_validacion1 = "red";
-      this.confirmacion1 = "validation_error";
-      this.icon_validacion2 = "fluent:error-circle-20-regular";
-      this.estilo_validacion2 = "red";
-      this.confirmacion2 = "validation_error";
-      this.icon_validacion3 = "fluent:error-circle-20-regular";
-      this.estilo_validacion3 = "red";
-      this.confirmacion3 = "validation_error";
-      this.icon_validacion4 = "fluent:error-circle-20-regular";
-      this.estilo_validacion4 = "red";
-      this.confirmacion4 = "validation_error";
-      this.icon_validacion5 = "fluent:error-circle-20-regular";
-      this.estilo_validacion5 = "red";
-      this.confirmacion5 = "validation_error";
+      this.icon_validacion0 = 'fluent:error-circle-20-regular';
+      this.estilo_validacion0 = 'red';
+      this.confirmacion0 = 'validation_error';
+      this.icon_validacion1 = 'fluent:error-circle-20-regular';
+      this.estilo_validacion1 = 'red';
+      this.confirmacion1 = 'validation_error';
+      this.icon_validacion2 = 'fluent:error-circle-20-regular';
+      this.estilo_validacion2 = 'red';
+      this.confirmacion2 = 'validation_error';
+      this.icon_validacion3 = 'fluent:error-circle-20-regular';
+      this.estilo_validacion3 = 'red';
+      this.confirmacion3 = 'validation_error';
+      this.icon_validacion4 = 'fluent:error-circle-20-regular';
+      this.estilo_validacion4 = 'red';
+      this.confirmacion4 = 'validation_error';
+      this.icon_validacion5 = 'fluent:error-circle-20-regular';
+      this.estilo_validacion5 = 'red';
+      this.confirmacion5 = 'validation_error';
 
       if (password.length > 0 || passwordConf.length > 0) {
-        if (password === passwordConf) {
-          this.icon_validacion0 = "lets-icons:check-fill";
-          this.estilo_validacion0 = "green";
-          this.confirmacion0 = "validation_check";
-
-          if (password.length >= 12) {
-            this.icon_validacion1 = "lets-icons:check-fill";
-            this.estilo_validacion1 = "green";
-            this.confirmacion1 = "validation_check";
-          }
-
-          if (/[a-z]/.test(password)) {
-            this.icon_validacion2 = "lets-icons:check-fill";
-            this.estilo_validacion2 = "green";
-            this.confirmacion2 = "validation_check";
-          }
-
-          if (/[A-Z]/.test(password)) {
-            this.icon_validacion3 = "lets-icons:check-fill";
-            this.estilo_validacion3 = "green";
-            this.confirmacion3 = "validation_check";
-          }
-
-          if (/[^a-zA-Z0-9]/.test(password)) {
-            this.icon_validacion4 = "lets-icons:check-fill";
-            this.estilo_validacion4 = "green";
-            this.confirmacion4 = "validation_check";
-          }
-
-          if (/\d/.test(password)) {
-            this.icon_validacion5 = "lets-icons:check-fill";
-            this.estilo_validacion5 = "green";
-            this.confirmacion5 = "validation_check";
-          }
+        if (password.length >= 12) {
+          this.icon_validacion1 = 'lets-icons:check-fill';
+          this.estilo_validacion1 = 'green';
+          this.confirmacion1 = 'validation_check';
+        }  
+          
+        if (/[a-z]/.test(password)) {
+          this.icon_validacion2 = 'lets-icons:check-fill';
+          this.estilo_validacion2 = 'green';
+          this.confirmacion2 = 'validation_check';
         }
+        
+        if (/[A-Z]/.test(password)) {
+          this.icon_validacion3 = 'lets-icons:check-fill';
+          this.estilo_validacion3 = 'green';
+          this.confirmacion3 = 'validation_check';
+        }
+        
+        if (/[^a-zA-Z0-9]/.test(password)) {
+          this.icon_validacion4 = 'lets-icons:check-fill';
+          this.estilo_validacion4 = 'green';
+          this.confirmacion4 = 'validation_check';
+        }
+        
+        if (/\d/.test(password)) {
+          this.icon_validacion5 = 'lets-icons:check-fill';
+          this.estilo_validacion5 = 'green';
+          this.confirmacion5 = 'validation_check';
+        }
+        if (password === passwordConf ) {
+          this.icon_validacion0 = 'lets-icons:check-fill';
+          this.estilo_validacion0 = 'green';
+          this.confirmacion0 = 'validation_check';
+        }
+        
       }
     },
     mostrarError(message, icon) {
       this.$swal({
         icon: icon,
         timer: 3000,
-        title: "Oops...",
+        title: "Error",
         text: message,
       });
     },
@@ -360,6 +443,7 @@ export default {
   border: 2px solid black;
   color: #fff;
 }
+
 
 .registro-enlace-container {
   display: flex;

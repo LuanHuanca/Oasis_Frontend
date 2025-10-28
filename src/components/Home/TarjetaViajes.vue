@@ -1,7 +1,4 @@
 <template>
-  <transition name="fade">
-    <PopUp :imagenTitle="paises" v-show="showPopUp" @close="togglePopUp"/>
-  </transition>
   <div class="tarjeta-viaje">
     <img :src="imagen" :alt="alt" @click="togglePopUp"/>
     <div class="tarjeta-viaje-informacion">
@@ -14,7 +11,6 @@
 </template>
 
 <script>
-import PopUp from '../pop-up/PopUp.vue';
 
 export default {
   props: {
@@ -41,15 +37,6 @@ export default {
     ciudades: {
       type: String,
       default: "Ciudades visitadas",
-    },
-  },
-  components: { PopUp },
-  data: () => ({
-    showPopUp: false,
-  }),
-  methods: {
-    togglePopUp() {
-      this.showPopUp = !this.showPopUp;
     },
   },
 };

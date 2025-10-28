@@ -5,7 +5,7 @@
       <div id="invoice-content">
         <div class="header">
           <div class="logo">
-            <img style="width: 100%" src="../../../assets/logoBack.png" alt="Logo de la empresa">
+            <img style="width: 100%" src="/src/assets/Home/carusel/Logo.png" alt="Logo de la empresa">
           </div>
           <div class="company-info" style="color: black">
             <h2>Agencia de Viajes TU GUIA</h2>

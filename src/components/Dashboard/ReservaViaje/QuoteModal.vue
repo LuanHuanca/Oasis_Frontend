@@ -6,7 +6,7 @@
         <div class="headerq">
           <div class="logoCot">
             <!-- Aquí puedes agregar tu imagen -->
-            <img style="width: 100%" src="../../../assets/logoBack.png" alt="Logo de la empresa">
+            <img style="width: 100%" src="/src/assets/Home/carusel/Logo.png" alt="Logo de la empresa">
           </div>
           <div class="company-infoq" style="color: black">
             <h2>Agencia de Viajes TU GUIA</h2>
