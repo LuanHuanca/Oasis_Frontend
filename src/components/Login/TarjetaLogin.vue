@@ -168,10 +168,9 @@ export default defineComponent({
           // Ir a pantalla de verificación (allí se completará el login)
           this.$router.push("/Verificacion");
         } else {
-          this.mostrarError(
-            "Error al iniciar sesión: Correo o contraseña incorrectos",
-            "error"
-          );
+          // Usar el mensaje personalizado del backend si existe
+          const errorMessage = user.message || "Error al iniciar sesión: Correo o contraseña incorrectos";
+          this.mostrarError(errorMessage, "error");
           this.actividad = "Se introdujo contraseña incorrecta";
           await this.crearAuditoria();
         }
@@ -223,11 +222,9 @@ export default defineComponent({
         } else {
           // Si el inicio de sesión no es exitoso, muestra un mensaje de error
           console.error("Error al iniciar sesión:", response.data.message);
-          // alert("Error al iniciar sesión: Correo o contraseña incorrectos");
-          this.mostrarError(
-            "Error al iniciar sesión: Correo o contraseña incorrectos",
-            "error"
-          );
+          // Usar el mensaje personalizado del backend si existe
+          const errorMessage = response.data.message || "Error al iniciar sesión: Correo o contraseña incorrectos";
+          this.mostrarError(errorMessage, "error");
           // Crear auditoría para contraseña erronea
           this.actividad = "Se introdujo contraseña incorrecta";
           await this.crearAuditoria();

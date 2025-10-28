@@ -130,6 +130,8 @@ import { googleLogout } from 'vue3-google-login';
 import axios from "axios";
 import { Icon } from '@iconify/vue';  
 import CarritoPopUp from './pop-up/CarritoPopUp.vue';
+// @ts-ignore - Servicio de auditoría JavaScript
+import auditService from '@/functions/auditService';
 
 
 export default defineComponent({
@@ -220,10 +222,19 @@ export default defineComponent({
 
     const logout = async () => {
       try {
+        // Obtener información del usuario antes de cerrar sesión
+        const userEmail = store.state.user?.result?.correo || store.state.user?.correo || 'DESCONOCIDO';
+        const userType = store.state.rol === 'Admin' ? 'admin' : 'cliente';
+        
+        console.log("ROL: ", store.state.rol);
+        
+        // ✅ Auditoría: Logout del usuario
+        await auditService.auditLogout(userEmail, userType);
+
+        // Lógica original de logout
         calcularFecha();
         await getIPAddress();
 
-        console.log("ROL: ", store.state.rol);
         if (store.state.rol === 'Admin') {
           idAdmin.value = store.state.id;
           idCliente.value = '';

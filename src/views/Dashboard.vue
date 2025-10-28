@@ -3,7 +3,10 @@
     <template v-if="isAuthenticated">
       <div class="DashboardContainer">
         <div class="barralateral" style="background-color: black">
-            <side-bar :permisos="$store.state.sidebarPermisos" @optionSelected="optionSelected" />
+            <side-bar 
+              :permisos="$store.state.sidebarPermisos || []" 
+              @optionSelected="optionSelected" 
+            />
           </div>
         <div class="content">
           <component :is="currentComponent" />
@@ -71,23 +74,22 @@ export default {
     Modificaciones,
     ABMUsuarios,
     BajaComprobantes,
-  Editar_Usuario,
-  Desactivar_Usuario,
-  Ver_Lista_Usuarios,
-  Asignar_Roles,
-  Revisar_Accesos_Red,
-  Subir_Documentos_Internos,
-  Ver_Documentos_Internos,
-  Editar_Cuentas,
-  Eliminar_Comprobante,
-  Ver_Reportes_Contables,
-  Crear_Solicitud_Viaje
+    Editar_Usuario,
+    Desactivar_Usuario,
+    Ver_Lista_Usuarios,
+    Asignar_Roles,
+    Revisar_Accesos_Red,
+    Subir_Documentos_Internos,
+    Ver_Documentos_Internos,
+    Editar_Cuentas,
+    Eliminar_Comprobante,
+    Ver_Reportes_Contables,
+    Crear_Solicitud_Viaje
   },
   data() {
     return {
       currentComponent: '',
-      permisos: [],
-      permisosInterval: null
+      permisos: []
     };
   },
   computed: {
@@ -98,24 +100,44 @@ export default {
   methods: {
     async fetchPermisos() {
       try {
-        const response = await axios.get(`http://localhost:9999/api/v1/adminpermiso/admin/${this.$store.state.id}/permisos`);
+        // Usar el nuevo endpoint de permisos efectivos que incluye ROL + ADICIONAL + TEMPORAL
+        const response = await axios.get(
+          `http://localhost:9999/api/v1/gestion-permisos/admin/${this.$store.state.id}/permisos-efectivos`
+        );
+        
+        // Extraer los nombres de permisos del resultado
         this.permisos = response.data.result.map(permiso => permiso.permiso);
+        
         // Respetar overrides frontend: si existe override para el usuario actual, usarlo para la sidebar
-        const override = this.$store.state.sidebarOverrides && this.$store.state.sidebarOverrides[String(this.$store.state.id)];
+        const override = this.$store.state.sidebarOverrides && 
+                        this.$store.state.sidebarOverrides[String(this.$store.state.id)];
+        
         if (override && Array.isArray(override) && override.length > 0) {
           this.$store.commit('setSidebarPermisos', override.map(p => p.permiso));
         } else {
-          // También actualizar los permisos usados por la sidebar en el store
+          // Actualizar los permisos usados por la sidebar en el store
           this.$store.commit('setSidebarPermisos', this.permisos);
         }
-        console.log('Permisos:', this.permisos);
+        
+        console.log('Permisos efectivos cargados:', this.permisos.length);
       } catch (error) {
-        console.error('Error al obtener los permisos:', error);
+        console.error('❌ Error al obtener los permisos:', error);
+        // Fallback: intentar con el endpoint antiguo si falla
+        try {
+          const fallbackResponse = await axios.get(
+            `http://localhost:9999/api/v1/adminpermiso/admin/${this.$store.state.id}/permisos`
+          );
+          this.permisos = fallbackResponse.data.result.map(permiso => permiso.permiso);
+          this.$store.commit('setSidebarPermisos', this.permisos);
+          console.log('⚠️ Usando endpoint de respaldo, permisos:', this.permisos);
+        } catch (fallbackError) {
+          console.error('❌ Error en endpoint de respaldo:', fallbackError);
+        }
       }
     },
     optionSelected(option) {
       switch (option) {
-        case "dashboard":
+        case "Dashboard":
           this.currentComponent = "TableAudit";
           break;
         case "flights":
@@ -138,9 +160,6 @@ export default {
           break;
         case 'admin':
           this.currentComponent = 'TableAdmin';
-          break;
-        case 'registro_cuentas':
-          this.currentComponent = 'RegistroCuentas';
           break;
         case 'documentos_internos':
           this.currentComponent = 'DocumentosInternos';
@@ -204,13 +223,13 @@ export default {
   async created() {
     if (this.isAuthenticated) {
       await this.fetchPermisos();
-      this.permisosInterval = setInterval(this.fetchPermisos, 1000); 
+      // ✅ Eliminado el setInterval que causaba parpadeo
+      // Los permisos se cargan una sola vez al iniciar
+      // Si se modifican permisos, se actualizan desde PermissionsPopup via evento
     }
   },
   beforeDestroy() {
-    if (this.permisosInterval) {
-      clearInterval(this.permisosInterval);
-    }
+    // Ya no es necesario limpiar el interval
   }
 };
 </script>

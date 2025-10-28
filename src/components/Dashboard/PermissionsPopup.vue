@@ -275,6 +275,7 @@
 <script>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import auditService from '@/functions/auditService';
 
 export default {
   props: {
@@ -513,6 +514,18 @@ export default {
 
         if (response.data.code === '200-OK') {
           const msg = response.data.message || 'Rol actualizado correctamente. Todos los permisos personales han sido eliminados.';
+          
+          // ✅ Auditoría: Cambio de rol
+          const currentUserEmail = this.$store.state.user?.result?.correo || this.$store.state.correo || 'ADMIN';
+          const rolAnterior = this.roles.find(r => r.idRol === this.admin.rol.idRol)?.rol || 'Desconocido';
+          const rolNuevo = this.roles.find(r => r.idRol === this.selectedRolId)?.rol || 'Desconocido';
+          await auditService.auditCambioRol(
+            currentUserEmail,
+            this.admin.correo,
+            rolAnterior,
+            rolNuevo
+          );
+          
           Swal.fire('Éxito', msg, 'success');
           this.isEditingRole = false;
           await this.fetchData();
@@ -589,6 +602,9 @@ export default {
         console.log('Permisos a agregar:', toAdd);
         console.log('Permisos a eliminar:', toRemove);
 
+        // Obtener correo del usuario actual para auditoría
+        const currentUserEmail = this.$store.state.user?.result?.correo || this.$store.state.correo || 'ADMIN';
+
         // Eliminar permisos primero
         for (const permisoId of toRemove) {
           console.log(`Eliminando permiso adicional ${permisoId} del admin ${this.adminId}`);
@@ -596,6 +612,14 @@ export default {
             `http://localhost:9999/api/v1/gestion-permisos/admin/${this.adminId}/permiso-adicional/${permisoId}`
           );
           console.log('Respuesta de eliminación:', deleteResponse.data);
+          
+          // ✅ Auditoría: Revocación de permiso adicional
+          const permisoNombre = this.allPermisos.find(p => p.idPermiso === permisoId)?.permiso || `ID ${permisoId}`;
+          await auditService.auditRevocacionPermisoAdicional(
+            currentUserEmail,
+            this.admin.correo,
+            permisoNombre
+          );
         }
 
         // Agregar nuevos permisos
@@ -606,6 +630,14 @@ export default {
             { permisoId }
           );
           console.log('Respuesta de adición:', addResponse.data);
+          
+          // ✅ Auditoría: Asignación de permiso adicional
+          const permisoNombre = this.allPermisos.find(p => p.idPermiso === permisoId)?.permiso || `ID ${permisoId}`;
+          await auditService.auditAsignacionPermisoAdicional(
+            currentUserEmail,
+            this.admin.correo,
+            permisoNombre
+          );
         }
 
         const msg = `Permisos actualizados: ${toAdd.length} agregados, ${toRemove.length} eliminados`;
@@ -721,6 +753,26 @@ export default {
         const response = await axios.post(endpoint, body);
 
         if (response.data.code === '200-OK') {
+          // ✅ Auditoría: Asignación de permiso temporal
+          const currentUserEmail = this.$store.state.user?.result?.correo || this.$store.state.correo || 'ADMIN';
+          const permisoNombre = this.allPermisos.find(p => p.idPermiso === parseInt(this.newTemporal.permisoId))?.permiso || `ID ${this.newTemporal.permisoId}`;
+          
+          let duracionTexto = '';
+          if (this.newTemporal.tipoDuracion === 'dias') {
+            duracionTexto = `${this.newTemporal.dias} día(s)`;
+          } else if (this.newTemporal.tipoDuracion === 'horas') {
+            duracionTexto = `${this.newTemporal.horas} hora(s)`;
+          } else if (this.newTemporal.tipoDuracion === 'fecha') {
+            duracionTexto = `hasta ${this.newTemporal.fechaFin}`;
+          }
+          
+          await auditService.auditAsignacionPermisoTemporal(
+            currentUserEmail,
+            this.admin.correo,
+            permisoNombre,
+            duracionTexto
+          );
+          
           Swal.fire('Éxito', 'Permiso temporal asignado correctamente', 'success');
           this.cancelTemporalAdd();
           await this.fetchData();
@@ -758,6 +810,16 @@ export default {
         );
 
         if (response.data.code === '200-OK') {
+          // ✅ Auditoría: Extensión de permiso temporal
+          const currentUserEmail = this.$store.state.user?.result?.correo || this.$store.state.correo || 'ADMIN';
+          const permisoNombre = this.extendingTemporal.permiso?.permiso || 'Permiso desconocido';
+          await auditService.auditExtensionPermisoTemporal(
+            currentUserEmail,
+            this.admin.correo,
+            permisoNombre,
+            this.newFechaFin
+          );
+          
           Swal.fire('Éxito', 'Permiso temporal extendido correctamente', 'success');
           this.showExtendModal = false;
           await this.fetchData();
@@ -787,6 +849,16 @@ export default {
           );
 
           if (response.data.code === '200-OK') {
+            // ✅ Auditoría: Revocación de permiso temporal
+            const currentUserEmail = this.$store.state.user?.result?.correo || this.$store.state.correo || 'ADMIN';
+            const temporal = this.permisosTemporales.find(t => t.idPermisoTemporal === idPermisoTemporal);
+            const permisoNombre = temporal?.permiso?.permiso || 'Permiso desconocido';
+            await auditService.auditRevocacionPermisoTemporal(
+              currentUserEmail,
+              this.admin.correo,
+              permisoNombre
+            );
+            
             Swal.fire('Éxito', 'Permiso temporal revocado correctamente', 'success');
             await this.fetchData();
             this.emitPermissionsUpdate();

@@ -7,109 +7,45 @@
       </button>
       <nav class="sidebar" :style="{ width: isCollapsed ? '5%' : '20%' }">
         <ul class="nav flex-column">
-          <li class="nav-item" v-if="hasPermission('Administracion usuarios')">
-            <div class="nav-link" @click="selectOption('admin')">
-              <span v-if="isCollapsed">👤</span>
-              <span v-else>📊 Lista de Administradores</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('Dashboard')">
-            <div class="nav-link" @click="selectOption('dashboard')">
-              <span v-if="isCollapsed">👤</span>
-              <span v-else>📊 Dashboard</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('Agente de viajes')">
-            <div class="nav-link" @click="selectOption('hotels')">
-              <span v-if="isCollapsed">🏨</span>
-              <span v-else>🏨 Reservas Hoteles</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('Agente de viajes')">
-            <div class="nav-link" @click="selectOption('flights')">
-              <span v-if="isCollapsed">✈️</span>
-              <span v-else>✈️️ Reservas Vuelos</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('Agente de viajes')">
-            <div class="nav-link" @click="selectOption('cars')">
-              <span v-if="isCollapsed">🚗</span>
-              <span v-else>🚗 Alquiler Autos</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('Agente de viajes')">
-            <div class="nav-link" @click="selectOption('register_flight')">
-              <span v-if="isCollapsed">🌍</span>
-              <span v-else>🧳 Crear Viaje</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('Agente de viajes')">
-            <div class="nav-link" @click="selectOption('registers_flights')">
-              <span v-if="isCollapsed">🌍</span>
-              <span v-else>🌍 Reservas Viajes</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('Agente de viajes')">
-            <div class="nav-link" @click="selectOption('coments')">
-              <span v-if="isCollapsed">⚙️</span>
-              <span v-else>💌 Comentarios</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('Registro cuentas')">
-            <div class="nav-link" @click="selectOption('registro_cuentas')">
-              <span v-if="isCollapsed">📝</span>
-              <span v-else>📝 Registro de cuentas</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('Documentos internos')">
-            <div class="nav-link" @click="selectOption('documentos_internos')">
-              <span v-if="isCollapsed">📄</span>
-              <span v-else>📄 Documentos internos</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('Correo')">
-            <div class="nav-link" @click="selectOption('correo')">
-              <span v-if="isCollapsed">📧</span>
-              <span v-else>📧 Correo</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('Consultas')">
-            <div class="nav-link" @click="selectOption('consultas')">
-              <span v-if="isCollapsed">🔍</span>
-              <span v-else>🔍 Consultas</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('Modificaciones')">
-            <div class="nav-link" @click="selectOption('modificaciones')">
-              <span v-if="isCollapsed">✏️</span>
-              <span v-else>✏️ Modificaciones</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('ABM Usuarios')">
-            <div class="nav-link" @click="selectOption('abm_usuarios')">
-              <span v-if="isCollapsed">👥</span>
-              <span v-else>👥 ABM usuarios</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('Baja de comprobantes')">
-            <div class="nav-link" @click="selectOption('baja_comprobantes')">
-              <span v-if="isCollapsed">📉</span>
-              <span v-else>📉 Baja de comprobantes</span>
-            </div>
-          </li>
-          <li class="nav-item" v-if="hasPermission('ABM Usuarios')">
-            <div class="nav-link" @click="selectOption('Editar_Usuario')">
-              <span v-if="isCollapsed">📉</span>
-              <span v-else>📉 Editar Usuario</span>
-            </div>
-          </li>
-
-          <!-- Renderizar elementos dinámicos basados en permisos -->
+          <!-- Renderizar elementos dinámicos basados en permisos de la BD -->
           <template v-for="item in dynamicItems" :key="item.key">
             <li class="nav-item" v-if="hasPermission(item.permiso)">
-              <div class="nav-link" @click="selectOption(item.key)">
-                <span v-if="isCollapsed">•</span>
+              <!-- Item sin submenú -->
+              <div v-if="!item.submenu" class="nav-link" @click="selectOption(item.key)">
+                <span v-if="isCollapsed" v-text="item.icon"></span>
                 <span v-else v-text="item.label"></span>
+              </div>
+              
+              <!-- Item con submenú (Gestión de Viajes) -->
+              <div v-else>
+                <div class="nav-link nav-link-parent" @click="toggleSubMenu">
+                  <span v-if="isCollapsed" v-text="item.icon"></span>
+                  <span v-else>
+                    <span v-text="item.label"></span>
+                    <span class="submenu-arrow">{{ showViajesMenu ? '▼' : '▶' }}</span>
+                  </span>
+                </div>
+                <!-- Submenú de Viajes -->
+                <ul v-if="showViajesMenu && !isCollapsed" class="submenu">
+                  <li @click="selectOption('hotels')" class="submenu-item">
+                    <span>🏨 Reservas Hoteles</span>
+                  </li>
+                  <li @click="selectOption('flights')" class="submenu-item">
+                    <span>✈️ Reservas Vuelos</span>
+                  </li>
+                  <li @click="selectOption('cars')" class="submenu-item">
+                    <span>🚗 Alquiler Autos</span>
+                  </li>
+                  <li @click="selectOption('register_flight')" class="submenu-item">
+                    <span>🧳 Crear Viaje</span>
+                  </li>
+                  <li @click="selectOption('registers_flights')" class="submenu-item">
+                    <span>🌍 Reservas Viajes</span>
+                  </li>
+                  <li @click="selectOption('coments')" class="submenu-item">
+                    <span>💌 Comentarios</span>
+                  </li>
+                </ul>
               </div>
             </li>
           </template>
@@ -120,7 +56,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 
 export default defineComponent({
   name: "Sidebar",
@@ -133,9 +69,19 @@ export default defineComponent({
   emits: ['optionSelected'],
   setup(props, { emit }) {
     const isCollapsed = ref(false);
+    const showViajesMenu = ref(false);
+    
+    // Crear versión computed de permisos para asegurar reactividad
+    const permisosReactivos = computed(() => {
+      return props.permisos || [];
+    });
 
     const toggleCollapse = () => {
       isCollapsed.value = !isCollapsed.value;
+    };
+
+    const toggleSubMenu = () => {
+      showViajesMenu.value = !showViajesMenu.value;
     };
 
     const selectOption = (option) => {
@@ -143,31 +89,135 @@ export default defineComponent({
     };
 
     const hasPermission = (permiso) => {
-      return props.permisos.includes(permiso);
+      return permisosReactivos.value.includes(permiso);
     };
 
-    // Elementos dinámicos que se muestran cuando el usuario tiene permisos específicos
+    // ===== SISTEMA DE PERMISOS - 14 PERMISOS =====
+    // Mapeo de permisos de BD a vistas del Dashboard
     const dynamicItems = [
-      { permiso: 'Editar usuario', key: 'Editar_Usuario', label: '📌 Editar Usuario' },
-      { permiso: 'Desactivar usuario', key: 'Desactivar_Usuario', label: '🚫 Desactivar Usuario' },
-      { permiso: 'Ver lista de usuarios', key: 'Ver_Lista_Usuarios', label: '👥 Ver Lista de Usuarios' },
-      { permiso: 'Asignar roles', key: 'Asignar_Roles', label: '🎛️ Asignar Roles' },
-      { permiso: 'Revisar accesos de red', key: 'Revisar_Accesos_Red', label: '🔒 Revisar Accesos de Red' },
-      { permiso: 'Subir documentos internos', key: 'Subir_Documentos_Internos', label: '📤 Subir Documentos Internos' },
-      { permiso: 'Ver documentos internos', key: 'Ver_Documentos_Internos', label: '📂 Ver Documentos Internos' },
-      { permiso: 'Registrar cuentas', key: 'Registrar_Cuentas', label: '📝 Registrar Cuentas' },
-      { permiso: 'Editar cuentas', key: 'Editar_Cuentas', label: '✏️ Editar Cuentas' },
-      { permiso: 'Eliminar comprobante', key: 'Eliminar_Comprobante', label: '🗑️ Eliminar Comprobante' },
-      { permiso: 'Ver reportes contables', key: 'Ver_Reportes_Contables', label: '📊 Ver Reportes Contables' },
-      { permiso: 'Crear solicitud de viaje', key: 'Crear_Solicitud_Viaje', label: '✈️ Crear Solicitud de Viaje' }
+      // ===== PERMISO 14 - DASHBOARD (NUEVO) =====
+      // Muestra el dashboard principal con auditoría
+      { 
+        permiso: 'Dashboard', 
+        key: 'Dashboard', 
+        label: '📊 Dashboard',
+        icon: '📊'
+      },
+      
+      // ===== PERMISOS DE GESTIÓN DE USUARIOS (1-5) =====
+      // ID 1 - Editar usuario
+      { 
+        permiso: 'Editar usuario', 
+        key: 'Editar_Usuario', 
+        label: '✏️ Editar Usuario',
+        icon: '✏️'
+      },
+      // ID 2 - Desactivar usuario
+      { 
+        permiso: 'Desactivar usuario', 
+        key: 'Desactivar_Usuario', 
+        label: '🚫 Desactivar Usuario',
+        icon: '🚫'
+      },
+      // ID 3 - Ver lista de usuarios
+      { 
+        permiso: 'Ver lista de usuarios', 
+        key: 'Ver_Lista_Usuarios', 
+        label: '👥 Ver Lista de Usuarios',
+        icon: '👥'
+      },
+      // ID 4 - Asignar roles (gestión completa de admins)
+      { 
+        permiso: 'Asignar roles', 
+        key: 'admin', 
+        label: '🎛️ Gestión de Admins',
+        icon: '🎛️'
+      },
+      // ID 5 - Revisar accesos de red
+      { 
+        permiso: 'Revisar accesos de red', 
+        key: 'Revisar_Accesos_Red', 
+        label: '🔒 Accesos de Red',
+        icon: '🔒'
+      },
+      
+      // ===== PERMISOS DE DOCUMENTOS (6-8) =====
+      // ID 6 - Subir documentos internos
+      { 
+        permiso: 'Subir documentos internos', 
+        key: 'Subir_Documentos_Internos', 
+        label: '📤 Subir Documentos',
+        icon: '📤'
+      },
+      // ID 7 - Editar documentos internos
+      { 
+        permiso: 'Editar documentos internos', 
+        key: 'documentos_internos', 
+        label: '📝 Editar Documentos',
+        icon: '📝'
+      },
+      // ID 8 - Ver documentos internos
+      { 
+        permiso: 'Ver documentos internos', 
+        key: 'Ver_Documentos_Internos', 
+        label: '📂 Ver Documentos',
+        icon: '📂'
+      },
+      
+      // ===== PERMISOS CONTABLES (9-12) =====
+      // ID 9 - Registrar cuentas
+      { 
+        permiso: 'Registrar cuentas', 
+        key: 'Registrar_Cuentas', 
+        label: '💵 Registrar Cuentas',
+        icon: '💵'
+      },
+      // ID 10 - Editar cuentas
+      { 
+        permiso: 'Editar cuentas', 
+        key: 'Editar_Cuentas', 
+        label: '💰 Editar Cuentas',
+        icon: '💰'
+      },
+      // ID 11 - Eliminar comprobantes
+      { 
+        permiso: 'Eliminar comprobantes', 
+        key: 'Eliminar_Comprobante', 
+        label: '🗑️ Eliminar Comprobantes',
+        icon: '🗑️'
+      },
+      // ID 12 - Ver reportes contables
+      { 
+        permiso: 'Ver reportes contables', 
+        key: 'Ver_Reportes_Contables', 
+        label: '📈 Reportes Contables',
+        icon: '📈'
+      },
+      
+      // ===== PERMISO DE VIAJES (13) =====
+      // ID 13 - Crear solicitud de viaje
+      // Este permiso agrupa TODAS las funcionalidades de agente de viajes:
+      // - Gestión de vuelos, hoteles, autos
+      // - Reservas de viajes
+      // - Comentarios
+      { 
+        permiso: 'Crear solicitud de viaje', 
+        key: 'menu_viajes', 
+        label: '✈️ Gestión de Viajes',
+        icon: '✈️',
+        submenu: true  // Indica que tiene submenú
+      }
     ];
 
     return {
       isCollapsed,
+      showViajesMenu,
       toggleCollapse,
+      toggleSubMenu,
       selectOption,
-      hasPermission
-      , dynamicItems
+      hasPermission,
+      dynamicItems,
+      permisosReactivos
     };
   }
 });
@@ -191,7 +241,9 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 10px 20px;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .nav {
@@ -212,6 +264,40 @@ export default defineComponent({
 
 .nav-link:hover {
   color: #939292;
+}
+
+.nav-link-parent {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.submenu-arrow {
+  margin-left: 5px;
+  font-size: 0.8rem;
+}
+
+.submenu {
+  list-style: none;
+  padding-left: 20px;
+  margin: 5px 0;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-left: 2px solid #007bff;
+}
+
+.submenu-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #ccc;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.submenu-item:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding-left: 16px;
 }
 
 .toggle-sidebar-button {

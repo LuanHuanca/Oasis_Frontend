@@ -104,6 +104,7 @@
 <script>
 import axios from "axios";
 import { Icon } from "@iconify/vue";
+import auditService from "@/functions/auditService";
 
 export default {
   data() {
@@ -182,6 +183,7 @@ export default {
 
         // FLUJO UNIFICADO: Validar contraseña actual + Cambiar contraseña
         const userType = this.isAdmin ? 'admin' : 'cliente';
+        const userEmail = this.$store.state.user?.result?.correo || this.$store.state.correo || 'DESCONOCIDO';
         
         try {
           // Paso 1: Validar contraseña actual
@@ -194,9 +196,15 @@ export default {
 
           // Verificar que el resultado de la validación sea true
           if (!validateResponse.data.result) {
+            // ❌ Auditoría: Validación de contraseña fallida
+            await auditService.auditValidacionContrasena(userEmail, false);
+            
             this.mostrarError("La contraseña actual es incorrecta", "error");
             return;
           }
+
+          // ✅ Auditoría: Validación de contraseña exitosa
+          await auditService.auditValidacionContrasena(userEmail, true);
 
           // Paso 2: Si la validación es exitosa (result: true), cambiar la contraseña
           const changeResponse = await axios.put(
@@ -205,10 +213,18 @@ export default {
           );
 
           console.log("Respuesta del backend:", changeResponse.data);
+          
+          // ✅ Auditoría: Cambio de contraseña exitoso
+          await auditService.auditCambioContrasena(userEmail, true);
+          
           this.handleSuccessResponse(changeResponse.data);
 
         } catch (error) {
           console.error(`Error en flujo de ${userType}:`, error);
+          
+          // ❌ Auditoría: Cambio de contraseña fallido
+          await auditService.auditCambioContrasena(userEmail, false);
+          
           this.handleErrorResponse(error);
         }
 
