@@ -100,45 +100,27 @@ export default {
         const adminsResponse = await axios.get('http://localhost:9999/api/v1/admin');
         const admins = adminsResponse.data.result;
 
-        // Obtener todos los permisos de los administradores
-        const permisosResponse = await axios.get('http://localhost:9999/api/v1/adminpermiso');
-        const adminPermisoData = permisosResponse.data.result;
-
-        // Agrupar permisos por administrador
+        // Obtener permisos efectivos de cada administrador
         const adminPermisos = {};
-        adminPermisoData.forEach(item => {
-          if (!adminPermisos[item.admin.idAdmin]) {
-            adminPermisos[item.admin.idAdmin] = [];
+        for (const admin of admins) {
+          try {
+            // Obtener el resumen de permisos (rol + adicionales + temporales)
+            const resumenResponse = await axios.get(
+              `http://localhost:9999/api/v1/gestion-permisos/admin/${admin.idAdmin}/resumen`
+            );
+            const resumen = resumenResponse.data.result;
+            
+            // Usar permisosEfectivos que incluye todos los permisos
+            adminPermisos[admin.idAdmin] = resumen.permisosEfectivos || [];
+            admin.permisos = resumen.permisosEfectivos || [];
+          } catch (error) {
+            console.error(`Error al obtener permisos del admin ${admin.idAdmin}:`, error);
+            adminPermisos[admin.idAdmin] = [];
+            admin.permisos = [];
           }
-          adminPermisos[item.admin.idAdmin].push(item.permiso);
-        });
-
-        // Asignar permisos a los administradores
-        admins.forEach(admin => {
-          admin.permisos = adminPermisos[admin.idAdmin] || [];
-        });
-
-        // Aplicar overrides frontend por admin (si existen) para que la vista refleje cambios locales
-        try {
-          const overrides = this.$store.state && this.$store.state.sidebarOverrides;
-          if (overrides) {
-            Object.keys(overrides).forEach(adminId => {
-              const overridePerms = overrides[adminId];
-              if (overridePerms && overridePerms.length) {
-                const match = admins.find(a => String(a.idAdmin) === String(adminId));
-                if (match) {
-                  adminPermisos[adminId] = overridePerms;
-                  match.permisos = overridePerms;
-                }
-              }
-            });
-          }
-        } catch (e) {
-          console.error('Error aplicando overrides locales en TableAdmin:', e);
         }
 
         // Ordenar administradores por id (asegura orden ascendente por idAdmin)
-        // Convertimos a Number por si el id viene como string
         admins.sort((a, b) => Number(a.idAdmin) - Number(b.idAdmin));
 
         this.admins = admins;
@@ -157,21 +139,10 @@ export default {
       try {
         const currentId = this.$store.state.id;
         if (payload && payload.adminId && Number(payload.adminId) === Number(currentId)) {
-          // payload.permisos expected as array of objects {idPermiso, permiso}
-          let permisoObjects = [];
-          if (payload.permisos && payload.permisos.length) {
-            if (typeof payload.permisos[0] === 'string') {
-              permisoObjects = payload.permisos.map((p, idx) => ({ idPermiso: -(1000 + idx), permiso: p }));
-            } else {
-              permisoObjects = payload.permisos;
-            }
-          }
-          const permisoNames = permisoObjects.map(p => p.permiso);
-          // Reemplazamos la lista completa de permisos del sidebar para reflejar eliminaciones también
-          this.$store.commit('setSidebarPermisos', permisoNames);
-          // Guardar override (objetos) para evitar que el refresco del backend los reemplace
-          if (this.$store.commit) {
-            this.$store.commit('setSidebarOverride', { adminId: payload.adminId, permisos: permisoObjects });
+          // Actualizar los permisos en el sidebar del usuario actual si es necesario
+          if (payload.permisosEfectivos && payload.permisosEfectivos.length) {
+            const permisoNames = payload.permisosEfectivos.map(p => p.permiso);
+            this.$store.commit('setSidebarPermisos', permisoNames);
           }
         }
       } catch (e) {
