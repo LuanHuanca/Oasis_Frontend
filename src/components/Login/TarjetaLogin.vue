@@ -58,6 +58,7 @@ import CustomInput from "./CustomInput.vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { Icon } from "@iconify/vue";
+import { API_URL, MAIL_URL } from "@/config/api";
 
 
 export default defineComponent({
@@ -135,7 +136,7 @@ export default defineComponent({
     async loginPersona() {
       try {
         const response = await axios.post(
-          "http://localhost:9999/api/v1/cliente/login",
+          `${API_URL}/cliente/login`,
           {
             correo: this.correo,
             password: this.password,
@@ -186,7 +187,7 @@ export default defineComponent({
       try {
         // Realiza una solicitud POST al endpoint de inicio de sesión
         const response = await axios.post(
-          "http://localhost:9999/api/v1/admin/login",
+          `${API_URL}/admin/login`,
           {
             correo: this.correo, // Usa el valor del nombre de usuario del input
             password: this.password, // Usa el valor de la contraseña del input
@@ -284,7 +285,7 @@ export default defineComponent({
     },
 
     async sendMail() {
-      const url = "http://localhost:9999/mail/send/" + this.correo;
+      const url = `${MAIL_URL}/${this.correo}`;
       const data = {
         subject: "Código de Verificación en Dos Pasos para Acceder a tu Cuenta",
         message: `Estimado/a Usuario/a,
@@ -309,7 +310,7 @@ Luis Huanca, Gerente de la agencia de viajes`,
       });
     },
     async tokenDeOlvido() {
-      const url = "http://localhost:9999/mail/send/" + this.correo;
+      const url = `${MAIL_URL}/${this.correo}`;
       const data = {
         subject: "Solicitud de restablecimiento de contraseña",
         message: `Estimado/a Usuario/a,
@@ -371,7 +372,7 @@ Agencia de Viajes TU GUIA`,
         console.log("IP: ", data.ip);
         this.ipAddress = data.ip;
 
-        await axios.post("http://localhost:9999/api/v1/auditoria/create", {
+        await axios.post(`${API_URL}/auditoria/create`, {
           correo: this.correo,
           actividad: this.actividad,
           fecha: this.fecha,

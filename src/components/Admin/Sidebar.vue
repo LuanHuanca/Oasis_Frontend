@@ -5,7 +5,7 @@
         <span v-if="isCollapsed">☰</span>
         <span v-else>☰</span>
       </button>
-      <nav class="sidebar" :style="{ width: isCollapsed ? '5%' : '20%' }">
+      <nav class="sidebar" :style="{ width: isCollapsed ? '60px' : '280px' }">
         <ul class="nav flex-column">
           <!-- Renderizar elementos dinámicos basados en permisos de la BD -->
           <template v-for="item in dynamicItems" :key="item.key">
@@ -230,7 +230,7 @@ export default defineComponent({
   height: 100vh;
   background-color: black;
   z-index: 1000;
-  transition: width 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .sidebar-container.collapsed .sidebar {
@@ -240,10 +240,12 @@ export default defineComponent({
 .sidebar {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 10px 20px;
+  align-items: flex-start;
+  padding: 10px 15px;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
+  transition: width 0.3s ease;
 }
 
 .nav {
@@ -256,10 +258,12 @@ export default defineComponent({
 
 .nav-link {
   color: #fff;
-  padding: 10px 15px;
+  padding: 12px 10px;
   width: 100%;
   text-align: left;
   cursor: pointer;
+  white-space: nowrap;
+  font-size: 0.95rem;
 }
 
 .nav-link:hover {

@@ -7,6 +7,10 @@ RUN mkdir /app
 
 WORKDIR /app
 
+# Argumento de build para la URL de la API
+ARG VITE_API_URL=http://localhost:9999
+ENV VITE_API_URL=$VITE_API_URL
+
 COPY package.json .
 
 RUN npm install

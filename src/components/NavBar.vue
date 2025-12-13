@@ -41,6 +41,11 @@
             </li>
           </ul>
           <ul class="navbar-nav mr-auto">
+            <li v-if="isAdmin" class="nav-item">
+              <router-link to="/Dashboard" class="nav-link">Dashboard</router-link>
+            </li>
+          </ul>
+          <ul class="navbar-nav mr-auto">
             <li v-if="!isAuthenticated" class="nav-item">
               <router-link to="/RegistroPersona" class="nav-link">Registrarse</router-link>
             </li>
@@ -123,12 +128,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'; // Importa ref desde vue
+import { defineComponent, ref, computed } from 'vue'; // Importa ref y computed desde vue
 import { useStore } from 'vuex';
 import { useRouter } from "vue-router";
 import { googleLogout } from 'vue3-google-login';
 import axios from "axios";
-import { Icon } from '@iconify/vue';  
+import { Icon } from '@iconify/vue';
+import { API_URL } from '@/config/api';  
 import CarritoPopUp from './pop-up/CarritoPopUp.vue';
 // @ts-ignore - Servicio de auditoría JavaScript
 import auditService from '@/functions/auditService';
@@ -142,6 +148,9 @@ export default defineComponent({
     const isAuthenticated = ref(store.state.loggedIn);
     const user = ref(store.state.user);
     const localSelectedCity = ref(store.state.selectedCity);
+    
+    // Computed para verificar si el usuario es administrador
+    const isAdmin = computed(() => store.state.admin === true);
 
     // hide-on-scroll state
     const isHiddenNav = ref(false);
@@ -203,7 +212,7 @@ export default defineComponent({
     const auditoriaUser = async () => {
       try {
         actividad.value = "Cierrre Sesion"
-        await axios.post('http://localhost:9999/api/v1/auditoria/create', {
+        await axios.post(`${API_URL}/auditoria/create`, {
           actividad: actividad.value,
           fecha: fecha.value,
           hora: hora.value,
@@ -275,6 +284,7 @@ export default defineComponent({
     // Exponer propiedades y métodos al template
     return {
       isAuthenticated,
+      isAdmin,
       user,
       login,
       logout,
@@ -335,7 +345,7 @@ export default defineComponent({
 .nav-container{
   position: sticky;
   top: 0;
-  z-index: 1100;
+  z-index: 900;
   backdrop-filter: saturate(120%) blur(6px);
 }
 

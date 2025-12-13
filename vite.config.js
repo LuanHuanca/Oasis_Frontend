@@ -16,5 +16,7 @@ export default defineConfig({
     __VUE_PROD_DEVTOOLS__: false,
     // Deshabilita los detalles de errores de hidratación en producción
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false
-  }
+  },
+  // Exponer variables de entorno al cliente
+  envPrefix: 'VITE_'
 });
