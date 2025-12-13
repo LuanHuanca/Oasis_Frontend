@@ -34,6 +34,7 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import axios from "axios";
+import { API_URL, BASE_URL } from '@/config/api';
 import Swal from "sweetalert2"; // Importar SweetAlert
 
 export default {
@@ -83,7 +84,7 @@ export default {
 
       // Enviar solicitud al backend para enviar el correo
       try {
-        const url = "http://localhost:9999/mail/send/" + correoUsuario;
+        const url = `${BASE_URL}/mail/send/${correoUsuario}`;
         await axios.post(url, {
           subject: "Detalles de tu carrito de compras - Tu Guia",
           message: emailContent,
@@ -132,7 +133,7 @@ export default {
         console.log("IP: ", data.ip);
         this.ipAddress = data.ip;
         console.log("correo " + correoUsuario);
-        await axios.post("http://localhost:9999/api/v1/auditoria/create", {
+        await axios.post(`${API_URL}/auditoria/create`, {
           correo: correoUsuario,
           actividad: this.actividad,
           fecha: this.fecha,

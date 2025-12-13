@@ -7,7 +7,7 @@
         <div class="row align-items-center profile-header">
           <div class="col-md-2 mb-3">
             <img
-              :src="user.picture ? user.picture : ('/src/assets/deafult_profile.png')"
+              :src="user.picture ? user.picture : ('@/assets/deafult_profile.png')"
               alt="User's profile picture"
               class="rounded-circle img-fluid profile-picture"
             />
@@ -41,6 +41,7 @@
 
 <script lang="ts">
 import axios from "axios";
+import { API_URL } from '@/config/api';
 import NavBar from '../components/NavBar.vue';
 import { useStore } from 'vuex';
 import store from '../functions/store';
@@ -87,7 +88,7 @@ export default {
         return;
       }
       axios
-        .get(`http://localhost:9999/api/v1/persona/${idPersona}`)
+        .get(`${API_URL}/persona/${idPersona}`)
         .then((response) => {
           this.clienteData = response.data.result;
           console.log("informacion acerca del cliente:   ",this.clienteData);
@@ -104,7 +105,7 @@ export default {
         return;
       }
       axios
-        .get(`http://localhost:9999/api/v1/admin/${idPersona}`)
+        .get(`${API_URL}/admin/${idPersona}`)
         .then((response) => {
           this.clienteData = response.data.result;
           console.log("informacion acerca del cliente:   ",this.clienteData);
@@ -124,7 +125,7 @@ export default {
       const idPersona = u?.result?.idPersona ?? u?.idPersona ?? u?.id;
       if (!idPersona) { console.warn('fetchEliminarCliente: idPersona no disponible'); return; }
       axios
-        .delete(`http://localhost:9999/api/v1/cliente/delete/${idPersona}`)
+        .delete(`${API_URL}/cliente/delete/${idPersona}`)
         .then((response) => {
           console.log("Cliente eliminado con exito");
           Swal.fire({
@@ -145,7 +146,7 @@ export default {
       const idPersona = u?.result?.idPersona ?? u?.idPersona ?? u?.id;
       if (!idPersona) { console.warn('fetchEliminarPersona: idPersona no disponible'); return; }
       axios
-        .delete(`http://localhost:9999/api/v1/persona/delete/${idPersona}`)
+        .delete(`${API_URL}/persona/delete/${idPersona}`)
         .then((response) => {
           console.log("Cliente eliminado con exito");
           Swal.fire({

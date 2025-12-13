@@ -1,6 +1,6 @@
 <template>
   <div class="TarjetaRestablecerContra">
-    <img src="src/assets/Home/carusel/Logo.png" alt="Logo Tu Guia" />
+    <img src="@/assets/Home/carusel/Logo.png" alt="Logo Tu Guia" />
     <br />
     <h3>Cambio de contraseña</h3>
     <p>Para cambiar su contraseña, primero debe verificar su contraseña actual</p>
@@ -103,6 +103,7 @@
 
 <script>
 import axios from "axios";
+import { API_URL } from '@/config/api';
 import { Icon } from "@iconify/vue";
 import auditService from "@/functions/auditService";
 
@@ -188,7 +189,7 @@ export default {
         try {
           // Paso 1: Validar contraseña actual
           const validateResponse = await axios.post(
-            `http://localhost:9999/api/v1/${userType}/${userId}/validate-password`,
+            `${API_URL}/${userType}/${userId}/validate-password`,
             { password: this.currentPassword }
           );
 
@@ -208,7 +209,7 @@ export default {
 
           // Paso 2: Si la validación es exitosa (result: true), cambiar la contraseña
           const changeResponse = await axios.put(
-            `http://localhost:9999/api/v1/${userType}/${userId}/password`,
+            `${API_URL}/${userType}/${userId}/password`,
             { password: this.password }
           );
 

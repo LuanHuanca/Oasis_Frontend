@@ -83,7 +83,7 @@ export default {
     fetchHotelData() {
       const hotelId = this.getHotelIdFromURL();
       axios
-        .get(`http://localhost:9999/api/v1/hotel/${hotelId}`)
+        .get(`${API_URL}/hotel/${hotelId}`)
         .then((response) => {
           this.hotelData = response.data.result;
         })

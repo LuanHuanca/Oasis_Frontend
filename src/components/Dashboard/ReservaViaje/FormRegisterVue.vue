@@ -231,6 +231,7 @@ import QuoteModal from './QuoteModal.vue';
 import RegistroReserva from "./RegistroReserva.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { API_URL } from '@/config/api';
 
 export default {
   components: {
@@ -279,21 +280,21 @@ export default {
   async created() {
     this.quoteInfo = {};
     try {
-      const response1 = await axios.get('http://localhost:9999/api/v1/reservahotel/reservas');
+      const response1 = await axios.get(`${API_URL}/reservahotel/reservas`);
       this.reservaHoteles = response1.data;
       console.log('Reservas de Hoteles obtenidos:', this.reservaHoteles);
     } catch (error) {
       console.error('Error al obtener Reservas de Hoteles:', error);
     }
     try {
-      const response2 = await axios.get('http://localhost:9999/api/v1/vuelo/vuelos');
+      const response2 = await axios.get(`${API_URL}/vuelo/vuelos`);
       this.vuelos = response2.data;
       console.log('Vuelos obtenidos:', this.vuelos);
     } catch (error) {
       console.error('Error al obtener vuelos:', error);
     }
     try {
-      const response = await axios.get(`http://localhost:9999/api/v1/alquilerAuto/alquierAutos`);
+      const response = await axios.get(`${API_URL}/alquilerAuto/alquierAutos`);
       this.alquileresAuto = response.data; // Acceder a la propiedad `result` en la respuesta
       console.log('Alquileres cargados exitosamente:', this.alquileresAuto);
     } catch (error) {
@@ -301,7 +302,7 @@ export default {
     }
 
     try {
-      const response = await axios.get(`http://localhost:9999/api/v1/atraccion/atracciones`);
+      const response = await axios.get(`${API_URL}/atraccion/atracciones`);
       this.atracciones = response.data; // Acceder a la propiedad `result` en la respuesta
       console.log('atracciones cargados exitosamente:', this.atracciones);
     } catch (error) {
@@ -309,7 +310,7 @@ export default {
     }
 
     try {
-      const response = await axios.get(`http://localhost:9999/api/v1/actividad/actividades`);
+      const response = await axios.get(`${API_URL}/actividad/actividades`);
       this.actividades = response.data; // Acceder a la propiedad `result` en la respuesta
       console.log('actividades cargados exitosamente:', this.actividades);
     } catch (error) {
@@ -317,7 +318,7 @@ export default {
     }
 
     try {
-      const response = await axios.get(`http://localhost:9999/api/v1/seguro`);
+      const response = await axios.get(`${API_URL}/seguro`);
       this.seguros = response.data.result; // Acceder a la propiedad `result` en la respuesta
       console.log('seguros cargados exitosamente:', this.seguros);
     } catch (error) {
@@ -325,7 +326,7 @@ export default {
     }
 
     try {
-      const response = await axios.get(`http://localhost:9999/api/v1/cliente/clientes`);
+      const response = await axios.get(`${API_URL}/cliente/clientes`);
       this.clientes = response.data; // Acceder a la propiedad `result` en la respuesta
       console.log('clientes cargados exitosamente:', this.clientes);
     } catch (error) {
@@ -370,9 +371,7 @@ export default {
       await this.RegistrarReserva();
 
       // Enviar solicitud para obtener el id del ultimo viaje
-      const response2 = await axios.get(
-          "http://localhost:9999/api/v1/viaje/lastId"
-      );
+      const response2 = await axios.get(`${API_URL}/viaje/lastId`);
       const lastViaje = response2.data.result;
       console.log("Last viaje", lastViaje);
 
@@ -466,7 +465,7 @@ export default {
       console.log("Id de Seguro " + this.selectedInsurance.idSeguro);
 
       // Enviar solicitud para crear un nuevo administrador
-      const response3 = await axios.post('http://localhost:9999/api/v1/viaje/create', {
+      const response3 = await axios.post(`${API_URL}/viaje/create`, {
 
         fecha: this.selectedDate,
         idReservaHotel: this.selectedHotel.idReservaHotel,

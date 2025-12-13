@@ -57,6 +57,7 @@
 
 <script>
 import axios from 'axios';
+import { API_URL } from '@/config/api';
 import Chart from 'chart.js/auto';
 export default {
   name: 'TableAudit',
@@ -84,7 +85,7 @@ export default {
   methods: {
     async getReservasHotel() {
       try {
-        const response = await axios.get(`http://localhost:9999/api/v1/reservahotel/reservas`);
+        const response = await axios.get(`${API_URL}/reservahotel/reservas`);
         this.reservasHotel = response.data; // Acceder a la propiedad `result` en la respuesta
         console.log('Reservas cargadas exitosamente:', this.reservasHotel);
       } catch (error) {
@@ -93,7 +94,7 @@ export default {
     },
     async getVuelos() {
       try {
-        const response = await axios.get(`http://localhost:9999/api/v1/vuelo/vuelos`);
+        const response = await axios.get(`${API_URL}/vuelo/vuelos`);
         this.vuelos = response.data; // Acceder a la propiedad `result` en la respuesta
         console.log('Vuelos cargados exitosamente:', this.vuelos);
       } catch (error) {
@@ -102,7 +103,7 @@ export default {
     },
     async getViajes() {
       try {
-        const response = await axios.get(`http://localhost:9999/api/v1/viaje/viajes`);
+        const response = await axios.get(`${API_URL}/viaje/viajes`);
         this.viajes = response.data; // Acceder a la propiedad `result` en la respuesta
         console.log('Viajes cargados exitosamente:', this.viajes);
       } catch (error) {
@@ -111,7 +112,7 @@ export default {
     },
     async getAuditorias(userId) {
       try {
-        const response = await axios.get(`http://localhost:9999/api/v1/auditoria`);
+        const response = await axios.get(`${API_URL}/auditoria`);
         this.auditorias = response.data.result; // Acceder a la propiedad 
         // `result` en la respuesta
         console.log('Auditorias cargadas exitosamente:', this.auditorias);

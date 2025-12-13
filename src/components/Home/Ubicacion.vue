@@ -4,19 +4,19 @@
       <h2>Ubicacion</h2>
       <p>Av. 14 de Septiembre Nº 4807 esquina, La Paz</p>
       <div class="social">
-        <img src="src/assets/Home/team/mensaje.png" alt="" width="30">
+        <img :src="mensajeIcon" alt="" width="30">
         <p>agencia.viajes.oasis@gmail.com</p>
       </div>
       <div class="social">
-        <img src="src/assets/Home/facebook.png" alt="" width="30">
+        <img :src="facebookIcon" alt="" width="30">
         <p>Agencia de Viajes TU GUIA</p>
       </div>
       <div class="social">
-        <img src="src/assets/Home/instagram.png" alt="" width="30">
+        <img :src="instagramIcon" alt="" width="30">
         <p>Agency.TuGuia</p>
       </div>
       <div class="social">
-        <img src="src/assets/Home/telefono.png" alt="" width="30">
+        <img :src="telefonoIcon" alt="" width="30">
         <p>(+591) 68171114</p>
       </div>
     </div>
@@ -28,6 +28,26 @@
     ></iframe>
   </div>
 </template>
+
+<script>
+import mensajeIcon from '@/assets/Home/team/mensaje.png';
+import facebookIcon from '@/assets/Home/facebook.png';
+import instagramIcon from '@/assets/Home/instagram.png';
+import telefonoIcon from '@/assets/Home/telefono.png';
+
+export default {
+  name: 'Ubicacion',
+  data() {
+    return {
+      mensajeIcon,
+      facebookIcon,
+      instagramIcon,
+      telefonoIcon
+    };
+  }
+};
+</script>
+
 <style>
 .ubicacion-contenedor {
   width: 100%;

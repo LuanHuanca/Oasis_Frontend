@@ -31,6 +31,7 @@
 
 <script>
 import axios from 'axios';
+import { API_URL } from '@/config/api';
 
 export default {
   name: 'TableComentarios',
@@ -45,7 +46,7 @@ export default {
   methods: {
     async getComentarios() {
       try {
-        const response = await axios.get(`http://localhost:9999/api/v1/comentarios`);
+        const response = await axios.get(`${API_URL}/comentarios`);
         this.comentarios = response.data.result; // Acceder a la propiedad `result` en la respuesta
         console.log('Comentarios cargados exitosamente:', this.comentarios);
       } catch (error) {

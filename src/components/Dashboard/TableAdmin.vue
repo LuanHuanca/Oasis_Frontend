@@ -72,6 +72,7 @@
 
 <script>
 import axios from 'axios';
+import { API_URL } from '@/config/api';
 import PermissionsPopup from './PermissionsPopup.vue';
 
 export default {
@@ -97,7 +98,7 @@ export default {
     async fetchData() {
       try {
         // Obtener todos los administradores
-        const adminsResponse = await axios.get('http://localhost:9999/api/v1/admin');
+        const adminsResponse = await axios.get('${API_URL}/admin');
         const admins = adminsResponse.data.result;
 
         // Obtener permisos efectivos de cada administrador
@@ -106,7 +107,7 @@ export default {
           try {
             // Obtener el resumen de permisos (rol + adicionales + temporales)
             const resumenResponse = await axios.get(
-              `http://localhost:9999/api/v1/gestion-permisos/admin/${admin.idAdmin}/resumen`
+              `${API_URL}/gestion-permisos/admin/${admin.idAdmin}/resumen`
             );
             const resumen = resumenResponse.data.result;
             
@@ -154,7 +155,7 @@ export default {
       this.roleError = '';
       this.roleSuccess = '';
       try {
-        const response = await axios.post('http://localhost:9999/api/v1/rol/create', {
+        const response = await axios.post('${API_URL}/rol/create', {
           rol: this.newRole
         });
         if (response.data.code == '200-OK') {

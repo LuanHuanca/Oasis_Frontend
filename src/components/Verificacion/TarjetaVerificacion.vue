@@ -1,6 +1,6 @@
 <template>
   <div class="TarjetaVerificacion">
-    <img src="src/assets/Home/carusel/Logo.png" alt="Logo Oasis" />
+    <img src="@/assets/Home/carusel/Logo.png" alt="Logo Oasis" />
     <br />
     <h3>Verificacion de dos pasos</h3>
     <p>Se le envio un codigo de verificacion a su correo</p>

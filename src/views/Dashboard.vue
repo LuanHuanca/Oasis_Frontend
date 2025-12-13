@@ -27,9 +27,10 @@
 
 <script>
 import axios from 'axios';
+import { API_URL } from '@/config/api';
 import NavBar from "../components/NavBar.vue";
 import TableResHotel from "../components/Dashboard/CRUD_ResHoteles/TableResHotel.vue";
-import SideBar from "../components/Admin/SideBar.vue";
+import SideBar from "../components/Admin/Sidebar.vue";
 import TableAudit from "../components/Dashboard/TableAudit.vue";
 import TableVuelo from "../components/Dashboard/CRUD_Vuelos/TableVuelo.vue";
 import TableAlquilerAu from "../components/Dashboard/CRUD_AlquilerAutos/TableAlquilerAu.vue";
@@ -102,7 +103,7 @@ export default {
       try {
         // Usar el nuevo endpoint de permisos efectivos que incluye ROL + ADICIONAL + TEMPORAL
         const response = await axios.get(
-          `http://localhost:9999/api/v1/gestion-permisos/admin/${this.$store.state.id}/permisos-efectivos`
+          `${API_URL}/gestion-permisos/admin/${this.$store.state.id}/permisos-efectivos`
         );
         
         // Extraer los nombres de permisos del resultado
@@ -125,7 +126,7 @@ export default {
         // Fallback: intentar con el endpoint antiguo si falla
         try {
           const fallbackResponse = await axios.get(
-            `http://localhost:9999/api/v1/adminpermiso/admin/${this.$store.state.id}/permisos`
+            `${API_URL}/adminpermiso/admin/${this.$store.state.id}/permisos`
           );
           this.permisos = fallbackResponse.data.result.map(permiso => permiso.permiso);
           this.$store.commit('setSidebarPermisos', this.permisos);

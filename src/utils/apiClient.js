@@ -1,10 +1,22 @@
 /**
  * Cliente API centralizado
  * Proporciona funciones helper para hacer llamadas a la API
+ * 
+ * USO RECOMENDADO:
+ * - Importar apiClient para usar axios configurado: import apiClient from '@/utils/apiClient'
+ * - Importar funciones helper: import { getFullApiUrl, getApiEndpoint } from '@/utils/apiClient'
+ * - O importar directamente de api.js: import { API_URL, BASE_URL } from '@/config/api'
  */
 
 import axios from 'axios';
-import { API_URL, BASE_URL, MAIL_URL } from '../config/api';
+import { 
+  API_URL, 
+  BASE_URL, 
+  MAIL_URL,
+  getFullApiUrl as getFullApiUrlFromConfig,
+  getApiEndpoint as getApiEndpointFromConfig,
+  getMailUrlWithEmail
+} from '../config/api';
 
 // Crear instancia de axios con configuración por defecto
 const apiClient = axios.create({
@@ -25,31 +37,25 @@ apiClient.interceptors.response.use(
 );
 
 /**
- * Construir URL completa para endpoints de la API
- * @param {string} endpoint - Endpoint relativo (ej: '/cliente/login')
+ * Construir URL completa para endpoints que ya incluyen /api/v1
+ * @param {string} endpoint - Endpoint que ya incluye /api/v1 (ej: '/api/v1/cliente/login')
  * @returns {string} URL completa
  */
-export const getApiUrl = (endpoint) => {
-  // Si el endpoint ya incluye /api/v1, usar BASE_URL
-  if (endpoint.startsWith('/api/v1')) {
-    return `${BASE_URL}${endpoint}`;
-  }
-  // Si el endpoint comienza con /, agregarlo a API_URL
-  if (endpoint.startsWith('/')) {
-    return `${API_URL}${endpoint}`;
-  }
-  // Si no, agregar / antes
-  return `${API_URL}/${endpoint}`;
-};
+export const getFullApiUrl = getFullApiUrlFromConfig;
+
+/**
+ * Construir URL para endpoints que NO incluyen /api/v1
+ * @param {string} endpoint - Endpoint relativo (ej: '/cliente/login')
+ * @returns {string} URL completa con /api/v1
+ */
+export const getApiEndpoint = getApiEndpointFromConfig;
 
 /**
  * Construir URL para el servicio de correo
  * @param {string} correo - Correo del destinatario
  * @returns {string} URL completa para el servicio de correo
  */
-export const getMailUrl = (correo) => {
-  return `${MAIL_URL}/${correo}`;
-};
+export const getMailUrl = getMailUrlWithEmail;
 
 // Exportar instancia de axios configurada
 export default apiClient;

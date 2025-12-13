@@ -59,6 +59,7 @@
 
 <script>
 import axios from 'axios';
+import { API_URL } from '@/config/api';
 import Swal from 'sweetalert2';
 // @ts-ignore - Servicio de auditoría
 import auditService from '@/functions/auditService';
@@ -80,7 +81,7 @@ export default {
         const id = user.esAdmin ? user.idAdmin : user.idCliente;
         
         const response = await axios.get(
-          `http://localhost:9999/api/v1/bloqueo/${tipo}/${id}/info`
+          `${API_URL}/bloqueo/${tipo}/${id}/info`
         );
         
         if (response.data.code === '200-OK') {
@@ -144,7 +145,7 @@ export default {
         
         // Bloquear la cuenta
         const response = await axios.post(
-          `http://localhost:9999/api/v1/bloqueo/${tipo}/${id}/bloquear`,
+          `${API_URL}/bloqueo/${tipo}/${id}/bloquear`,
           { motivo }
         );
         
@@ -201,7 +202,7 @@ export default {
         
         // Desbloquear la cuenta
         const response = await axios.post(
-          `http://localhost:9999/api/v1/bloqueo/${tipo}/${id}/desbloquear`
+          `${API_URL}/bloqueo/${tipo}/${id}/desbloquear`
         );
         
         if (response.data.code === '200-OK') {
@@ -237,7 +238,7 @@ export default {
     async cargarUsuarios() {
       try {
         // Ejemplo: Obtener clientes
-        const clientesResponse = await axios.get('http://localhost:9999/api/v1/cliente');
+        const clientesResponse = await axios.get('${API_URL}/cliente');
         const clientes = clientesResponse.data.map(c => ({
           ...c,
           id: c.idCliente,
@@ -245,7 +246,7 @@ export default {
         }));
         
         // Ejemplo: Obtener administradores
-        const adminsResponse = await axios.get('http://localhost:9999/api/v1/admin');
+        const adminsResponse = await axios.get('${API_URL}/admin');
         const admins = adminsResponse.data.map(a => ({
           ...a,
           id: a.idAdmin,

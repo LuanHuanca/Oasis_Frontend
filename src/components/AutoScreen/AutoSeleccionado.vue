@@ -84,7 +84,7 @@ export default {
     fetchAutoData() {
       const AutoId = this.getAutoIdFromURL();
       axios
-        .get(`http://localhost:9999/api/v1/auto/${autoId}`)
+        .get(`${API_URL}/auto/${autoId}`)
         .then((response) => {
           this.autoData = response.data.result;
         })

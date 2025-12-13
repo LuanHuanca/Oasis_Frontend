@@ -50,6 +50,7 @@
 
 <script>
 import axios from 'axios';
+import { API_URL } from '@/config/api';
 import RegisterVuelo from "./RegisterVuelo.vue";
 import EditVuelo from "./EditVuelo.vue";
 
@@ -73,7 +74,7 @@ export default {
   methods: {
     async getVuelos() {
       try {
-        const response = await axios.get(`http://localhost:9999/api/v1/vuelo/vuelos`);
+        const response = await axios.get(`${API_URL}/vuelo/vuelos`);
         this.vuelos = response.data; // Acceder a la propiedad `result` en la respuesta
         console.log('Vuelos cargados exitosamente:', this.vuelos);
       } catch (error) {
@@ -95,7 +96,7 @@ export default {
         return;
       }
       try {
-        await axios.delete(`http://localhost:9999/api/v1/vuelo/delete/${idVuelo}`);
+        await axios.delete(`${API_URL}/vuelo/delete/${idVuelo}`);
         this.getVuelos();
         console.log('Vuelo eliminado:', idVuelo);
       } catch (error) {

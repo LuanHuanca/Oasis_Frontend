@@ -5,7 +5,7 @@
   <div class="nav-container" :class="{ 'nav-hidden': isHiddenNav }">
     <nav class="navbar navbar-expand-md navbar-light custom-navbar-color">
       <div class="container">
-        <img id="logo" src="/src/assets/Home/carusel/Logo.png" alt="Logo">
+        <img id="logo" src="@/assets/Home/carusel/Logo.png" alt="Logo">
         <button
             id="custom-button"
             class="navbar-toggler"
@@ -77,7 +77,7 @@
                   data-toggle="dropdown"
               >
                 <img
-                    :src="user.picture ? user.picture : ('/src/assets/deafult_profile.png')"
+                    :src="user.picture ? user.picture : ('@/assets/deafult_profile.png')"
                     alt="User's profile picture"
                     class="nav-user-profile rounded-circle"
                     width="100"
@@ -128,12 +128,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue'; // Importa ref y computed desde vue
+import { defineComponent, ref, computed, onBeforeUnmount } from 'vue'; // Importa ref, computed y onBeforeUnmount desde vue
 import { useStore } from 'vuex';
 import { useRouter } from "vue-router";
 import { googleLogout } from 'vue3-google-login';
 import axios from "axios";
 import { Icon } from '@iconify/vue';
+// @ts-ignore - api.js no tiene tipos TypeScript
 import { API_URL } from '@/config/api';  
 import CarritoPopUp from './pop-up/CarritoPopUp.vue';
 // @ts-ignore - Servicio de auditoría JavaScript
@@ -167,8 +168,6 @@ export default defineComponent({
       lastScroll = current;
     };
 
-    // attach/detach en mounted/beforeUnmount usando lifecycle hooks expuestos abajo
-
     const actividad = ref('');
     const fecha = ref('');
     const hora = ref('');
@@ -177,7 +176,6 @@ export default defineComponent({
     const ipAddress = ref('');
     const idAdmin = ref('');
     const idCliente = ref('');
-    
 
     const login = () => {
       router.push("/login");
@@ -276,10 +274,62 @@ export default defineComponent({
       console.log(selectedCity);
     };
     
-    // lifecycle hooks para montar y desmontar el listener de scroll
+    // Manejar el listener de scroll con lifecycle hooks
     if (typeof window !== 'undefined') {
       window.addEventListener('scroll', onScroll, { passive: true });
+      
+      // Limpiar listener cuando el componente se desmonte
+      onBeforeUnmount(() => {
+        window.removeEventListener('scroll', onScroll);
+      });
     }
+
+    // Temporizador para cierre automático de sesión por inactividad
+    let temporizadorId: ReturnType<typeof setTimeout> | null = null;
+    
+    const realizarAccionAutomatica = async () => {
+      console.log("Proceso de cerrado de sesión automático por inactividad");
+      
+      try {
+        const userEmail = store.state.user?.result?.correo || store.state.user?.correo || 'DESCONOCIDO';
+        const userType = store.state.rol === 'Admin' ? 'admin' : 'cliente';
+        
+        // Auditoría: Logout automático por inactividad
+        await auditService.auditLogout(userEmail, userType);
+
+        googleLogout();
+        store.commit('setLoggedIn', false);
+        store.commit('setUser', null);
+        store.commit('setAdmin', false);
+        console.log("Cierre automático completado");
+        router.push("/");
+        window.location.reload();
+      } catch (error) {
+        console.error('Error al cerrar sesión automáticamente:', error);
+      }
+    };
+
+    // Iniciar temporizador (5 horas = 5*3600*1000 ms)
+    if (typeof window !== 'undefined') {
+      temporizadorId = setTimeout(realizarAccionAutomatica, 5 * 3600 * 1000);
+      
+      // Limpiar temporizador al desmontar
+      onBeforeUnmount(() => {
+        if (temporizadorId) {
+          clearTimeout(temporizadorId);
+        }
+      });
+    }
+
+    const togglePopUp = ref(false);
+    const togglePopUpFn = () => {
+      togglePopUp.value = !togglePopUp.value;
+    };
+
+    const cities = [
+      'all', 'La Paz', 'Santa Cruz de la Sierra', 'Cochabamba', 'Sucre', 
+      'Oruro', 'Potosí', 'Tarija', 'Beni', 'Pando'
+    ];
 
     // Exponer propiedades y métodos al template
     return {
@@ -291,46 +341,11 @@ export default defineComponent({
       localSelectedCity,
       updateCity,
       isHiddenNav,
-      onScroll
+      onScroll: onScroll as () => void,
+      showPopUp: togglePopUp,
+      togglePopUp: togglePopUpFn,
+      cities
     };
-  },
-  data() {
-    return {
-      tiempoRestante: 5*3600, 
-      temporizador: null as number | null,
-      cities: [
-        'all', 'La Paz', 'Santa Cruz de la Sierra', 'Cochabamba', 'Sucre', 
-        'Oruro', 'Potosí', 'Tarija', 'Beni', 'Pando'
-      ],
-      showPopUp: false,
-    };
-  },
-  mounted() {
-    // Iniciar el temporizador
-    this.temporizador = setTimeout(this.realizarAccion, this.tiempoRestante * 1000);
-  },
-  beforeUnmount() {
-    if (typeof window !== 'undefined') {
-      window.removeEventListener('scroll', this.onScroll as EventListener);
-    }
-  },
-  methods: {
-    async realizarAccion() {
-      const store = useStore();
-      const router = useRouter();
-      console.log("Proceso de cerrado de sesión");
-      this.logout();
-      // Aquí puedes poner la acción que quieras realizar después de 5 minutos
-      console.log("Han pasado 5 minutos. Se realiza la acción.");
-
-      // También puedes reiniciar el temporizador si deseas que se repita la acción después de cada intervalo de 5 minutos
-      this.tiempoRestante = 5*60;
-      this.temporizador = setTimeout(this.realizarAccion, this.tiempoRestante * 1000);
-      clearTimeout(this.temporizador);
-    },
-    togglePopUp() {
-      this.showPopUp = !this.showPopUp;
-    },
   },
   components:{
     Icon,

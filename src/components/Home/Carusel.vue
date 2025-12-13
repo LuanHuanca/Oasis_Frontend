@@ -1,6 +1,6 @@
 <template>
   <div class="Inicio2-container">
-    <div class="imagen-container">
+    <div class="imagen-container" :style="{ backgroundImage: `url(${foto1Image})` }">
       <div class="imagen-informacion">
         <h4>Disfruta de los mejores destinos con nuestra agencia de viajes</h4>
         <h1>Explora el Mundo</h1>
@@ -10,16 +10,16 @@
     <div class="Tarjetas-container">
       <div class="carusel">
         <div class="tarjeta-ciudad">
-          <img src="src/assets/Home/carusel/Cochabamba.png" alt="Ciudad de Cochabamba" />
+          <img :src="cochabambaImage" alt="Ciudad de Cochabamba" />
           <span>Cochabamba</span>
         </div>
         <div class="tarjeta-ciudad">
-          <img src="src/assets/Home/carusel/La_Paz.png" alt="Ciudad de La Paz" />
+          <img :src="laPazImage" alt="Ciudad de La Paz" />
           <span>La Paz</span>
         </div>
         <div class="tarjeta-ciudad">
           <img
-            src="src/assets/Home/carusel/tarija-nocturna-600.png"
+            :src="tarijaImage"
             alt="Ciudad de Tarija"
           />
           <span>Tarija</span>
@@ -29,9 +29,28 @@
     </div>
   </div>
 </template>
+
+<script>
+import cochabambaImage from '@/assets/Home/carusel/Cochabamba.png';
+import laPazImage from '@/assets/Home/carusel/La_Paz.png';
+import tarijaImage from '@/assets/Home/carusel/tarija-nocturna-600.png';
+import foto1Image from '@/assets/Home/carusel/foto1.jpg';
+
+export default {
+  name: 'Carusel',
+  data() {
+    return {
+      cochabambaImage,
+      laPazImage,
+      tarijaImage,
+      foto1Image
+    };
+  }
+};
+</script>
+
 <style>
 .imagen-container {
-  background: url("src/assets/Home/carusel/foto1.jpg");
   display: flex;
   flex-direction: column;
   background-size: cover;

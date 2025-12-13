@@ -55,14 +55,14 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('http://localhost:9999/api/v1/auto');
+      const response = await axios.get('${API_URL}/auto');
       this.autos = response.data.result;
       console.log('Autos obtenidos:', this.autos);
     } catch (error) {
       console.error('Error al obtener los autos:', error);
     }
     try {
-      const response = await axios.get('http://localhost:9999/api/v1/ciudad');
+      const response = await axios.get('${API_URL}/ciudad');
       this.ciudades = response.data.result;
       console.log('Ciudades obtenidas:', this.ciudades);
     } catch (error) {
@@ -78,7 +78,7 @@ export default {
     // Metodo para actualizar Vuelo
     async updateAlquiler (){
       const data = { ...this.formData };
-      const response = await axios.put(`http://localhost:9999/api/v1/alquilerAuto/update/${this.alquiler.idAlquiler}`, {
+      const response = await axios.put(`${API_URL}/alquilerAuto/update/${this.alquiler.idAlquiler}`, {
         empresa: data.empresa,
         idAuto: data.idAuto,
         idCiudad: data.idCiudad,

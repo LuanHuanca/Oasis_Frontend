@@ -13,6 +13,7 @@
 
 <script>
 import axios from 'axios';
+import { API_URL } from '@/config/api';
 
 export default {
   name: 'PopularHotels',
@@ -48,7 +49,7 @@ export default {
       this.$router.push(link);
     },
     fetchHotels() {
-      axios.get('http://localhost:9999/api/v1/hotel')
+      axios.get('${API_URL}/hotel')
         .then(response => {
           this.hotels = response.data.result.map(hotel => ({
             name: hotel.hotel,

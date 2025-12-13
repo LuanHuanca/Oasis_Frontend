@@ -5,7 +5,7 @@
       <div id="invoice-content">
         <div class="header">
           <div class="logo">
-            <img style="width: 100%" src="/src/assets/Home/carusel/Logo.png" alt="Logo de la empresa">
+            <img style="width: 100%" src="@/assets/Home/carusel/Logo.png" alt="Logo de la empresa">
           </div>
           <div class="company-info" style="color: black">
             <h2>Agencia de Viajes TU GUIA</h2>
@@ -111,6 +111,7 @@
 
 <script>
 import axios from "axios";
+import { API_URL } from '@/config/api';
 import Factura from "./Factura.vue";
 import Modal from './Modal.vue';
 
@@ -148,7 +149,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('http://localhost:9999/api/v1/formaPago');
+      const response = await axios.get(`${API_URL}/formaPago`);
       this.formasPago = response.data.result;
       console.log('Metodos de pago obtenidos:', this.formasPago);
     } catch (error) {
@@ -169,7 +170,7 @@ export default {
     async saveAndClose() {
 
       // Enviar solicitud para crear una factura
-      const response3 = await axios.post('http://localhost:9999/api/v1/facturacion/create', {
+      const response3 = await axios.post(`${API_URL}/facturacion/create`, {
 
         fecha: this.quoteInfo.fecha,
         nit: this.nit,

@@ -23,6 +23,7 @@ import {mapActions, useStore} from "vuex";
 import { Icon } from "@iconify/vue";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { API_URL } from '@/config/api';
 
 export default {
   name: 'PopularAutos',
@@ -52,7 +53,7 @@ export default {
   methods: {
     async addComentary() {
       // Enviar solicitud para crear un nuevo administrador
-      const response3 = await axios.post('http://localhost:9999/api/v1/comentarios/create', {
+      const response3 = await axios.post(`${API_URL}/comentarios/create`, {
 
         comentario: this.mensaje,
         clienteidCliente: this.user,

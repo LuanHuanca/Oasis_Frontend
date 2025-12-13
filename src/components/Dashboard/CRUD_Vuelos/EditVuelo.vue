@@ -71,14 +71,14 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('http://localhost:9999/api/v1/ciudad');
+      const response = await axios.get('${API_URL}/ciudad');
       this.ciudades = response.data.result;
       console.log('Ciudades obtenidas:', this.ciudades);
     } catch (error) {
       console.error('Error al obtener ciudades:', error);
     }
     try {
-      const response = await axios.get('http://localhost:9999/api/v1/aerolinea');
+      const response = await axios.get('${API_URL}/aerolinea');
       this.aerolineas = response.data.result;
       console.log('Aerolineas obtenidas:', this.aerolineas);
     } catch (error) {
@@ -102,7 +102,7 @@ export default {
     // Metodo para actualizar Vuelo
     async updateVuelo (){
       const data = { ...this.formData };
-      const response = await axios.put(`http://localhost:9999/api/v1/vuelo/update/${this.vuelo.idViaje}`, {
+      const response = await axios.put(`${API_URL}/vuelo/update/${this.vuelo.idViaje}`, {
         nroReserva: data.nroReserva,
         origen: data.origen,
         destino: data.destino,

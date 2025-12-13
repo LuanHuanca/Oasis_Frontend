@@ -77,6 +77,7 @@
 
 <script>
 import axios from "axios";
+import { API_URL, BASE_URL } from '@/config/api';
 
 export default {
   data() {
@@ -100,7 +101,7 @@ export default {
       try {
         // Enviar solicitud para crear una persona
         const response = await axios.post(
-          "http://localhost:9999/api/v1/persona/create",
+          `${API_URL}/persona/create`,
           {
             nombre: this.nombre,
             apellidoP: this.apellidoP,
@@ -113,14 +114,12 @@ export default {
         console.log("Persona created");
 
         // Enviar solicitud para obtener el id de la última persona creada
-        const response2 = await axios.get(
-          "http://localhost:9999/api/v1/persona/lastId"
-        );
+        const response2 = await axios.get(`${API_URL}/persona/lastId`);
         const lastPersona = response2.data.result;
         console.log("Last persona", lastPersona);
 
         // Enviar solicitud para crear un nuevo administrador
-        await axios.post("http://localhost:9999/api/v1/admin/create", {
+        await axios.post(`${API_URL}/admin/create`, {
           persona: {
             idPersona: lastPersona,
             nombre: this.nombre,
@@ -160,7 +159,7 @@ export default {
       this.$router.push("/");
     },
     async sendCredentialsMail(correo, contrasena) {
-      const url = `http://localhost:9999/mail/send/${this.correoenviar}`;
+      const url = `${BASE_URL}/mail/send/${this.correoenviar}`;
       const data = {
         subject: "Credenciales de Acceso a tu Cuenta",
         message: `Estimado/a Usuario/a,
@@ -231,7 +230,7 @@ Luis Huanca, Gerente de la agencia de viajes`,
         console.log("fecha inicio creado"+this.fechaInicio);
         console.log("fecha fin creado"+this.fechaFin);
         console.log("ip creado"+this.ipAddress);
-        await axios.post('http://localhost:9999/api/v1/auditoria/create', {
+        await axios.post(`${API_URL}/auditoria/create`, {
           correo: this.nombre +"."+ this.apellidoP+"@tuguia.bo",
           actividad: this.actividad,
           fecha: this.fecha,

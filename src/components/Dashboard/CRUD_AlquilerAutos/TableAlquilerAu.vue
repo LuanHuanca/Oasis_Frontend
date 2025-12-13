@@ -50,6 +50,7 @@
 
 <script>
 import axios from 'axios';
+import { API_URL } from '@/config/api';
 import RegisterAlquilerAu from "./RegisterAlquilerAu.vue";
 import EditAlquilerAu from "./EditAlquilerAu.vue";
 
@@ -73,7 +74,7 @@ export default {
   methods: {
     async getAlquilerAutos() {
       try {
-        const response = await axios.get(`http://localhost:9999/api/v1/alquilerAuto/alquierAutos`);
+        const response = await axios.get(`${API_URL}/alquilerAuto/alquierAutos`);
         this.alquileresAutos = response.data; // Acceder a la propiedad `result` en la respuesta
         console.log('Alquileres cargados exitosamente:', this.alquileresAutos);
       } catch (error) {
@@ -95,7 +96,7 @@ export default {
         return;
       }
       try {
-        await axios.delete(`http://localhost:9999/api/v1/alquilerAuto/delete/${idAlquiler}`);
+        await axios.delete(`${API_URL}/alquilerAuto/delete/${idAlquiler}`);
         this.getAlquilerAutos();
         console.log('Vuelo eliminado:', idAlquiler);
       } catch (error) {

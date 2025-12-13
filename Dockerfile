@@ -8,6 +8,8 @@ RUN mkdir /app
 WORKDIR /app
 
 # Argumento de build para la URL de la API
+# IMPORTANTE: En Docker, esto se pasa desde docker-compose.yml
+# En EC2, debe configurarse antes del build o pasarse como build arg
 ARG VITE_API_URL=http://localhost:9999
 ENV VITE_API_URL=$VITE_API_URL
 

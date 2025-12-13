@@ -145,6 +145,7 @@
 
 <script>
 import axios from "axios";
+import { API_URL } from '@/config/api';
 import { Icon } from "@iconify/vue";
 
 export default {
@@ -199,7 +200,7 @@ export default {
     async emailExistsBackend(email) {
       if (!email) return false;
       try {
-        const res = await axios.get("http://localhost:9999/api/v1/cliente");
+        const res = await axios.get(`${API_URL}/cliente`);
         let lista = [];
         if (Array.isArray(res.data)) {
           lista = res.data;
@@ -260,7 +261,7 @@ export default {
 
         // Enviar solicitud para crear una persona
         const response = await axios.post(
-          "http://localhost:9999/api/v1/persona/create",
+          `${API_URL}/persona/create`,
           {
             nombre: this.nombre,
             apellidoP: this.apellidoP,
@@ -273,15 +274,13 @@ export default {
         console.log("Persona created");
 
         // Enviar solicitud para obtener el id de la última persona creada
-        const response2 = await axios.get(
-          "http://localhost:9999/api/v1/persona/lastId"
-        );
+        const response2 = await axios.get(`${API_URL}/persona/lastId`);
         const lastPersona = response2.data.result;
         console.log("Last persona", lastPersona);
         
         // Enviar solicitud para crear una cuenta
         const response3 = await axios.post(
-          "http://localhost:9999/api/v1/cliente/create",
+          `${API_URL}/cliente/create`,
           {
             correo: this.correo,
             password: this.password,
@@ -480,7 +479,7 @@ export default {
         console.log("fecha inicio creado"+this.fechaInicio);
         console.log("fecha fin creado"+this.fechaFin);
         console.log("ip creado"+this.ipAddress);
-        await axios.post('http://localhost:9999/api/v1/auditoria/create', {
+        await axios.post(`${API_URL}/auditoria/create`, {
           correo: this.correo,
           actividad: this.actividad,
           fecha: this.fecha,

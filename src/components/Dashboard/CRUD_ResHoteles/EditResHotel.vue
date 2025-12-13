@@ -61,7 +61,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('http://localhost:9999/api/v1/hotel');
+      const response = await axios.get('${API_URL}/hotel');
       this.hoteles = response.data.result;
       console.log('Hoteles obtenidos:', this.hoteles);
     } catch (error) {
@@ -85,7 +85,7 @@ export default {
     // Metodo para actualizar Reserva
     async updateReserva (){
       const data = { ...this.formData };
-      const response = await axios.put(`http://localhost:9999/api/v1/reservahotel/update/${this.reservation.idReservaHotel}`, {
+      const response = await axios.put(`${API_URL}/reservahotel/update/${this.reservation.idReservaHotel}`, {
         nroReservaHotel: data.nroReservaHotel,
         fechaInicio: data.fechaInicio,
         fechaFin: data.fechaFin,

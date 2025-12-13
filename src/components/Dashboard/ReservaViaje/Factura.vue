@@ -5,7 +5,7 @@
       <div id="invoice-contentFac">
         <div class="header">
           <div class="logo">
-            <img style="width: 100%" src="/src/assets/Home/carusel/Logo.png" alt="Logo de la empresa">
+            <img style="width: 100%" src="@/assets/Home/carusel/Logo.png" alt="Logo de la empresa">
           </div>
           <div class="company-info" style="color: black">
             <h2>Agencia de Viajes TU GUIA</h2>
@@ -102,6 +102,7 @@
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import axios from "axios";
+import { API_URL } from '@/config/api';
 
 
 export default {
@@ -141,7 +142,7 @@ export default {
 
 
     try {
-      const response = await axios.get(`http://localhost:9999/api/v1/formaPago/${this.pago}`);
+      const response = await axios.get(`${API_URL}/formaPago/${this.pago}`);
       this.pagoName = response.data.result;
       console.log('Metodos de pago obtenidos:', this.pagoName);
     } catch (error) {

@@ -1,6 +1,6 @@
 <template>
   <div class="TarjetaLogin">
-    <img src="src/assets/Home/carusel/Logo.png" alt="Logo" />
+    <img :src="logoUrl" alt="Logo" />
     <br />
     <h3>Bienvenido</h3>
     <p>Inicie su sesión para continuar en TU GUIA</p>
@@ -59,6 +59,7 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 import { Icon } from "@iconify/vue";
 import { API_URL, MAIL_URL } from "@/config/api";
+import logoImage from "@/assets/Home/carusel/Logo.png";
 
 
 export default defineComponent({
@@ -77,6 +78,7 @@ export default defineComponent({
       fechaFin: "",
       ipAddress: "",
       showPassword: false,
+      logoUrl: logoImage,
     };
   },
   components: {

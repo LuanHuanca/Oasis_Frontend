@@ -54,6 +54,7 @@
 
 <script>
 import axios from 'axios';
+import { API_URL } from '@/config/api';
 import RegisterResHotel from "./RegisterResHotel.vue";
 import EditResHotel from "./EditResHotel.vue";
 
@@ -77,7 +78,7 @@ export default {
   methods: {
     async getReservasHotel() {
       try {
-        const response = await axios.get(`http://localhost:9999/api/v1/reservahotel/reservas`);
+        const response = await axios.get(`${API_URL}/reservahotel/reservas`);
         this.reservasHotel = response.data; // Acceder a la propiedad `result` en la respuesta
         console.log('Reservas cargadas exitosamente:', this.reservasHotel);
       } catch (error) {
@@ -99,7 +100,7 @@ export default {
         return;
       }
       try {
-        await axios.delete(`http://localhost:9999/api/v1/reservahotel/delete/${idReservaHotel}`);
+        await axios.delete(`${API_URL}/reservahotel/delete/${idReservaHotel}`);
         this.getReservasHotel();
         console.log('Reserva eliminada:', idReservaHotel);
       } catch (error) {

@@ -46,6 +46,7 @@
 
 <script>
 import axios from 'axios';
+import { API_URL } from '@/config/api';
 import EditViaje from "./EditViaje.vue";
 
 export default {
@@ -68,7 +69,7 @@ export default {
   methods: {
     async getViajes() {
       try {
-        const response = await axios.get(`http://localhost:9999/api/v1/viaje/viajes`);
+        const response = await axios.get(`${API_URL}/viaje/viajes`);
         this.viajes = response.data; // Acceder a la propiedad `result` en la respuesta
         console.log('Viajes cargados exitosamente:', this.viajes);
       } catch (error) {
@@ -90,7 +91,7 @@ export default {
         return;
       }
       try {
-        await axios.delete(`http://localhost:9999/api/v1/viaje/delete/${idViaje}`);
+        await axios.delete(`${API_URL}/viaje/delete/${idViaje}`);
         this.getViajes();
         console.log('Viaje eliminado:', idViaje);
       } catch (error) {

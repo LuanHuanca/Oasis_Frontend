@@ -10,7 +10,7 @@
       <div class="row">
         <div class="col-lg-4 col-md-6 mb-4">
           <div class="package-item bg-white mb-2">
-            <img class="img-fluid" src="src/assets/vuelos/package-1.jpg" alt="" />
+            <img class="img-fluid" :src="package1" alt="" />
             <div class="p-4">
               <div class="d-flex justify-content-between mb-3">
                 <small class="m-0"
@@ -42,7 +42,7 @@
         </div>
         <div class="col-lg-4 col-md-6 mb-4">
           <div class="package-item bg-white mb-2">
-            <img class="img-fluid" src="src/assets/vuelos/package-2.jpg" alt="" />
+            <img class="img-fluid" :src="package2" alt="" />
             <div class="p-4">
               <div class="d-flex justify-content-between mb-3">
                 <small class="m-0"
@@ -74,7 +74,7 @@
         </div>
         <div class="col-lg-4 col-md-6 mb-4">
           <div class="package-item bg-white mb-2">
-            <img class="img-fluid" src="src/assets/vuelos/package-3.jpg" alt="" />
+            <img class="img-fluid" :src="package3" alt="" />
             <div class="p-4">
               <div class="d-flex justify-content-between mb-3">
                 <small class="m-0"
@@ -106,7 +106,7 @@
         </div>
         <div class="col-lg-4 col-md-6 mb-4">
           <div class="package-item bg-white mb-2">
-            <img class="img-fluid" src="src/assets/vuelos/package-4.jpg" alt="" />
+            <img class="img-fluid" :src="package4" alt="" />
             <div class="p-4">
               <div class="d-flex justify-content-between mb-3">
                 <small class="m-0"
@@ -138,7 +138,7 @@
         </div>
         <div class="col-lg-4 col-md-6 mb-4">
           <div class="package-item bg-white mb-2">
-            <img class="img-fluid" src="src/assets/vuelos/package-5.jpg" alt="" />
+            <img class="img-fluid" :src="package5" alt="" />
             <div class="p-4">
               <div class="d-flex justify-content-between mb-3">
                 <small class="m-0"
@@ -170,7 +170,7 @@
         </div>
         <div class="col-lg-4 col-md-6 mb-4">
           <div class="package-item bg-white mb-2">
-            <img class="img-fluid" src="src/assets/vuelos/package-6.jpg" alt="" />
+            <img class="img-fluid" :src="package6" alt="" />
             <div class="p-4">
               <div class="d-flex justify-content-between mb-3">
                 <small class="m-0"
@@ -204,3 +204,26 @@
     </div>
   </div>
 </template>
+
+<script>
+import package1 from '@/assets/vuelos/package-1.jpg';
+import package2 from '@/assets/vuelos/package-2.jpg';
+import package3 from '@/assets/vuelos/package-3.jpg';
+import package4 from '@/assets/vuelos/package-4.jpg';
+import package5 from '@/assets/vuelos/package-5.jpg';
+import package6 from '@/assets/vuelos/package-6.jpg';
+
+export default {
+  name: 'Packages',
+  data() {
+    return {
+      package1,
+      package2,
+      package3,
+      package4,
+      package5,
+      package6
+    };
+  }
+};
+</script>

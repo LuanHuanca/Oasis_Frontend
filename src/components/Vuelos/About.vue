@@ -6,7 +6,7 @@
           <div class="position-relative h-100">
             <img
               class="position-absolute w-100 h-100"
-              src="src/assets/vuelos/about.jpg"
+              :src="aboutImage"
               style="object-fit: cover"
             />
           </div>
@@ -26,14 +26,14 @@
               <div class="col-6">
                 <img
                   class="img-fluid"
-                  src="src/assets/vuelos/about-1.jpg"
+                  :src="aboutImage1"
                   alt=""
                 />
               </div>
               <div class="col-6">
                 <img
                   class="img-fluid"
-                  src="src/assets/vuelos/about-2.jpg"
+                  :src="aboutImage2"
                   alt=""
                 />
               </div>
@@ -44,6 +44,24 @@
     </div>
   </div>
 </template>
+
+<script>
+import aboutImage from '@/assets/vuelos/about.jpg';
+import aboutImage1 from '@/assets/vuelos/about-1.jpg';
+import aboutImage2 from '@/assets/vuelos/about-2.jpg';
+
+export default {
+  name: 'About',
+  data() {
+    return {
+      aboutImage,
+      aboutImage1,
+      aboutImage2
+    };
+  }
+};
+</script>
+
 <style>
 .container-fluid{
     padding: 20px 0px 20px 0px;

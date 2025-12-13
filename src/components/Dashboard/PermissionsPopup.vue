@@ -274,6 +274,7 @@
 
 <script>
 import axios from 'axios';
+import { API_URL } from '@/config/api';
 import Swal from 'sweetalert2';
 import auditService from '@/functions/auditService';
 
@@ -366,21 +367,21 @@ export default {
     async fetchData() {
       try {
         // Obtener datos del admin
-        const adminResponse = await axios.get(`http://localhost:9999/api/v1/admin/${this.adminId}`);
+        const adminResponse = await axios.get(`${API_URL}/admin/${this.adminId}`);
         this.admin = adminResponse.data.result;
         this.selectedRolId = this.admin.rol.idRol;
 
         // Obtener todos los roles
-        const rolesResponse = await axios.get('http://localhost:9999/api/v1/rol');
+        const rolesResponse = await axios.get(`${API_URL}/rol`);
         this.roles = rolesResponse.data.result;
 
         // Obtener todos los permisos disponibles
-        const permisosResponse = await axios.get('http://localhost:9999/api/v1/permiso');
+        const permisosResponse = await axios.get(`${API_URL}/permiso`);
         this.allPermisos = permisosResponse.data.result;
 
         // Obtener resumen de permisos del admin
         const resumenResponse = await axios.get(
-          `http://localhost:9999/api/v1/gestion-permisos/admin/${this.adminId}/resumen`
+          `${API_URL}/gestion-permisos/admin/${this.adminId}/resumen`
         );
         const resumen = resumenResponse.data.result;
 
@@ -391,7 +392,7 @@ export default {
         // Obtener permisos temporales con información completa (fecha, motivo, estado)
         try {
           const temporalesResponse = await axios.get(
-            `http://localhost:9999/api/v1/permiso-temporal/admin/${this.adminId}`
+            `${API_URL}/permiso-temporal/admin/${this.adminId}`
           );
           this.permisosTemporales = temporalesResponse.data.result || [];
         } catch (error) {
@@ -498,7 +499,7 @@ export default {
         console.log('Limpiando todos los permisos personales del admin...');
         try {
           const limpiarResponse = await axios.delete(
-            `http://localhost:9999/api/v1/gestion-permisos/admin/${this.adminId}/limpiar-todos-permisos`
+            `${API_URL}/gestion-permisos/admin/${this.adminId}/limpiar-todos-permisos`
           );
           console.log('Respuesta de limpieza de permisos:', limpiarResponse.data);
         } catch (error) {
@@ -508,7 +509,7 @@ export default {
 
         // 2. Cambiar el rol
         const response = await axios.put(
-          `http://localhost:9999/api/v1/admin/updateRole/${this.adminId}`,
+          `${API_URL}/admin/updateRole/${this.adminId}`,
           { rolId: this.selectedRolId }
         );
 
@@ -609,7 +610,7 @@ export default {
         for (const permisoId of toRemove) {
           console.log(`Eliminando permiso adicional ${permisoId} del admin ${this.adminId}`);
           const deleteResponse = await axios.delete(
-            `http://localhost:9999/api/v1/gestion-permisos/admin/${this.adminId}/permiso-adicional/${permisoId}`
+            `${API_URL}/gestion-permisos/admin/${this.adminId}/permiso-adicional/${permisoId}`
           );
           console.log('Respuesta de eliminación:', deleteResponse.data);
           
@@ -626,7 +627,7 @@ export default {
         for (const permisoId of toAdd) {
           console.log(`Agregando permiso adicional ${permisoId} al admin ${this.adminId}`);
           const addResponse = await axios.post(
-            `http://localhost:9999/api/v1/gestion-permisos/admin/${this.adminId}/permiso-adicional`,
+            `${API_URL}/gestion-permisos/admin/${this.adminId}/permiso-adicional`,
             { permisoId }
           );
           console.log('Respuesta de adición:', addResponse.data);
@@ -736,17 +737,17 @@ export default {
         };
 
         if (this.newTemporal.tipoDuracion === 'dias') {
-          endpoint = 'http://localhost:9999/api/v1/permiso-temporal/asignar-por-dias';
+          endpoint = `${API_URL}/permiso-temporal/asignar-por-dias`;
           body.dias = this.newTemporal.dias;
         } else if (this.newTemporal.tipoDuracion === 'horas') {
-          endpoint = 'http://localhost:9999/api/v1/permiso-temporal/asignar-por-horas';
+          endpoint = `${API_URL}/permiso-temporal/asignar-por-horas`;
           body.horas = this.newTemporal.horas;
         } else if (this.newTemporal.tipoDuracion === 'fecha') {
           if (!this.newTemporal.fechaFin) {
             Swal.fire('Error', 'Debe ingresar una fecha de finalización', 'error');
             return;
           }
-          endpoint = 'http://localhost:9999/api/v1/permiso-temporal/asignar';
+          endpoint = `${API_URL}/permiso-temporal/asignar`;
           body.fechaFin = this.newTemporal.fechaFin.replace('T', ' ') + ':00';
         }
 
@@ -803,7 +804,7 @@ export default {
         }
 
         const response = await axios.put(
-          `http://localhost:9999/api/v1/permiso-temporal/${this.extendingTemporal.idPermisoTemporal}/extender`,
+          `${API_URL}/permiso-temporal/${this.extendingTemporal.idPermisoTemporal}/extender`,
           {
             nuevaFechaFin: this.newFechaFin.replace('T', ' ') + ':00'
           }
@@ -845,7 +846,7 @@ export default {
 
         if (result.isConfirmed) {
           const response = await axios.put(
-            `http://localhost:9999/api/v1/permiso-temporal/${idPermisoTemporal}/revocar`
+            `${API_URL}/permiso-temporal/${idPermisoTemporal}/revocar`
           );
 
           if (response.data.code === '200-OK') {
