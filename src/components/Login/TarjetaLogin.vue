@@ -307,9 +307,21 @@ Atentamente,
 Agencia de Viajes TU GUIA
 Luis Huanca, Gerente de la agencia de viajes`,
       };
-      const response2 = await axios.post(url, data).catch((error) => {
+      try {
+        const response = await axios.post(url, data);
+        if (response.data && response.data.code === "200-OK") {
+          console.log("Correo enviado exitosamente:", response.data.result);
+        } else {
+          console.error("Error del backend al enviar correo:", response.data?.message);
+          this.mostrarError(response.data?.message || "Error al enviar el correo de verificación", "error");
+        }
+      } catch (error) {
         console.error("Hubo un problema al enviar el correo:", error);
-      });
+        const errorMessage = error.response?.data?.message || 
+                           error.message || 
+                           "Error al enviar el correo de verificación";
+        this.mostrarError(errorMessage, "error");
+      }
     },
     async tokenDeOlvido() {
       const url = `${MAIL_URL}/${this.correo}`;
@@ -331,14 +343,21 @@ Gracias,
 Agencia de Viajes TU GUIA`,
       };
 
-      await axios
-        .post(url, data)
-        .then((response) => {
-          console.log("El correo fue enviado exitosamente:", response.data);
-        })
-        .catch((error) => {
-          console.error("Hubo un problema al enviar el correo:", error);
-        });
+      try {
+        const response = await axios.post(url, data);
+        if (response.data && response.data.code === "200-OK") {
+          console.log("El correo fue enviado exitosamente:", response.data.result);
+        } else {
+          console.error("Error del backend al enviar correo:", response.data?.message);
+          this.mostrarError(response.data?.message || "Error al enviar el correo de restablecimiento", "error");
+        }
+      } catch (error) {
+        console.error("Hubo un problema al enviar el correo:", error);
+        const errorMessage = error.response?.data?.message || 
+                           error.message || 
+                           "Error al enviar el correo de restablecimiento";
+        this.mostrarError(errorMessage, "error");
+      }
     },
     // Método para generar un código aleatorio de 6 dígitos
     generateCode() {

@@ -10,8 +10,8 @@
             id="custom-button"
             class="navbar-toggler"
             type="button"
-            data-toggle="collapse"
-            data-target="#navbarNav"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
             aria-controls="navbarNav"
             aria-expanded="false"
             aria-label="Toggle navigation"
@@ -20,37 +20,37 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav mr-auto">
+          <ul class="navbar-nav me-auto">
             <li class="nav-item">
               <router-link to="/" class="nav-link">Home</router-link>
             </li>
           </ul>
-          <ul class="navbar-nav mr-auto">
+          <ul class="navbar-nav me-auto">
             <li class="nav-item">
               <router-link to="/Hotel" class="nav-link">Hoteles</router-link>
             </li>
           </ul>
-          <ul class="navbar-nav mr-auto">
+          <ul class="navbar-nav me-auto">
             <li class="nav-item">
               <router-link to="/vuelos" class="nav-link">Vuelos</router-link>
             </li>
           </ul>
-          <ul class="navbar-nav mr-auto">
+          <ul class="navbar-nav me-auto">
             <li class="nav-item">
               <router-link to="/Autos" class="nav-link">Autos</router-link>
             </li>
           </ul>
-          <ul class="navbar-nav mr-auto">
+          <ul class="navbar-nav me-auto">
             <li v-if="isAdmin" class="nav-item">
               <router-link to="/Dashboard" class="nav-link">Dashboard</router-link>
             </li>
           </ul>
-          <ul class="navbar-nav mr-auto">
+          <ul class="navbar-nav me-auto">
             <li v-if="!isAuthenticated" class="nav-item">
               <router-link to="/RegistroPersona" class="nav-link">Registrarse</router-link>
             </li>
           </ul>
-          <ul class="navbar-nav mr-auto">
+          <ul class="navbar-nav me-auto">
             <li v-if="!isAuthenticated" class="nav-item">
               <router-link to="" class="nav-link" @click.prevent="login">Login</router-link>
             </li>
@@ -63,18 +63,18 @@
               </option>
             </select>
           </div>
-          <ul class="navbar-nav mr-auto ml-5">
+          <ul class="navbar-nav me-auto ms-5">
             <li class="nav-item" v-if="isAuthenticated">
               <Icon id="carrito" icon="emojione-v1:shopping-bags" width="30" height="30" @click="togglePopUp"/>
             </li>
           </ul>
-<ul class="navbar-nav mr-auto d-none d-md-block">
+<ul class="navbar-nav me-auto d-none d-md-block">
             <li class="nav-item dropdown" v-if="isAuthenticated">
               <a
                   class="nav-link dropdown-toggle"
                   href="#"
                   id="profileDropDown"
-                  data-toggle="dropdown"
+                  data-bs-toggle="dropdown"
               >
                 <img
                     :src="user.picture ? user.picture : ('@/assets/deafult_profile.png')"

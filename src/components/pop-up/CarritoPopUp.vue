@@ -85,27 +85,42 @@ export default {
       // Enviar solicitud al backend para enviar el correo
       try {
         const url = `${BASE_URL}/mail/send/${correoUsuario}`;
-        await axios.post(url, {
+        const response = await axios.post(url, {
           subject: "Detalles de tu carrito de compras - Tu Guia",
           message: emailContent,
         });
 
-        await this.crearAuditoria();
+        // Verificar la respuesta del backend
+        if (response.data && response.data.code === "200-OK") {
+          await this.crearAuditoria();
 
-        // Mostrar notificación de éxito
-        Swal.fire({
-          icon: "success",
-          title: "Correo enviado",
-          text: "El correo ha sido enviado exitosamente.",
-        });
+          // Mostrar notificación de éxito
+          Swal.fire({
+            icon: "success",
+            title: "Correo enviado",
+            text: response.data.result || "El correo ha sido enviado exitosamente.",
+          });
+        } else {
+          // El backend devolvió un error
+          const errorMessage = response.data?.message || "Error desconocido al enviar el correo";
+          console.error("Error del backend:", errorMessage);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: errorMessage,
+          });
+        }
 
       } catch (error) {
         console.error("Error enviando correo:", error);
-        // Mostrar notificación de error
+        // Mostrar notificación de error con más detalles
+        const errorMessage = error.response?.data?.message || 
+                           error.message || 
+                           "Hubo un error al enviar el correo. Por favor, verifica tu conexión e intenta de nuevo.";
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Hubo un error al enviar el correo.",
+          text: errorMessage,
         });
       }
     },
