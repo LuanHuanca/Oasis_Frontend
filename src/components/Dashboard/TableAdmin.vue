@@ -28,14 +28,22 @@
         </tr>
       </thead>
       <tbody>
+        <tr v-if="admins.length === 0">
+          <td colspan="5" style="text-align: center; padding: 20px;">
+            No hay administradores registrados.
+          </td>
+        </tr>
         <tr v-for="admin in admins" :key="admin.idAdmin">
           <td>{{ admin.idAdmin }}</td>
-          <td>{{ admin.correo }}</td>
-          <td>{{ admin.rol.rol }}</td>
+          <td>{{ admin.correo || 'N/A' }}</td>
+          <td>{{ admin.rol?.rol || 'Sin rol' }}</td>
           <td>
-            <span v-for="permiso in adminPermisos[admin.idAdmin]" :key="permiso.idPermiso" class="capsule">
-              {{ permiso.permiso }}
+            <span v-if="adminPermisos[admin.idAdmin] && adminPermisos[admin.idAdmin].length > 0">
+              <span v-for="permiso in adminPermisos[admin.idAdmin]" :key="permiso.idPermiso" class="capsule">
+                {{ permiso.permiso }}
+              </span>
             </span>
+            <span v-else class="capsule" style="opacity: 0.5;">Sin permisos</span>
           </td>
           <td>
             <button @click="showPermissions(admin.idAdmin)" class="btn btn-action">
@@ -98,8 +106,19 @@ export default {
     async fetchData() {
       try {
         // Obtener todos los administradores
-        const adminsResponse = await axios.get('${API_URL}/admin');
-        const admins = adminsResponse.data.result;
+        const adminsResponse = await axios.get(`${API_URL}/admin`);
+        
+        // Validar que la respuesta tenga la estructura correcta
+        if (!adminsResponse.data || !adminsResponse.data.result) {
+          console.error('Respuesta del backend inválida:', adminsResponse.data);
+          this.admins = [];
+          this.adminPermisos = {};
+          return;
+        }
+        
+        const admins = Array.isArray(adminsResponse.data.result) 
+          ? adminsResponse.data.result 
+          : [];
 
         // Obtener permisos efectivos de cada administrador
         const adminPermisos = {};
@@ -128,6 +147,17 @@ export default {
         this.adminPermisos = adminPermisos;
       } catch (error) {
         console.error('Error al obtener los administradores:', error);
+        // Mostrar mensaje de error al usuario
+        if (error.response) {
+          console.error('Error del servidor:', error.response.data);
+        } else if (error.request) {
+          console.error('No se recibió respuesta del servidor:', error.request);
+        } else {
+          console.error('Error al configurar la petición:', error.message);
+        }
+        // Asegurar que los arrays estén vacíos en caso de error
+        this.admins = [];
+        this.adminPermisos = {};
       }
     },
 
@@ -155,7 +185,7 @@ export default {
       this.roleError = '';
       this.roleSuccess = '';
       try {
-        const response = await axios.post('${API_URL}/rol/create', {
+        const response = await axios.post(`${API_URL}/rol/create`, {
           rol: this.newRole
         });
         if (response.data.code == '200-OK') {

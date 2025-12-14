@@ -1,4 +1,4 @@
-import { createRouter as createVueRouter, createWebHashHistory, Router } from "vue-router";
+import { createRouter as createVueRouter, createWebHistory, Router } from "vue-router";
 import Home from "../views/Home.vue";
 import Profile from "../views/Profile.vue";
 import { App } from 'vue';
@@ -102,6 +102,6 @@ export function createRouter(app: App): Router {
       },
 
     ],
-    history: createWebHashHistory()
+    history: createWebHistory()
   })
 }
