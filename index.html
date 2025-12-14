@@ -5,8 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     
-    <!-- Security Headers Meta Tags -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://code.jquery.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://cdn.auth0.com; style-src 'self' 'unsafe-inline' https://stackpath.bootstrapcdn.com https://cdn.auth0.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; font-src 'self' https://stackpath.bootstrapcdn.com https://cdn.auth0.com; connect-src 'self' https://api.google.dev https://api.ipify.org; frame-src 'self' https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests;" />
+    <!-- Security Headers Meta Tags (Nota: frame-ancestors no está permitido en meta tags, solo en headers HTTP) -->
     <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />

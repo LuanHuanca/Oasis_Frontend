@@ -4,15 +4,20 @@ const { join } = require("path");
 const morgan = require("morgan");
 const app = express();
 
+// Deshabilitar X-Powered-By antes de cualquier middleware
+app.disable('x-powered-by');
+
 // Configuración de headers de seguridad HTTP
 app.use((req, res, next) => {
-  // Content Security Policy (CSP)
+  // Content Security Policy (CSP) - Versión mejorada sin unsafe-inline/unsafe-eval cuando sea posible
+  // Nota: unsafe-inline y unsafe-eval pueden ser necesarios para Vue.js y algunas librerías
+  // Se recomienda usar nonces o hashes en el futuro para mayor seguridad
   const csp = "default-src 'self'; " +
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://code.jquery.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://stackpath.bootstrapcdn.com https://cdn.auth0.com; " +
-    "style-src 'self' 'unsafe-inline' https://stackpath.bootstrapcdn.com https://cdn.auth0.com https://cdn.jsdelivr.net; " +
-    "img-src 'self' data: https: blob:; " +
-    "font-src 'self' https://stackpath.bootstrapcdn.com https://cdn.auth0.com; " +
-    "connect-src 'self' https://api.google.dev https://api.ipify.org; " +
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdn.auth0.com; " +
+    "style-src 'self' 'unsafe-inline' https://cdn.auth0.com https://cdn.jsdelivr.net; " +
+    "img-src 'self' data: https://cdn.jsdelivr.net https://cdn.auth0.com https://stackpath.bootstrapcdn.com https://cdnjs.cloudflare.com https://code.jquery.com https://maxcdn.bootstrapcdn.com https://www.google.com https://*.googleapis.com https://*.googleusercontent.com blob:; " +
+    "font-src 'self' https://cdn.auth0.com https://cdn.jsdelivr.net; " +
+    "connect-src 'self' https://api.google.dev https://api.ipify.org https://*.googleapis.com; " +
     "frame-src 'self' https://accounts.google.com; " +
     "object-src 'none'; " +
     "base-uri 'self'; " +
@@ -52,7 +57,7 @@ app.use((req, res, next) => {
     res.setHeader("Expires", "0");
   }
 
-  // Ocultar información del servidor
+  // Asegurar que X-Powered-By esté removido (por si acaso)
   res.removeHeader("X-Powered-By");
   
   next();
