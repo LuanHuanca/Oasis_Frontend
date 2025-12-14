@@ -61,14 +61,14 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('${API_URL}/auto');
+      const response = await axios.get(`${API_URL}/auto`);
       this.autos = response.data.result;
       console.log('Autos obtenidos:', this.autos);
     } catch (error) {
       console.error('Error al obtener los autos:', error);
     }
     try {
-      const response = await axios.get('${API_URL}/ciudad');
+      const response = await axios.get(`${API_URL}/ciudad`);
       this.ciudades = response.data.result;
       console.log('Ciudades obtenidas:', this.ciudades);
     } catch (error) {
@@ -88,7 +88,7 @@ export default {
     },
     async addToCart() {
       // Enviar solicitud para crear un nuevo administrador
-      const response3 = await axios.post('${API_URL}/alquilerAuto/create', {
+      const response3 = await axios.post(`${API_URL}/alquilerAuto/create`, {
         dias: this.alquiler.dias,
         precio: this.alquiler.precio,
         empresa: this.alquiler.empresa,

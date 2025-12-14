@@ -49,7 +49,7 @@ export default {
       this.$router.push(link);
     },
     fetchHotels() {
-      axios.get('${API_URL}/hotel')
+      axios.get(`${API_URL}/hotel`)
         .then(response => {
           this.hotels = response.data.result.map(hotel => ({
             name: hotel.hotel,

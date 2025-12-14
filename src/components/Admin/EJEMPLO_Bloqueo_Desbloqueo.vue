@@ -238,7 +238,7 @@ export default {
     async cargarUsuarios() {
       try {
         // Ejemplo: Obtener clientes
-        const clientesResponse = await axios.get('${API_URL}/cliente');
+        const clientesResponse = await axios.get(`${API_URL}/cliente`);
         const clientes = clientesResponse.data.map(c => ({
           ...c,
           id: c.idCliente,
@@ -246,7 +246,7 @@ export default {
         }));
         
         // Ejemplo: Obtener administradores
-        const adminsResponse = await axios.get('${API_URL}/admin');
+        const adminsResponse = await axios.get(`${API_URL}/admin`);
         const admins = adminsResponse.data.map(a => ({
           ...a,
           id: a.idAdmin,

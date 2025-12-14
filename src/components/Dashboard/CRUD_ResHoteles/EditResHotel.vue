@@ -61,7 +61,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('${API_URL}/hotel');
+      const response = await axios.get(`${API_URL}/hotel`);
       this.hoteles = response.data.result;
       console.log('Hoteles obtenidos:', this.hoteles);
     } catch (error) {

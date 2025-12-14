@@ -80,14 +80,14 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('${API_URL}/ciudad');
+      const response = await axios.get(`${API_URL}/ciudad`);
       this.ciudades = response.data.result;
       console.log('Ciudades obtenidas:', this.ciudades);
     } catch (error) {
       console.error('Error al obtener ciudades:', error);
     }
     try {
-      const response = await axios.get('${API_URL}/aerolinea');
+      const response = await axios.get(`${API_URL}/aerolinea`);
       this.aerolineas = response.data.result;
       console.log('Aerolineas obtenidas:', this.aerolineas);
     } catch (error) {
@@ -107,7 +107,7 @@ export default {
     },
     async addToCart() {
       // Enviar solicitud para crear un nuevo administrador
-      const response3 = await axios.post('${API_URL}/vuelo/create', {
+      const response3 = await axios.post(`${API_URL}/vuelo/create`, {
 
         origen: this.vuelo.origen,
         destino: this.vuelo.destino,

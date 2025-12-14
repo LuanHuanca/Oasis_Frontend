@@ -71,14 +71,14 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('${API_URL}/ciudad');
+      const response = await axios.get(`${API_URL}/ciudad`);
       this.ciudades = response.data.result;
       console.log('Ciudades obtenidas:', this.ciudades);
     } catch (error) {
       console.error('Error al obtener ciudades:', error);
     }
     try {
-      const response = await axios.get('${API_URL}/aerolinea');
+      const response = await axios.get(`${API_URL}/aerolinea`);
       this.aerolineas = response.data.result;
       console.log('Aerolineas obtenidas:', this.aerolineas);
     } catch (error) {

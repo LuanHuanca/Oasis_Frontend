@@ -55,14 +55,14 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('${API_URL}/auto');
+      const response = await axios.get(`${API_URL}/auto`);
       this.autos = response.data.result;
       console.log('Autos obtenidos:', this.autos);
     } catch (error) {
       console.error('Error al obtener los autos:', error);
     }
     try {
-      const response = await axios.get('${API_URL}/ciudad');
+      const response = await axios.get(`${API_URL}/ciudad`);
       this.ciudades = response.data.result;
       console.log('Ciudades obtenidas:', this.ciudades);
     } catch (error) {

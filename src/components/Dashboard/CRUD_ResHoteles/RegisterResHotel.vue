@@ -71,7 +71,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('${API_URL}/hotel');
+      const response = await axios.get(`${API_URL}/hotel`);
       this.hoteles = response.data.result;
       console.log('Hoteles obtenidos:', this.hoteles);
     } catch (error) {
@@ -90,7 +90,7 @@ export default {
     },
     async addToCart() {
       // Enviar solicitud para crear un nuevo administrador
-      const response3 = await axios.post('${API_URL}/reservahotel/create', {
+      const response3 = await axios.post(`${API_URL}/reservahotel/create`, {
 
 
         nroReservaHotel: this.reservation.nroReservaHotel,

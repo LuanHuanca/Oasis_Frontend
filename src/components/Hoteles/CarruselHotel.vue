@@ -76,7 +76,7 @@ let runTimeOut: ReturnType<typeof setTimeout>;
 let runAutoRun: ReturnType<typeof setTimeout>;
 
 const fetchHotelData = () => {
-  axios.get('${API_URL}/hotel')
+  axios.get(`${API_URL}/hotel`)
   .then((response) => {
     const data = response.data.result;
     const filteredData = data.map((item: { imagenes: any; hotel: any; idCiudad: any; descripcion: any; }) => ({
