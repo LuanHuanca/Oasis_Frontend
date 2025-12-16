@@ -2,15 +2,33 @@
  * Configuración centralizada de la API
  * Las variables de entorno se inyectan en tiempo de build por Vite
  * 
- * IMPORTANTE: En Docker, las variables de entorno se pasan durante el build.
- * En EC2, asegúrate de tener VITE_API_URL configurada en el .env antes de hacer build.
+ * IMPORTANTE: 
+ * - En desarrollo local: crear archivo .env con VITE_API_URL=http://localhost:9999
+ * - En Railway: configurar variable de entorno VITE_API_URL en el dashboard de Railway
+ * - La variable DEBE tener el prefijo VITE_ para ser accesible en el cliente
  */
 
 // Obtener la URL de la API desde las variables de entorno
 // En desarrollo local: VITE_API_URL o por defecto http://localhost:9999
-// En Docker: se pasa durante el build desde docker-compose.yml
-// En producción EC2: debe configurarse en el .env antes del build
+// En producción (Railway/EC2): debe configurarse VITE_API_URL en las variables de entorno
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:9999';
+
+// Log de depuración (solo en desarrollo o para debugging)
+if (import.meta.env.DEV || import.meta.env.MODE === 'development') {
+  console.log('🔧 Configuración API:', {
+    'VITE_API_URL (env)': import.meta.env.VITE_API_URL,
+    'API_BASE_URL (usado)': API_BASE_URL,
+    'API_URL (completo)': `${API_BASE_URL}/api/v1`,
+    'MODE': import.meta.env.MODE,
+    'DEV': import.meta.env.DEV
+  });
+}
+
+// Advertencia si no se encontró la variable de entorno en producción
+if (!import.meta.env.VITE_API_URL && (import.meta.env.PROD || import.meta.env.MODE === 'production')) {
+  console.warn('⚠️ ADVERTENCIA: VITE_API_URL no está configurada. Usando valor por defecto:', API_BASE_URL);
+  console.warn('⚠️ En Railway, asegúrate de configurar la variable VITE_API_URL en Settings > Variables');
+}
 
 // Construir la URL completa de la API
 export const API_URL = `${API_BASE_URL}/api/v1`;
