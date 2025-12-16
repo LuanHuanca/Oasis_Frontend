@@ -34,6 +34,7 @@
 import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useStore } from 'vuex';
 import axios from "axios";
+import { API_URL } from '@/config/api';
 
 const store = useStore();
 
