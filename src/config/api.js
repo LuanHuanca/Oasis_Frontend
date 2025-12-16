@@ -13,21 +13,22 @@
 // En producción (Railway/EC2): debe configurarse VITE_API_URL en las variables de entorno
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:9999';
 
-// Log de depuración (solo en desarrollo o para debugging)
-if (import.meta.env.DEV || import.meta.env.MODE === 'development') {
-  console.log('🔧 Configuración API:', {
-    'VITE_API_URL (env)': import.meta.env.VITE_API_URL,
-    'API_BASE_URL (usado)': API_BASE_URL,
-    'API_URL (completo)': `${API_BASE_URL}/api/v1`,
-    'MODE': import.meta.env.MODE,
-    'DEV': import.meta.env.DEV
-  });
-}
+// Log de depuración (siempre mostrar para debugging en producción también)
+console.log('🔧 Configuración API:', {
+  'VITE_API_URL (env)': import.meta.env.VITE_API_URL || 'NO DEFINIDA',
+  'API_BASE_URL (usado)': API_BASE_URL,
+  'API_URL (completo)': `${API_BASE_URL}/api/v1`,
+  'MODE': import.meta.env.MODE,
+  'DEV': import.meta.env.DEV,
+  'PROD': import.meta.env.PROD,
+  'Hostname actual': typeof window !== 'undefined' ? window.location.hostname : 'N/A'
+});
 
 // Advertencia si no se encontró la variable de entorno en producción
 if (!import.meta.env.VITE_API_URL && (import.meta.env.PROD || import.meta.env.MODE === 'production')) {
   console.warn('⚠️ ADVERTENCIA: VITE_API_URL no está configurada. Usando valor por defecto:', API_BASE_URL);
   console.warn('⚠️ En Railway, asegúrate de configurar la variable VITE_API_URL en Settings > Variables');
+  console.warn('⚠️ IMPORTANTE: Después de configurar la variable, DEBES hacer un nuevo build/deploy');
 }
 
 // Construir la URL completa de la API
