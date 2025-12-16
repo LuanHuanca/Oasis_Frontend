@@ -49,8 +49,18 @@ export default {
       this.$router.push(link);
     },
     fetchHotels() {
-      axios.get(`${API_URL}/hotel`)
+      const url = `${API_URL}/hotel`;
+      console.log('🔍 Intentando obtener hoteles desde:', url);
+      
+      axios.get(url, {
+        timeout: 10000,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      })
         .then(response => {
+          console.log('✅ Hoteles obtenidos exitosamente');
           this.hotels = response.data.result.map(hotel => ({
             name: hotel.hotel,
             image: hotel.imagenes,
@@ -60,7 +70,12 @@ export default {
           }));
         })
         .catch(error => {
-          console.error("Hubo un error al obtener los hoteles:", error);
+          console.error("❌ Hubo un error al obtener los hoteles:", error);
+          console.error('URL intentada:', url);
+          console.error('Tipo de error:', error.code);
+          if (error.code === 'ERR_NETWORK') {
+            console.error('🚨 Error de red - Verifica que el backend esté accesible en:', API_URL.replace('/api/v1', ''));
+          }
         });
     }
   },

@@ -77,20 +77,43 @@ let runTimeOut: ReturnType<typeof setTimeout>;
 let runAutoRun: ReturnType<typeof setTimeout>;
 
 const fetchHotelData = () => {
-  axios.get(`${API_URL}/hotel`)
+  const url = `${API_URL}/hotel`;
+  console.log('🔍 Intentando obtener hoteles desde:', url);
+  
+  axios.get(url, {
+    timeout: 10000, // 10 segundos de timeout
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  })
   .then((response) => {
+    console.log('✅ Respuesta exitosa de hoteles:', response);
     const data = response.data.result;
     const filteredData = data.map((item: { imagenes: any; hotel: any; idCiudad: any; descripcion: any; }) => ({
-      imagenes: item.imagenes, // Cambia 'src' por el nombre correcto de la propiedad que contiene la URL de la imagen
+      imagenes: item.imagenes,
       hotel: item.hotel,
       idCiudad: item.idCiudad,
       descripcion: item.descripcion
     }));
-    images.value = filteredData; // Asigna el nuevo array a la variable images
-    console.log(filteredData); // Aquí tendrás el nuevo array con los datos filtrados
+    images.value = filteredData;
+    console.log('✅ Hoteles cargados:', filteredData);
   })
   .catch((error) => {
-    console.error('Hubo un error al obtener los datos del hotel:', error);
+    console.error('❌ Error al obtener los datos del hotel:', error);
+    console.error('URL intentada:', url);
+    console.error('Tipo de error:', error.code);
+    console.error('Mensaje:', error.message);
+    
+    if (error.code === 'ERR_NETWORK') {
+      console.error('🚨 Error de red: El backend no está respondiendo o hay un problema de conexión');
+      console.error('Verifica que:');
+      console.error('1. El backend esté corriendo en:', API_URL.replace('/api/v1', ''));
+      console.error('2. El backend esté accesible públicamente');
+      console.error('3. No haya problemas de CORS');
+    } else if (error.response) {
+      console.error('Respuesta del servidor:', error.response.status, error.response.data);
+    }
   });
 };
 
