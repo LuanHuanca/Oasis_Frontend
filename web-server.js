@@ -17,7 +17,7 @@ app.use((req, res, next) => {
     "style-src 'self' 'unsafe-inline' https://cdn.auth0.com https://cdn.jsdelivr.net; " +
     "img-src 'self' data: https://cdn.jsdelivr.net https://cdn.auth0.com https://stackpath.bootstrapcdn.com https://cdnjs.cloudflare.com https://code.jquery.com https://maxcdn.bootstrapcdn.com https://www.google.com https://*.googleapis.com https://*.googleusercontent.com blob:; " +
     "font-src 'self' https://cdn.auth0.com https://cdn.jsdelivr.net; " +
-    "connect-src 'self' https://api.google.dev https://api.ipify.org https://*.googleapis.com; " +
+    "connect-src 'self' https://api.google.dev https://api.ipify.org https://*.googleapis.com https://oasisbackend-production-eb4d.up.railway.app https://*.up.railway.app http://localhost:*; " +
     "frame-src 'self' https://accounts.google.com; " +
     "object-src 'none'; " +
     "base-uri 'self'; " +
