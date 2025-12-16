@@ -152,7 +152,7 @@ export default defineComponent({
       // ID 7 - Editar documentos internos
       { 
         permiso: 'Editar documentos internos', 
-        key: 'documentos_internos', 
+        key: 'Editar_Documentos_Internos', 
         label: '📝 Editar Documentos',
         icon: '📝'
       },

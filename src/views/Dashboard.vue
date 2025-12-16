@@ -52,6 +52,7 @@ import Asignar_Roles from '@/components/Admin/Asignar_Roles.vue';
 import Revisar_Accesos_Red from '@/components/Admin/Revisar_Accesos_Red.vue';
 import Subir_Documentos_Internos from '@/components/Admin/Subir_Documentos_Internos.vue';
 import Ver_Documentos_Internos from '@/components/Admin/Ver_Documentos_Internos.vue';
+import Editar_Documentos_Internos from '@/components/Admin/Editar_Documentos_Internos.vue';
 import Editar_Cuentas from '@/components/Admin/Editar_Cuentas.vue';
 import Eliminar_Comprobante from '@/components/Admin/Eliminar_Comprobante.vue';
 import Ver_Reportes_Contables from '@/components/Admin/Ver_Reportes_Contables.vue';
@@ -82,6 +83,7 @@ export default {
     Revisar_Accesos_Red,
     Subir_Documentos_Internos,
     Ver_Documentos_Internos,
+    Editar_Documentos_Internos,
     Editar_Cuentas,
     Eliminar_Comprobante,
     Ver_Reportes_Contables,
@@ -203,6 +205,9 @@ export default {
           break;
         case 'Ver_Documentos_Internos':
           this.currentComponent = 'Ver_Documentos_Internos';
+          break;
+        case 'Editar_Documentos_Internos':
+          this.currentComponent = 'Editar_Documentos_Internos';
           break;
         case 'Editar_Cuentas':
           this.currentComponent = 'Editar_Cuentas';
