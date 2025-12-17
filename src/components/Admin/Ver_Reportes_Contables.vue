@@ -1,68 +1,8 @@
 <template>
   <div class="reportes-contables-container">
-    <h2>📈 Reportes Contables</h2>
+    <h2>📈 Tabla de auditoria</h2>
     
-    <div class="filters-section">
-      <div class="filters">
-        <div class="filter-group">
-          <label>Rango de Fechas:</label>
-          <input type="date" v-model="filtros.fechaInicio" />
-          <span>a</span>
-          <input type="date" v-model="filtros.fechaFin" />
-        </div>
-        <div class="filter-group">
-          <label>Tipo de Actividad:</label>
-          <select v-model="filtros.tipoActividad">
-            <option value="">Todas</option>
-            <option value="CREATE">Creación</option>
-            <option value="UPDATE">Actualización</option>
-            <option value="DELETE">Eliminación</option>
-            <option value="LOGIN">Inicio de Sesión</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>Usuario:</label>
-          <input 
-            type="text" 
-            v-model="filtros.usuario" 
-            placeholder="Buscar por correo o ID"
-          />
-        </div>
-        <button @click="generarReporte" class="btn btn-primary">📊 Generar Reporte</button>
-        <button @click="exportarReporte" class="btn btn-success">📥 Exportar</button>
-      </div>
-    </div>
-
-    <div class="stats-section">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">💰</div>
-          <div class="stat-value">{{ totalFacturas }}</div>
-          <div class="stat-label">Total Facturas</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">📊</div>
-          <div class="stat-value">{{ totalActividades }}</div>
-          <div class="stat-label">Actividades Registradas</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">👥</div>
-          <div class="stat-value">{{ usuariosActivos }}</div>
-          <div class="stat-label">Usuarios Activos</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">📈</div>
-          <div class="stat-value">{{ porcentajeCrecimiento }}%</div>
-          <div class="stat-label">Crecimiento</div>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="cargando" class="loading">
-      <p>Cargando reporte...</p>
-    </div>
-
-    <div v-else class="report-section">
+    <div class="report-section">
       <h3>📋 Registro de Actividades</h3>
       <div class="table-container">
         <table class="data-table">

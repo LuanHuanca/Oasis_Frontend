@@ -190,7 +190,7 @@ export default defineComponent({
       { 
         permiso: 'Ver reportes contables', 
         key: 'Ver_Reportes_Contables', 
-        label: '📈 Reportes Contables',
+        label: '📈 Tabla de auditoria',
         icon: '📈'
       },
       
